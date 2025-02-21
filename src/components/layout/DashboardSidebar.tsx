@@ -21,10 +21,15 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
+  {
+    group: "Website Traffic",
+    items: [
+      { icon: Globe, label: "Website Traffic", href: "/website/traffic" },
+    ]
+  },
   { 
     group: "Website",
     items: [
-      { icon: Globe, label: "Website Traffic", href: "/website/traffic" },
       { icon: LineChart, label: "Traffic Analytics", href: "/website/analytics" },
       { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
     ]
