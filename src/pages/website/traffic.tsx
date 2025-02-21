@@ -5,14 +5,23 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Globe, Users, LineChart, FormInput } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { WebsiteScanner } from "@/services/websiteScanner";
 import { toast } from "@/components/ui/use-toast";
+
+interface ScanProgress {
+  scannedPages: number;
+  totalPages: number;
+  currentUrl: string;
+  estimatedTimeRemaining: number;
+}
 
 const WebsiteTrafficPage = () => {
   const [url, setUrl] = useState("");
   const [scanning, setScanning] = useState(false);
   const [pagesCount, setPagesCount] = useState(0);
   const [formsCount, setFormsCount] = useState(0);
+  const [progress, setProgress] = useState<ScanProgress | null>(null);
 
   const handleScan = async () => {
     if (!url) {
@@ -26,10 +35,13 @@ const WebsiteTrafficPage = () => {
 
     try {
       setScanning(true);
-      const scanner = new WebsiteScanner(url);
-      const pages = await scanner.scanWebsite();
+      setProgress(null);
       
-      // Zähle Gesamtanzahl der Formulare
+      const scanner = new WebsiteScanner(url, (progress) => {
+        setProgress(progress);
+      });
+      
+      const pages = await scanner.scanWebsite();
       const totalForms = pages.reduce((sum, page) => sum + page.forms.length, 0);
       
       setPagesCount(pages.length);
@@ -47,6 +59,7 @@ const WebsiteTrafficPage = () => {
       });
     } finally {
       setScanning(false);
+      setProgress(null);
     }
   };
 
@@ -58,21 +71,34 @@ const WebsiteTrafficPage = () => {
           <p className="text-muted-foreground">Übersicht über Ihre Website-Besucher und Aktivitäten.</p>
         </div>
 
-        <div className="flex gap-4 items-end">
-          <div className="flex-1">
-            <Input
-              placeholder="Website URL eingeben (z.B. https://example.com)"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="w-full"
-            />
+        <div className="space-y-4">
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <Input
+                placeholder="Website URL eingeben (z.B. https://example.com)"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <Button 
+              onClick={handleScan}
+              disabled={scanning}
+            >
+              {scanning ? "Scanne..." : "Website scannen"}
+            </Button>
           </div>
-          <Button 
-            onClick={handleScan}
-            disabled={scanning}
-          >
-            {scanning ? "Scanne..." : "Website scannen"}
-          </Button>
+
+          {progress && (
+            <div className="space-y-2">
+              <Progress value={(progress.scannedPages / progress.totalPages) * 100} />
+              <div className="text-sm text-muted-foreground">
+                <p>Scanne {progress.currentUrl}</p>
+                <p>{progress.scannedPages} von {progress.totalPages} Seiten gescannt</p>
+                <p>Geschätzte Restzeit: {progress.estimatedTimeRemaining} Sekunden</p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

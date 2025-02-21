@@ -1,4 +1,3 @@
-
 import { toast } from "@/components/ui/use-toast";
 
 interface DiscoveredPage {
@@ -16,26 +15,56 @@ interface FormElement {
   classes?: string[];
 }
 
+interface ScanProgress {
+  scannedPages: number;
+  totalPages: number;
+  currentUrl: string;
+  estimatedTimeRemaining: number;
+}
+
 export class WebsiteScanner {
   private visited = new Set<string>();
   private baseUrl: string;
   private proxyUrl = "https://api.allorigins.win/get?url=";
+  private onProgress?: (progress: ScanProgress) => void;
+  private startTime: number = 0;
+  private avgPageScanTime: number = 0;
 
-  constructor(url: string) {
+  constructor(url: string, onProgress?: (progress: ScanProgress) => void) {
     this.baseUrl = new URL(url).origin;
+    this.onProgress = onProgress;
   }
 
   async scanWebsite(): Promise<DiscoveredPage[]> {
     const pages: DiscoveredPage[] = [];
+    this.startTime = Date.now();
     
     try {
       // Versuche zuerst die sitemap.xml zu lesen
       const sitemapUrls = await this.getSitemapUrls();
       if (sitemapUrls.length > 0) {
         console.log("Sitemap gefunden, scanne URLs...", sitemapUrls);
-        for (const url of sitemapUrls) {
+        
+        // Initialer Fortschritt
+        this.updateProgress({
+          scannedPages: 0,
+          totalPages: sitemapUrls.length,
+          currentUrl: "Starte Scan...",
+          estimatedTimeRemaining: this.estimateTimeRemaining(0, sitemapUrls.length)
+        });
+        
+        for (let i = 0; i < sitemapUrls.length; i++) {
+          const url = sitemapUrls[i];
           const page = await this.scanPage(url);
           if (page) pages.push(page);
+          
+          // Update Fortschritt
+          this.updateProgress({
+            scannedPages: i + 1,
+            totalPages: sitemapUrls.length,
+            currentUrl: url,
+            estimatedTimeRemaining: this.estimateTimeRemaining(i + 1, sitemapUrls.length)
+          });
         }
       } else {
         // Wenn keine Sitemap vorhanden, starte mit der Hauptseite
@@ -201,5 +230,22 @@ export class WebsiteScanner {
       console.error(`Fehler beim Scannen von ${url}:`, error);
       return null;
     }
+  }
+
+  private updateProgress(progress: ScanProgress) {
+    if (this.onProgress) {
+      this.onProgress(progress);
+    }
+  }
+
+  private estimateTimeRemaining(scannedPages: number, totalPages: number): number {
+    if (scannedPages === 0) return 0;
+    
+    const elapsedTime = Date.now() - this.startTime;
+    const avgTimePerPage = elapsedTime / scannedPages;
+    this.avgPageScanTime = avgTimePerPage;
+    
+    const remainingPages = totalPages - scannedPages;
+    return Math.round(remainingPages * avgTimePerPage / 1000); // Sekunden
   }
 }
