@@ -53,10 +53,12 @@ const menuItems = [
 export const DashboardSidebar = () => {
   return (
     <Sidebar variant="inset" collapsible="icon">
-      <SidebarContent>
+      <SidebarContent className="pt-4">
         {menuItems.map((group) => (
           <SidebarGroup key={group.group}>
-            <SidebarGroupLabel>{group.group}</SidebarGroupLabel>
+            <SidebarGroupLabel className="px-6 text-base font-medium mb-1">
+              {group.group}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
@@ -64,10 +66,10 @@ export const DashboardSidebar = () => {
                     <SidebarMenuButton asChild>
                       <a
                         href={item.href}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                        className="flex items-center gap-4 px-6 py-2 hover:bg-accent transition-colors"
                       >
                         <item.icon className="h-5 w-5" />
-                        <span>{item.label}</span>
+                        <span className="text-base">{item.label}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
