@@ -22,9 +22,14 @@ import {
 
 const menuItems = [
   { 
-    group: "Website",
+    group: "Gesamtübersicht",
     items: [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
+    ]
+  },
+  { 
+    group: "Website",
+    items: [
       { icon: LineChart, label: "Traffic Analytics", href: "/website/traffic" },
       { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
     ]
