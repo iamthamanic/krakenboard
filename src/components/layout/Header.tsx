@@ -14,7 +14,7 @@ export const Header = () => {
             <img 
               src="/lovable-uploads/deaeb7df-0e13-4733-b44b-7b2e5faf09d9.png" 
               alt="Kraken Logo" 
-              className="h-8 w-8 mr-2" 
+              className="h-12 w-12 mr-2" 
             />
             <span className="text-primary-500">Kraken</span>
             <span className="text-secondary-500">Board</span>
