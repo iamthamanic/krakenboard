@@ -8,6 +8,7 @@ import {
   CreditCard,
   LineChart,
   FormInput,
+  LayoutDashboard
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,6 +22,12 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
+  {
+    group: "Dashboard",
+    items: [
+      { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
+    ]
+  },
   {
     group: "Website Traffic",
     items: [
