@@ -12,11 +12,14 @@ interface FormElement {
   action?: string;
   method?: string;
   fields: number;
+  steps?: number;
+  classes?: string[];
 }
 
 export class WebsiteScanner {
   private visited = new Set<string>();
   private baseUrl: string;
+  private proxyUrl = "https://api.allorigins.win/get?url=";
 
   constructor(url: string) {
     this.baseUrl = new URL(url).origin;
@@ -29,7 +32,7 @@ export class WebsiteScanner {
       // Versuche zuerst die sitemap.xml zu lesen
       const sitemapUrls = await this.getSitemapUrls();
       if (sitemapUrls.length > 0) {
-        console.log("Sitemap gefunden, scanne URLs...");
+        console.log("Sitemap gefunden, scanne URLs...", sitemapUrls);
         for (const url of sitemapUrls) {
           const page = await this.scanPage(url);
           if (page) pages.push(page);
@@ -57,14 +60,18 @@ export class WebsiteScanner {
     }
   }
 
+  private async fetchWithProxy(url: string): Promise<string> {
+    const response = await fetch(this.proxyUrl + encodeURIComponent(url));
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.contents;
+  }
+
   private async getSitemapUrls(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/sitemap.xml`);
-      if (!response.ok) return [];
-      
-      const text = await response.text();
+      const xml = await this.fetchWithProxy(`${this.baseUrl}/sitemap.xml`);
       const urls: string[] = [];
-      const matches = text.match(/<loc>(.*?)<\/loc>/g);
+      const matches = xml.match(/<loc>(.*?)<\/loc>/g);
       
       if (matches) {
         matches.forEach(match => {
@@ -85,6 +92,7 @@ export class WebsiteScanner {
   private async crawlPage(url: string, pages: DiscoveredPage[]) {
     if (this.visited.has(url)) return;
     this.visited.add(url);
+    console.log("Crawle Seite:", url);
 
     try {
       const page = await this.scanPage(url);
@@ -93,6 +101,8 @@ export class WebsiteScanner {
         
         // Parse Links und crawle weitere Seiten
         const links = await this.getPageLinks(url);
+        console.log("Gefundene Links:", links);
+        
         for (const link of links) {
           if (link.startsWith(this.baseUrl)) {
             await this.crawlPage(link, pages);
@@ -106,22 +116,24 @@ export class WebsiteScanner {
 
   private async getPageLinks(url: string): Promise<string[]> {
     try {
-      const response = await fetch(url);
-      const html = await response.text();
+      const html = await this.fetchWithProxy(url);
       const links: string[] = [];
       
+      // Finde alle href Attribute
       const matches = html.match(/href="([^"]+)"/g);
       if (matches) {
         matches.forEach(match => {
           const href = match.replace(/href="|"/g, '');
           if (href.startsWith('/') || href.startsWith(this.baseUrl)) {
             const fullUrl = href.startsWith('/') ? `${this.baseUrl}${href}` : href;
-            links.push(fullUrl);
+            if (!fullUrl.includes('#') && !fullUrl.endsWith('.pdf')) { // Filtere Anker und PDFs
+              links.push(fullUrl);
+            }
           }
         });
       }
       
-      return links;
+      return [...new Set(links)]; // Entferne Duplikate
     } catch (error) {
       console.error(`Fehler beim Extrahieren der Links von ${url}:`, error);
       return [];
@@ -130,8 +142,8 @@ export class WebsiteScanner {
 
   private async scanPage(url: string): Promise<DiscoveredPage | null> {
     try {
-      const response = await fetch(url);
-      const html = await response.text();
+      const html = await this.fetchWithProxy(url);
+      console.log(`Scanne Seite ${url}, HTML Länge: ${html.length}`);
       
       // Extrahiere Titel
       const titleMatch = html.match(/<title>(.*?)<\/title>/);
@@ -146,17 +158,44 @@ export class WebsiteScanner {
           const actionMatch = formHtml.match(/action="([^"]*)"/);
           const methodMatch = formHtml.match(/method="([^"]*)"/);
           const idMatch = formHtml.match(/id="([^"]*)"/);
+          const classMatch = formHtml.match(/class="([^"]*)"/);
+          
+          // Zähle Input-Felder und versuche mehrstufige Formulare zu erkennen
           const inputCount = (formHtml.match(/<input[^>]*>/g) || []).length;
+          const stepElements = formHtml.match(/step|wizard|multi|stage/gi);
+          const steps = stepElements ? stepElements.length : 1;
           
           forms.push({
             id: idMatch ? idMatch[1] : undefined,
             action: actionMatch ? actionMatch[1] : undefined,
             method: methodMatch ? methodMatch[1] : 'get',
-            fields: inputCount
+            fields: inputCount,
+            steps: steps,
+            classes: classMatch ? classMatch[1].split(/\s+/) : []
           });
         });
       }
       
+      // Suche auch nach dynamischen Formularen ohne <form> Tag
+      const divFormMatches = html.match(/<div[^>]*form[^>]*>[\s\S]*?<\/div>/g);
+      if (divFormMatches) {
+        divFormMatches.forEach(divHtml => {
+          const inputCount = (divHtml.match(/<input[^>]*>/g) || []).length;
+          if (inputCount > 0) {
+            const classMatch = divHtml.match(/class="([^"]*)"/);
+            const stepElements = divHtml.match(/step|wizard|multi|stage/gi);
+            
+            forms.push({
+              fields: inputCount,
+              steps: stepElements ? stepElements.length : 1,
+              classes: classMatch ? classMatch[1].split(/\s+/) : [],
+              method: 'dynamic'
+            });
+          }
+        });
+      }
+      
+      console.log(`Gefundene Formulare auf ${url}:`, forms);
       return { url, title, forms };
     } catch (error) {
       console.error(`Fehler beim Scannen von ${url}:`, error);
