@@ -30,7 +30,7 @@ const menuItems = [
   { 
     group: "Website",
     items: [
-      { icon: LineChart, label: "Traffic Analytics", href: "/website/analytics" },
+      { icon: LineChart, label: "Traffic Analytics", href: "/website/traffic" },
       { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
     ]
   },
