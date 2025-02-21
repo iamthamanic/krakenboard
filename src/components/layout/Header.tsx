@@ -27,9 +27,6 @@ export const Header = () => {
           <a href="#integrations" className="text-sm font-medium hover:text-primary-500 transition-colors">
             Integrations
           </a>
-          <a href="#pricing" className="text-sm font-medium hover:text-primary-500 transition-colors">
-            Pricing
-          </a>
           <Button className="bg-primary-500 hover:bg-primary-600 text-white">
             Get Started
           </Button>

@@ -3,10 +3,9 @@ import {
   BarChart,
   Globe,
   Home,
-  LayoutDashboard,
-  Settings,
   Share2,
-  ShoppingCart,
+  MessageCircle,
+  CreditCard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,38 +19,55 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { icon: Home, label: "Overview", href: "/" },
-  { icon: Globe, label: "Web Traffic", href: "/traffic" },
-  { icon: Share2, label: "Social Media", href: "/social" },
-  { icon: BarChart, label: "Analytics", href: "/analytics" },
-  { icon: ShoppingCart, label: "E-Commerce", href: "/ecommerce" },
-  { icon: Settings, label: "Settings", href: "/settings" },
+  { 
+    group: "Website",
+    items: [
+      { icon: Globe, label: "Traffic & Conversions", href: "/website/traffic" },
+      { icon: BarChart, label: "Form Analytics", href: "/website/forms" },
+    ]
+  },
+  {
+    group: "Social Media",
+    items: [
+      { icon: MessageCircle, label: "Organic Performance", href: "/social/organic" },
+      { icon: CreditCard, label: "Paid Campaigns", href: "/social/paid" },
+    ]
+  },
+  {
+    group: "Google Ads",
+    items: [
+      { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
+      { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
+    ]
+  },
 ];
 
 export const DashboardSidebar = () => {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton asChild>
-                    <a
-                      href={item.href}
-                      className="flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.label}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {menuItems.map((group) => (
+          <SidebarGroup key={group.group}>
+            <SidebarGroupLabel>{group.group}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton asChild>
+                      <a
+                        href={item.href}
+                        className="flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
     </Sidebar>
   );
