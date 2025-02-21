@@ -2,7 +2,6 @@
 import {
   BarChart,
   Globe,
-  Home,
   Share2,
   MessageCircle,
   CreditCard,
@@ -22,21 +21,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  {
-    group: "Dashboard",
-    items: [
-      { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
-    ]
-  },
-  {
-    group: "Website Traffic",
-    items: [
-      { icon: Globe, label: "Website Traffic", href: "/website/traffic" },
-    ]
-  },
   { 
     group: "Website",
     items: [
+      { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
       { icon: LineChart, label: "Traffic Analytics", href: "/website/traffic" },
       { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
     ]
