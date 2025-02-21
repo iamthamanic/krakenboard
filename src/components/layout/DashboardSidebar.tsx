@@ -6,6 +6,8 @@ import {
   Share2,
   MessageCircle,
   CreditCard,
+  LineChart,
+  FormInput,
 } from "lucide-react";
 import {
   Sidebar,
@@ -22,8 +24,9 @@ const menuItems = [
   { 
     group: "Website",
     items: [
-      { icon: Globe, label: "Traffic & Conversions", href: "/website/traffic" },
-      { icon: BarChart, label: "Form Analytics", href: "/website/forms" },
+      { icon: Globe, label: "Website Traffic", href: "/website/traffic" },
+      { icon: LineChart, label: "Traffic Analytics", href: "/website/analytics" },
+      { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
     ]
   },
   {
