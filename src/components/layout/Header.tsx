@@ -10,21 +10,24 @@ export const Header = () => {
           <Button variant="ghost" size="icon" className="lg:hidden">
             <Menu className="h-6 w-6" />
           </Button>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-            KrakenBoard
+          <h1 className="text-xl font-bold">
+            <span className="text-primary-500">Kraken</span>
+            <span className="text-secondary-500">Board</span>
           </h1>
         </div>
         <nav className="hidden lg:flex items-center space-x-8">
-          <a href="#features" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="#features" className="text-sm font-medium hover:text-primary-500 transition-colors">
             Features
           </a>
-          <a href="#integrations" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="#integrations" className="text-sm font-medium hover:text-primary-500 transition-colors">
             Integrations
           </a>
-          <a href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="#pricing" className="text-sm font-medium hover:text-primary-500 transition-colors">
             Pricing
           </a>
-          <Button>Get Started</Button>
+          <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+            Get Started
+          </Button>
         </nav>
       </div>
     </header>

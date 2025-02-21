@@ -23,20 +23,20 @@ export const StatsCard = ({
   className,
 }: StatsCardProps) => {
   return (
-    <Card className={cn("relative overflow-hidden transition-all hover:shadow-lg", className)}>
+    <Card className={cn("relative overflow-hidden transition-all hover:shadow-lg border-secondary-100", className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        {icon}
+        <CardTitle className="text-sm font-medium text-secondary-400">{title}</CardTitle>
+        <div className="text-primary-400">{icon}</div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-2xl font-bold text-secondary-700">{value}</div>
         {(description || trend) && (
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-secondary-400 mt-1">
             {trend && (
               <span
                 className={cn(
                   "inline-flex items-center",
-                  trend.isPositive ? "text-green-500" : "text-red-500"
+                  trend.isPositive ? "text-primary-500" : "text-red-500"
                 )}
               >
                 {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%
