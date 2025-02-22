@@ -351,6 +351,33 @@ export type Database = {
         }
         Relationships: []
       }
+      tech_documentation: {
+        Row: {
+          category: string
+          content: Json
+          created_at: string | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content: Json
+          created_at?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content?: Json
+          created_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       websites: {
         Row: {
           created_at: string | null

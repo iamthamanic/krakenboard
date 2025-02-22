@@ -7,8 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Settings, Users, Database, Shield, BookOpen, Code, GitBranch, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useTechDocumentation } from "@/hooks/useTechDocumentation";
 
 const AdminPage = () => {
+  const { data: techDocs, isLoading } = useTechDocumentation();
+
   return (
     <AdminLayout>
       <div className="space-y-8 animate-fade-in">
@@ -225,141 +228,145 @@ const AdminPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="stack">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <Code className="h-5 w-5" />
-                        Tech Stack
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium mb-2">Frontend</h4>
+                {isLoading ? (
+                  <div className="text-sm text-muted-foreground">Lade Dokumentation...</div>
+                ) : (
+                  <Accordion type="single" collapsible className="w-full">
+                    {techDocs?.find(doc => doc.category === 'stack') && (
+                      <AccordionItem value="stack">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-2">
+                            <Code className="h-5 w-5" />
+                            Tech Stack
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-medium mb-2">Frontend</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'stack')?.content.frontend?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h4 className="font-medium mb-2">Backend</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'stack')?.content.backend?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {techDocs?.find(doc => doc.category === 'database') && (
+                      <AccordionItem value="database">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-2">
+                            <Database className="h-5 w-5" />
+                            Datenbankstruktur
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-medium mb-2">Haupttabellen</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'database')?.content.tables?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h4 className="font-medium mb-2">Relations</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'database')?.content.relations?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {techDocs?.find(doc => doc.category === 'repository') && (
+                      <AccordionItem value="repository">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-2">
+                            <GitBranch className="h-5 w-5" />
+                            Repository-Struktur
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
                           <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                            <li>React + TypeScript (Vite)</li>
-                            <li>TailwindCSS für Styling</li>
-                            <li>Shadcn/ui für UI Komponenten</li>
-                            <li>React Query für Server State</li>
-                            <li>React Router für Routing</li>
+                            <li>/src/components - UI Komponenten</li>
+                            <li>/src/pages - Routen & Seitenkomponenten</li>
+                            <li>/src/services - Business Logic & API Clients</li>
+                            <li>/src/hooks - Custom React Hooks</li>
+                            <li>/src/lib - Utilities & Helpers</li>
+                            <li>/src/types - TypeScript Definitionen</li>
                           </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-medium mb-2">Backend</h4>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {techDocs?.find(doc => doc.category === 'apis') && (
+                      <AccordionItem value="apis">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-2">
+                            <Database className="h-5 w-5" />
+                            API-Integrationen
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-medium mb-2">Implementierte APIs</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'apis')?.content.implemented?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h4 className="font-medium mb-2">Integration Pattern</h4>
+                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                {techDocs?.find(doc => doc.category === 'apis')?.content.integration?.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {techDocs?.find(doc => doc.category === 'deployment') && (
+                      <AccordionItem value="deployment">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-2">
+                            <Package className="h-5 w-5" />
+                            Deployment
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
                           <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                            <li>Docker Container für die Anwendung</li>
                             <li>Supabase für Datenbank & Auth</li>
-                            <li>Edge Functions für Backend Logic</li>
-                            <li>Row Level Security (RLS)</li>
+                            <li>Edge Functions für serverless Backend</li>
+                            <li>Automatisches Deployment via CI/CD</li>
+                            <li>Monitoring & Error Tracking</li>
                           </ul>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="database">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <Database className="h-5 w-5" />
-                        Datenbankstruktur
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium mb-2">Haupttabellen</h4>
-                          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                            <li>websites - Gespeicherte Websites & Scan-Status</li>
-                            <li>discovered_pages - Gefundene Unterseiten</li>
-                            <li>forms - Erkannte Formulare</li>
-                            <li>form_conversions - Formular-Conversions</li>
-                            <li>integrations - API-Integrationen</li>
-                            <li>api_metrics - Gesammelte Metriken</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-medium mb-2">Relations</h4>
-                          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                            <li>websites → discovered_pages (1:n)</li>
-                            <li>discovered_pages → forms (1:n)</li>
-                            <li>forms → form_conversions (1:n)</li>
-                            <li>integrations → api_metrics (1:n)</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="repository">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <GitBranch className="h-5 w-5" />
-                        Repository-Struktur
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                        <li>/src/components - UI Komponenten</li>
-                        <li>/src/pages - Routen & Seitenkomponenten</li>
-                        <li>/src/services - Business Logic & API Clients</li>
-                        <li>/src/hooks - Custom React Hooks</li>
-                        <li>/src/lib - Utilities & Helpers</li>
-                        <li>/src/types - TypeScript Definitionen</li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="apis">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <Database className="h-5 w-5" />
-                        API-Integrationen
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium mb-2">Implementierte APIs</h4>
-                          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                            <li>Google Analytics 4</li>
-                            <li>Google Ads</li>
-                            <li>Facebook Marketing</li>
-                            <li>Instagram Graph API</li>
-                            <li>LinkedIn Marketing</li>
-                            <li>TikTok Business</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-medium mb-2">Integration Pattern</h4>
-                          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                            <li>OAuth2 Flow für Auth</li>
-                            <li>Automatisches Token Refresh</li>
-                            <li>Rate Limiting & Caching</li>
-                            <li>Error Handling & Retry Logic</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="deployment">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <Package className="h-5 w-5" />
-                        Deployment
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                        <li>Docker Container für die Anwendung</li>
-                        <li>Supabase für Datenbank & Auth</li>
-                        <li>Edge Functions für serverless Backend</li>
-                        <li>Automatisches Deployment via CI/CD</li>
-                        <li>Monitoring & Error Tracking</li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+                  </Accordion>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
