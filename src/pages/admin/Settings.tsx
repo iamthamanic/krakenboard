@@ -27,9 +27,9 @@ const Settings = () => {
     <AdminLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Einstellungen & Administration</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Admin</h1>
           <p className="text-muted-foreground mt-2">
-            Verwalten Sie hier die rechtlichen Dokumente der Anwendung.
+            Wichtiger Scheiß für die Entwicklung
           </p>
         </div>
 
