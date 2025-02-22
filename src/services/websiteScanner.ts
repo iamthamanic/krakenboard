@@ -66,9 +66,9 @@ export class WebsiteScanner {
         if (page) {
           // Analysiere Dankeseiten für gefundene Formulare
           for (const form of page.forms) {
-            const thankYouPage = await FormParser.detectThankYouPage(form, this.baseUrl);
-            if (thankYouPage) {
-              form.thankYouPage = thankYouPage;
+            const successPage = await FormParser.detectThankYouPage(form, this.baseUrl);
+            if (successPage) {
+              form.successPage = successPage;
             }
           }
 
