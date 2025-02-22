@@ -47,6 +47,47 @@ export type Database = {
           },
         ]
       }
+      form_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          form_id: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          metadata: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          form_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          metadata?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          form_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          metadata?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_alerts_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       form_conversions: {
         Row: {
           conversion_timestamp: string | null

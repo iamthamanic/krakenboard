@@ -5,6 +5,7 @@ import { FormElement } from "@/services/types/scanner.types";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { AlertCircle, CheckCircle, Timer } from "lucide-react";
+import { FormAlerts } from "./FormAlerts";
 
 interface FormMonitoringDashboardProps {
   form: FormElement;
@@ -103,6 +104,8 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
 
   return (
     <div className="space-y-6">
+      <FormAlerts formId={form.id} />
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
