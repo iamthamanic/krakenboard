@@ -8,6 +8,9 @@ import {
   LineChart,
   FormInput,
   LayoutDashboard,
+  Settings,
+  Puzzle,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -19,9 +22,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
-const menuItems = [
+const dashboardMenuItems = [
   { 
     items: [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
@@ -50,14 +53,31 @@ const menuItems = [
   }
 ];
 
+const adminMenuItems = [
+  {
+    items: [
+      { icon: Settings, label: "Administration", href: "/admin" },
+    ]
+  },
+  {
+    group: "Einstellungen",
+    items: [
+      { icon: Puzzle, label: "Integrationen", href: "/admin#integrations" },
+      { icon: FileText, label: "Rechtliche Dokumente", href: "/admin#legal" },
+    ]
+  }
+];
+
 export const DashboardSidebar = () => {
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const menuItems = isAdminRoute ? adminMenuItems : dashboardMenuItems;
 
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarContent className="pt-16">
-        {menuItems.map((group) => (
-          <SidebarGroup key={group.group || 'overview'}>
+        {menuItems.map((group, index) => (
+          <SidebarGroup key={group.group || `group-${index}`}>
             {group.group && (
               <SidebarGroupLabel className="px-6 text-base font-medium mb-2">
                 {group.group}
@@ -68,14 +88,14 @@ export const DashboardSidebar = () => {
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.label}>
                     <SidebarMenuButton asChild>
-                      <a
-                        href={item.href}
+                      <Link
+                        to={item.href}
                         className="flex items-center gap-4 px-6 py-2 hover:bg-accent transition-colors"
                         data-active={location.pathname === item.href}
                       >
                         <item.icon className="h-5 w-5" />
                         <span className="text-base">{item.label}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
