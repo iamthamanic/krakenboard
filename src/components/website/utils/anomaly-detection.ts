@@ -1,19 +1,10 @@
-
 import { ConversionData } from "../types/monitoring.types";
 
 export interface AnomalyAlert {
   form_id: string;
   alert_type: 'conversion_increase' | 'conversion_decrease' | 'high_error_rate' | 'inactivity';
   message: string;
-  metadata: {
-    previous_rate?: number;
-    current_rate?: number;
-    percentage_change?: number;
-    error_rate?: number;
-    threshold?: number;
-    last_conversion?: Date;
-    hours_inactive?: number;
-  };
+  metadata: Record<string, number | string>;
 }
 
 export const analyzeConversionTrend = (

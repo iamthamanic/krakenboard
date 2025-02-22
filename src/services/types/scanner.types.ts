@@ -9,6 +9,7 @@ export interface DiscoveredPage {
 
 export interface FormElement {
   id?: string;
+  name?: string;  // Hinzugefügt
   type: 'standard' | 'dynamic' | 'multi-step';
   fields: number;
   successPage?: string;

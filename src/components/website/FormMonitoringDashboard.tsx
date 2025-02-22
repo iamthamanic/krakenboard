@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,7 +45,7 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from('form_submissions')
+          .from('form_conversions')
           .select('*')
           .eq('form_id', form.id)
           .order('created_at', { ascending: false })
@@ -73,13 +74,13 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     // Setup Realtime subscription
     if (realtimeEnabled) {
       const channel = supabase
-        .channel('form_submissions')
+        .channel('form_conversions')
         .on(
           'postgres_changes',
           {
             event: 'INSERT',
             schema: 'public',
-            table: 'form_submissions',
+            table: 'form_conversions',
             filter: `form_id=eq.${form.id}`,
           },
           async (payload) => {
@@ -104,7 +105,6 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     const previousConversions = newData.slice(5, 10);
     const alerts: AnomalyAlert[] = [];
 
-    // Analyze conversion trend
     const trendAlert = analyzeConversionTrend(
       recentConversions,
       previousConversions,
@@ -115,7 +115,6 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
       alerts.push(trendAlert);
     }
 
-    // Check error rate
     const errorAlert = detectErrorRateAnomaly(
       recentConversions,
       settings.error_rate_threshold
@@ -125,7 +124,6 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
       alerts.push(errorAlert);
     }
 
-    // Check inactivity
     if (newData.length > 0) {
       const inactivityAlert = checkInactivity(
         new Date(newData[0].timestamp),
@@ -138,9 +136,14 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     }
 
     if (alerts.length > 0) {
+      const formattedAlerts = alerts.map(alert => ({
+        ...alert,
+        metadata: JSON.stringify(alert.metadata) // Konvertiere das metadata-Objekt in einen JSON-String
+      }));
+
       await supabase
         .from('form_alerts')
-        .insert(alerts);
+        .insert(formattedAlerts);
     }
   };
 
@@ -166,7 +169,7 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
             </CardHeader>
             <CardContent>
               {loading ? (
-                <Skeleton height="300px" />
+                <Skeleton className="h-[300px]" />
               ) : (
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={chartData}>
