@@ -1,3 +1,4 @@
+
 import { toast } from "@/components/ui/use-toast";
 import { DiscoveredPage, ScanProgress } from './types/scanner.types';
 import { SitemapParser } from './parsers/sitemapParser';
@@ -60,7 +61,7 @@ export class WebsiteScanner {
       scannedPages: 0,
       totalPages: urls.length,
       currentUrl: "Starte Scan...",
-      estimatedTimeRemaining: 0
+      estimatedTimeRemaining: "Berechne..." // Hier wurde die Änderung vorgenommen
     });
 
     for (let i = 0; i < urls.length; i += this.concurrentRequests) {
