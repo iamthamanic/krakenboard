@@ -1,21 +1,11 @@
 
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import { Copy, FileText, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { LegalDocumentEditor } from "@/components/legal/LegalDocumentEditor";
-import { useLegalDocument } from "@/hooks/useLegalDocuments";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const AdminOverview = () => {
-  const { document: privacyDoc, isLoading: privacyLoading, updateDocument: updatePrivacy } = useLegalDocument('privacy');
-  const { document: termsDoc, isLoading: termsLoading, updateDocument: updateTerms } = useLegalDocument('terms');
-
   const copyToClipboard = (path: string) => {
     const url = `${window.location.origin}${path}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -33,76 +23,66 @@ const AdminOverview = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="text-base font-medium">Startseite der Anwendung</div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => copyToClipboard('/')}
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              URL kopieren
-            </Button>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Startseite der Anwendung
+              </CardTitle>
+              <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full"
+                onClick={() => copyToClipboard('/')}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                URL kopieren
+              </Button>
+            </CardContent>
+          </Card>
 
-          <Accordion type="single" collapsible className="w-full space-y-4">
-            <AccordionItem value="privacy">
-              <div className="flex items-center justify-between">
-                <AccordionTrigger className="text-base font-medium">Datenschutzerklärung</AccordionTrigger>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="mr-4"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipboard('/legal/privacy');
-                  }}
-                >
-                  <Copy className="h-4 w-4 mr-2" />
-                  URL kopieren
-                </Button>
-              </div>
-              <AccordionContent>
-                <div className="pt-4">
-                  <LegalDocumentEditor
-                    title="Datenschutzerklärung"
-                    content={privacyDoc?.content ?? ''}
-                    isLoading={privacyLoading}
-                    onSave={updatePrivacy}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Datenschutzerklärung
+              </CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full"
+                onClick={() => copyToClipboard('/legal/privacy')}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                URL kopieren
+              </Button>
+            </CardContent>
+          </Card>
 
-            <AccordionItem value="terms">
-              <div className="flex items-center justify-between">
-                <AccordionTrigger className="text-base font-medium">Nutzungsbedingungen</AccordionTrigger>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="mr-4"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipboard('/legal/terms');
-                  }}
-                >
-                  <Copy className="h-4 w-4 mr-2" />
-                  URL kopieren
-                </Button>
-              </div>
-              <AccordionContent>
-                <div className="pt-4">
-                  <LegalDocumentEditor
-                    title="Nutzungsbedingungen"
-                    content={termsDoc?.content ?? ''}
-                    isLoading={termsLoading}
-                    onSave={updateTerms}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Nutzungsbedingungen
+              </CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="w-full"
+                onClick={() => copyToClipboard('/legal/terms')}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                URL kopieren
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </AdminLayout>
