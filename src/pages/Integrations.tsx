@@ -13,15 +13,19 @@ import {
   BarChart3
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useIntegrations } from "@/hooks/useIntegrations";
+import { toast } from "@/components/ui/use-toast";
 
 interface IntegrationCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
   isConnected: boolean;
+  type: string;
+  onConnect: () => void;
 }
 
-const IntegrationCard = ({ title, description, icon, isConnected }: IntegrationCardProps) => (
+const IntegrationCard = ({ title, description, icon, isConnected, onConnect }: IntegrationCardProps) => (
   <Card className="p-6">
     <div className="flex items-start justify-between">
       <div className="flex items-center space-x-4">
@@ -36,6 +40,7 @@ const IntegrationCard = ({ title, description, icon, isConnected }: IntegrationC
       <Button
         variant={isConnected ? "outline" : "default"}
         className={isConnected ? "border-green-500 text-green-500 hover:bg-green-50" : ""}
+        onClick={onConnect}
       >
         {isConnected ? "Verbunden" : "Verbinden"}
       </Button>
@@ -44,6 +49,22 @@ const IntegrationCard = ({ title, description, icon, isConnected }: IntegrationC
 );
 
 const Integrations = () => {
+  const { data: integrations, isLoading } = useIntegrations();
+
+  const handleConnect = async (type: string) => {
+    // Hier später die OAuth2-Authentifizierung implementieren
+    toast({
+      title: "Info",
+      description: "OAuth2-Integration wird implementiert...",
+    });
+  };
+
+  const isIntegrationActive = (type: string) => {
+    return integrations?.some(integration => 
+      integration.type === type && integration.is_active
+    ) ?? false;
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
@@ -68,25 +89,33 @@ const Integrations = () => {
               title="Google Ads"
               description="Performance Marketing & Search Ads"
               icon={<CreditCard className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('google_ads')}
+              onConnect={() => handleConnect('google_ads')}
+              type="google_ads"
             />
             <IntegrationCard
               title="Meta Ads Manager"
               description="Facebook & Instagram Ads"
               icon={<BarChart3 className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('meta_ads')}
+              onConnect={() => handleConnect('meta_ads')}
+              type="meta_ads"
             />
             <IntegrationCard
               title="LinkedIn Ads"
               description="B2B Marketing & Sponsored Content"
               icon={<Linkedin className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('linkedin_ads')}
+              onConnect={() => handleConnect('linkedin_ads')}
+              type="linkedin_ads"
             />
             <IntegrationCard
               title="TikTok Ads Manager"
               description="TikTok Werbekampagnen & Analytics"
               icon={<MessageCircle className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('tiktok_ads')}
+              onConnect={() => handleConnect('tiktok_ads')}
+              type="tiktok_ads"
             />
           </div>
         </div>
@@ -98,31 +127,41 @@ const Integrations = () => {
               title="Google Analytics"
               description="Website Traffic & User Behavior"
               icon={<Chrome className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('google_analytics')}
+              onConnect={() => handleConnect('google_analytics')}
+              type="google_analytics"
             />
             <IntegrationCard
               title="Meta Business Suite"
               description="Facebook & Instagram Organic Performance"
               icon={<Facebook className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('meta_business')}
+              onConnect={() => handleConnect('meta_business')}
+              type="meta_business"
             />
             <IntegrationCard
               title="LinkedIn Company Page"
               description="Organic Posts & Engagement"
               icon={<Linkedin className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('linkedin_company')}
+              onConnect={() => handleConnect('linkedin_company')}
+              type="linkedin_company"
             />
             <IntegrationCard
               title="YouTube Studio"
               description="Video Performance & Analytics"
               icon={<Youtube className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('youtube_studio')}
+              onConnect={() => handleConnect('youtube_studio')}
+              type="youtube_studio"
             />
             <IntegrationCard
               title="TikTok Business Center"
               description="Organische TikTok Performance"
               icon={<MessageCircle className="h-5 w-5" />}
-              isConnected={false}
+              isConnected={isIntegrationActive('tiktok_business')}
+              onConnect={() => handleConnect('tiktok_business')}
+              type="tiktok_business"
             />
           </div>
         </div>

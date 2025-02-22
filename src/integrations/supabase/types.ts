@@ -9,7 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      integrations: {
+        Row: {
+          created_at: string | null
+          credentials: Json
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          metadata: Json | null
+          type: Database["public"]["Enums"]["integration_type"]
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credentials?: Json
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          metadata?: Json | null
+          type: Database["public"]["Enums"]["integration_type"]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credentials?: Json
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          metadata?: Json | null
+          type?: Database["public"]["Enums"]["integration_type"]
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +53,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      integration_type:
+        | "google_analytics"
+        | "google_ads"
+        | "meta_ads"
+        | "linkedin_ads"
+        | "tiktok_ads"
+        | "meta_business"
+        | "linkedin_company"
+        | "youtube_studio"
+        | "tiktok_business"
     }
     CompositeTypes: {
       [_ in never]: never
