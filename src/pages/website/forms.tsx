@@ -1,8 +1,41 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { DataTable } from "@/components/dashboard/DataTable";
 import { FormInput, Activity, CheckCircle, AlertCircle } from "lucide-react";
 import { translations, getStoredLanguage } from "@/lib/utils";
+
+const mockFormData = [
+  {
+    url: "/kontakt",
+    fields: 5,
+    submissions: 45,
+    conversionRate: "8.2%",
+    errorRate: "2.1%"
+  },
+  {
+    url: "/newsletter",
+    fields: 2,
+    submissions: 128,
+    conversionRate: "12.4%",
+    errorRate: "1.8%"
+  },
+  {
+    url: "/demo-anfrage",
+    fields: 7,
+    submissions: 23,
+    conversionRate: "15.2%",
+    errorRate: "3.5%"
+  }
+];
+
+const formColumns = [
+  { key: "url", label: "Formular URL" },
+  { key: "fields", label: "Felder" },
+  { key: "submissions", label: "Submissions" },
+  { key: "conversionRate", label: "Conversion Rate" },
+  { key: "errorRate", label: "Fehlerrate" }
+];
 
 const WebsiteFormsPage = () => {
   const t = translations[getStoredLanguage()];
@@ -48,13 +81,13 @@ const WebsiteFormsPage = () => {
           />
         </div>
 
-        {/* TODO: Implementierung der Formular-Liste mit Details wie:
-          - Formularposition (URL)
-          - Anzahl der Felder
-          - Conversion Rate
-          - Fehlerraten
-          - Erfolgsseiten
-        */}
+        <div className="space-y-6">
+          <h2 className="text-xl font-semibold">Erkannte Formulare</h2>
+          <DataTable 
+            columns={formColumns}
+            data={mockFormData}
+          />
+        </div>
       </div>
     </DashboardLayout>
   );

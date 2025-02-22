@@ -1,8 +1,27 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { PerformanceChart } from "@/components/dashboard/PerformanceChart";
 import { BarChart, Share2, CreditCard, Activity } from "lucide-react";
 import { translations, getStoredLanguage } from "@/lib/utils";
+
+const mockConversionData = [
+  { name: "Jan", value: 2.4 },
+  { name: "Feb", value: 2.5 },
+  { name: "Mar", value: 2.6 },
+  { name: "Apr", value: 2.8 },
+  { name: "Mai", value: 2.9 },
+  { name: "Jun", value: 3.0 }
+];
+
+const mockQualityScoreData = [
+  { name: "Jan", value: 7.2 },
+  { name: "Feb", value: 7.4 },
+  { name: "Mar", value: 7.6 },
+  { name: "Apr", value: 8.0 },
+  { name: "Mai", value: 8.2 },
+  { name: "Jun", value: 8.4 }
+];
 
 const GoogleMetricsPage = () => {
   const t = translations[getStoredLanguage()];
@@ -48,7 +67,16 @@ const GoogleMetricsPage = () => {
           />
         </div>
 
-        {/* TODO: Detaillierte Performance Metriken & Visualisierungen */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <PerformanceChart
+            title="Conversion Rate Trend"
+            data={mockConversionData}
+          />
+          <PerformanceChart
+            title="Quality Score Entwicklung"
+            data={mockQualityScoreData}
+          />
+        </div>
       </div>
     </DashboardLayout>
   );

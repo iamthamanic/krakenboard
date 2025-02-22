@@ -1,8 +1,27 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { PerformanceChart } from "@/components/dashboard/PerformanceChart";
 import { MessageCircle, Share2, BarChart, Activity } from "lucide-react";
 import { translations, getStoredLanguage } from "@/lib/utils";
+
+const mockChartData = [
+  { name: "Jan", value: 42000 },
+  { name: "Feb", value: 45000 },
+  { name: "Mar", value: 48000 },
+  { name: "Apr", value: 52300 },
+  { name: "Mai", value: 55000 },
+  { name: "Jun", value: 58000 }
+];
+
+const mockEngagementData = [
+  { name: "Jan", value: 7200 },
+  { name: "Feb", value: 7800 },
+  { name: "Mar", value: 8100 },
+  { name: "Apr", value: 8900 },
+  { name: "Mai", value: 9200 },
+  { name: "Jun", value: 9500 }
+];
 
 const SocialOrganicPage = () => {
   const t = translations[getStoredLanguage()];
@@ -48,7 +67,16 @@ const SocialOrganicPage = () => {
           />
         </div>
 
-        {/* TODO: Social Media Performance Charts & Tabellen */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <PerformanceChart
+            title="Organische Reichweite"
+            data={mockChartData}
+          />
+          <PerformanceChart
+            title="Engagement Entwicklung"
+            data={mockEngagementData}
+          />
+        </div>
       </div>
     </DashboardLayout>
   );
