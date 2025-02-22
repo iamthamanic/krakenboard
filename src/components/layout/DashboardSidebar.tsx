@@ -9,6 +9,7 @@ import {
   FormInput,
   LayoutDashboard,
   Settings,
+  Plug,
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,6 +27,7 @@ const dashboardMenuItems = [
   { 
     items: [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
+      { icon: Plug, label: "Integrationen", href: "/integrations" },
     ]
   },
   { 
