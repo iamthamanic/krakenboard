@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Language, languages, getStoredLanguage, setStoredLanguage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FlagEmoji = ({ language }: { language: Language }) => {
   const flagEmojis = {
@@ -23,6 +23,7 @@ const FlagEmoji = ({ language }: { language: Language }) => {
 
 export const Header = () => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(getStoredLanguage);
+  const navigate = useNavigate();
 
   const handleLanguageChange = (lang: Language) => {
     setCurrentLanguage(lang);
@@ -74,9 +75,23 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="hidden lg:flex items-center space-x-8">
-            <a href="#features" className="text-sm font-medium hover:text-primary-500 transition-colors">
-              Features
-            </a>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-sm font-medium hover:text-primary-500 transition-colors">
+                Features
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to="/legal/privacy">
+                    Datenschutzerklärung
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/legal/terms">
+                    Nutzungsbedingungen
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link to="/integrations" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
               Integrations
               <Cog className="ml-2 h-4 w-4" />
