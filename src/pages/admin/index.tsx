@@ -3,7 +3,7 @@ import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Copy, FileText, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const AdminOverview = () => {
   const copyToClipboard = (path: string) => {
@@ -23,66 +23,55 @@ const AdminOverview = () => {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Startseite der Anwendung
-              </CardTitle>
-              <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="w-full"
-                onClick={() => copyToClipboard('/')}
-              >
-                <Copy className="h-4 w-4 mr-2" />
-                URL kopieren
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Datenschutzerklärung
-              </CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="w-full"
-                onClick={() => copyToClipboard('/legal/privacy')}
-              >
-                <Copy className="h-4 w-4 mr-2" />
-                URL kopieren
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Nutzungsbedingungen
-              </CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="w-full"
-                onClick={() => copyToClipboard('/legal/terms')}
-              >
-                <Copy className="h-4 w-4 mr-2" />
-                URL kopieren
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 hover:bg-accent rounded-lg transition-colors">
+            <div className="flex items-center gap-4">
+              <LayoutDashboard className="h-5 w-5 text-muted-foreground" />
+              <span className="font-medium">Startseite der Anwendung</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => copyToClipboard('/')}
+            >
+              <Copy className="h-4 w-4 mr-2" />
+              URL kopieren
+            </Button>
+          </div>
+          
+          <Separator />
+          
+          <div className="flex items-center justify-between p-4 hover:bg-accent rounded-lg transition-colors">
+            <div className="flex items-center gap-4">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              <span className="font-medium">Datenschutzerklärung</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => copyToClipboard('/legal/privacy')}
+            >
+              <Copy className="h-4 w-4 mr-2" />
+              URL kopieren
+            </Button>
+          </div>
+          
+          <Separator />
+          
+          <div className="flex items-center justify-between p-4 hover:bg-accent rounded-lg transition-colors">
+            <div className="flex items-center gap-4">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              <span className="font-medium">Nutzungsbedingungen</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => copyToClipboard('/legal/terms')}
+            >
+              <Copy className="h-4 w-4 mr-2" />
+              URL kopieren
+            </Button>
+          </div>
         </div>
       </div>
     </AdminLayout>
