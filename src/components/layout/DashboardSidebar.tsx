@@ -1,7 +1,6 @@
 
 import {
   BarChart,
-  Globe,
   Share2,
   MessageCircle,
   CreditCard,
@@ -52,7 +51,7 @@ const dashboardMenuItems = [
   }
 ];
 
-const adminMenuItems = [
+const settingsMenuItems = [
   {
     group: "Einstellungen",
     items: [
@@ -64,8 +63,8 @@ const adminMenuItems = [
 
 export const DashboardSidebar = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
-  const menuItems = isAdminRoute ? adminMenuItems : dashboardMenuItems;
+  const isSettingsRoute = location.pathname.startsWith('/admin');
+  const menuItems = isSettingsRoute ? settingsMenuItems : dashboardMenuItems;
 
   return (
     <Sidebar variant="inset" collapsible="icon">
