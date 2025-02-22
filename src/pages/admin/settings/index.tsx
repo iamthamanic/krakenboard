@@ -29,23 +29,11 @@ const Settings = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Einstellungen</h1>
           <p className="text-muted-foreground mt-2">
-            Rechtliche Dokumente und wichtige Entwicklungseinstellungen
+            Der ganze Bums damit das hier ordentlich läuft
           </p>
         </div>
 
         <div className="space-y-6">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="text-base font-medium">Startseite der Anwendung</div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => copyToClipboard('/')}
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              URL kopieren
-            </Button>
-          </div>
-
           <Accordion type="single" collapsible className="w-full space-y-4">
             <AccordionItem value="privacy">
               <div className="flex items-center justify-between">
