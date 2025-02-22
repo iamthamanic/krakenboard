@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -88,7 +87,7 @@ export class WebsiteScanner {
 
   private async scanSitemap(): Promise<string[]> {
     try {
-      const sitemapUrls = await SitemapParser.parse(this.url);
+      const sitemapUrls = await SitemapParser.parse(this.baseUrl);
       return sitemapUrls.filter(url => this.isValidUrl(url));
     } catch (error) {
       console.warn('Error parsing sitemap:', error);
@@ -254,7 +253,6 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
   };
 };
 
-// Korrigiere die Zeile 165, füge den fehlenden Parameter hinzu
 const scanWebsite = async (url: string, options = {}): Promise<DiscoveredPage[]> => {
   try {
     const response = await fetch(url);

@@ -1,16 +1,14 @@
 
 export class LinkParser {
-  constructor(private baseUrl: string) {}
-
-  parseLinks(html: string): string[] {
+  static extractLinks(html: string, baseUrl: string): string[] {
     const links: string[] = [];
     const regex = /href="([^"]+)"/g;
     let match;
     
     while ((match = regex.exec(html)) !== null) {
       const href = match[1];
-      if (href.startsWith('/') || href.startsWith(this.baseUrl)) {
-        const fullUrl = href.startsWith('/') ? `${this.baseUrl}${href}` : href;
+      if (href.startsWith('/') || href.startsWith(baseUrl)) {
+        const fullUrl = href.startsWith('/') ? `${baseUrl}${href}` : href;
         if (!fullUrl.includes('#') && !fullUrl.endsWith('.pdf')) {
           links.push(fullUrl);
         }

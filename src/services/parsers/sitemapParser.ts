@@ -2,18 +2,16 @@
 import { fetchWithProxy } from '../proxy/proxyFetch';
 
 export class SitemapParser {
-  constructor(private baseUrl: string) {}
-
-  async getUrls(): Promise<string[]> {
+  static async parse(baseUrl: string): Promise<string[]> {
     try {
-      const xml = await fetchWithProxy(`${this.baseUrl}/sitemap.xml`);
+      const xml = await fetchWithProxy(`${baseUrl}/sitemap.xml`);
       const urls: string[] = [];
       const matches = xml.match(/<loc>(.*?)<\/loc>/g);
       
       if (matches) {
         matches.forEach(match => {
           const url = match.replace(/<\/?loc>/g, '');
-          if (url.startsWith(this.baseUrl)) {
+          if (url.startsWith(baseUrl)) {
             urls.push(url);
           }
         });
