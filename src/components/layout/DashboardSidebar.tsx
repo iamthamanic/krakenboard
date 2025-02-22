@@ -49,12 +49,6 @@ const dashboardMenuItems = [
       { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
       { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
     ]
-  },
-  {
-    group: "Einstellungen",
-    items: [
-      { icon: Plug, label: "Integrationen", href: "/integrations" },
-    ]
   }
 ];
 
@@ -63,6 +57,7 @@ const adminMenuItems = [
     group: "Einstellungen",
     items: [
       { icon: Settings, label: "Admin", href: "/admin" },
+      { icon: Plug, label: "Integrationen", href: "/admin/integrations" },
     ]
   }
 ];
