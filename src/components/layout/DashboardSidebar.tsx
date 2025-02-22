@@ -27,7 +27,6 @@ const dashboardMenuItems = [
   { 
     items: [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
-      { icon: Plug, label: "Integrationen", href: "/integrations" },
     ]
   },
   { 
@@ -49,6 +48,12 @@ const dashboardMenuItems = [
     items: [
       { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
       { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
+    ]
+  },
+  {
+    group: "Einstellungen",
+    items: [
+      { icon: Plug, label: "Integrationen", href: "/integrations" },
     ]
   }
 ];
