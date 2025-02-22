@@ -3,10 +3,10 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-  GoogleIcon,
+  Chrome,
   Facebook,
   Linkedin,
-  BrandTiktok,
+  MessageCircle,
   AlertCircle
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -62,7 +62,7 @@ const Integrations = () => {
           <IntegrationCard
             title="Google Analytics & Ads"
             description="Tracking, Kampagnen und Performance-Daten"
-            icon={<GoogleIcon className="h-5 w-5" />}
+            icon={<Chrome className="h-5 w-5" />}
             isConnected={false}
           />
           <IntegrationCard
@@ -80,7 +80,7 @@ const Integrations = () => {
           <IntegrationCard
             title="TikTok"
             description="Social Media Reichweite und Ad Performance"
-            icon={<BrandTiktok className="h-5 w-5" />}
+            icon={<MessageCircle className="h-5 w-5" />}
             isConnected={false}
           />
         </div>
