@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
@@ -7,13 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { WebsiteScanner } from "@/services/websiteScanner";
 import { toast } from "@/components/ui/use-toast";
-
-interface ScanProgress {
-  scannedPages: number;
-  totalPages: number;
-  currentUrl: string;
-  estimatedTimeRemaining: number;
-}
+import { ScanProgress } from "@/services/types/scanner.types";
 
 const WebsiteTrafficPage = () => {
   const [url, setUrl] = useState("");
