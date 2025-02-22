@@ -14,6 +14,23 @@ export interface FormElement {
   successPage?: string;
   isMultiStep: boolean;
   stepsCount?: number;
+  action?: string;
+  method?: string;
+  inputs?: FormInput[];
+  submitButton?: FormButton;
+}
+
+export interface FormInput {
+  name: string;
+  type: string;
+  required?: boolean;
+  label?: string;
+}
+
+export interface FormButton {
+  text: string;
+  type: string;
+  classes?: string[];
 }
 
 export interface FormConversion {
@@ -25,7 +42,16 @@ export interface FormConversion {
 }
 
 export interface WebsiteScanResult {
+  id: string;
   url: string;
+  lastScanAt: string;
   pages: DiscoveredPage[];
-  lastScanAt: Date;
+  discovered_pages?: DiscoveredPage[];
+}
+
+export interface ScanProgress {
+  scannedPages: number;
+  totalPages: number;
+  currentUrl: string;
+  estimatedTimeRemaining: string;
 }

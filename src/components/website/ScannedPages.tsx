@@ -8,6 +8,20 @@ interface ScannedPagesProps {
   websiteUrl: string;
 }
 
+const translations = {
+  noPages: "Keine Seiten gefunden",
+  startScan: "Starten Sie einen Scan, um Seiten zu entdecken.",
+  foundPages: "Gefundene Seiten",
+  page: "Seite",
+  forms: "Formulare",
+  details: "Details",
+  steps: "Schritte",
+  fields: "Felder",
+  successPageExists: "Erfolgsseite vorhanden",
+  discoveredPagesAndForms: "Entdeckte Seiten und Formulare",
+  discoveredPagesDescription: "Übersicht aller gefundenen Seiten und ihrer Formulare"
+};
+
 export const ScannedPages = ({ websiteUrl }: ScannedPagesProps) => {
   const { scanResult, isLoadingResults } = useWebsiteScanner(websiteUrl);
 
@@ -30,11 +44,11 @@ export const ScannedPages = ({ websiteUrl }: ScannedPagesProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Keine Seiten gefunden</CardTitle>
+          <CardTitle>{translations.noPages}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Starten Sie einen Scan, um Seiten zu entdecken.
+            {translations.startScan}
           </p>
         </CardContent>
       </Card>
@@ -44,10 +58,10 @@ export const ScannedPages = ({ websiteUrl }: ScannedPagesProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gefundene Seiten</CardTitle>
+        <CardTitle>{translations.foundPages}</CardTitle>
       </CardHeader>
       <CardContent>
-        <DiscoveredPagesTable pages={scanResult.pages} />
+        <DiscoveredPagesTable pages={scanResult.pages} t={translations} />
       </CardContent>
     </Card>
   );

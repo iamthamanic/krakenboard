@@ -22,7 +22,22 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
         .single();
 
       if (websiteError) throw websiteError;
-      return website as WebsiteScanResult;
+      
+      // Transform the data to match WebsiteScanResult
+      const result: WebsiteScanResult = {
+        id: website.id,
+        url: website.url,
+        lastScanAt: website.last_scan_at,
+        pages: website.discovered_pages.map((page: any) => ({
+          id: page.id,
+          url: page.url,
+          title: page.title,
+          forms: [],
+          lastSeenAt: new Date(page.last_seen_at)
+        }))
+      };
+
+      return result;
     },
     enabled: !!websiteUrl
   });
@@ -35,15 +50,15 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
         // Insert or update website record
         const { data: website, error: websiteError } = await supabase
           .from('websites')
-          .upsert({ url, last_scan_at: new Date() })
+          .upsert({ 
+            url, 
+            last_scan_at: new Date().toISOString() 
+          })
           .select()
           .single();
 
         if (websiteError) throw websiteError;
 
-        // Start the scanning process
-        // Note: This would typically be handled by a background worker
-        // For now we'll do it in the browser
         const pages: DiscoveredPage[] = await scanWebsite(url);
         
         // Save discovered pages
@@ -54,7 +69,7 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
               website_id: website.id,
               url: page.url,
               title: page.title,
-              last_seen_at: new Date()
+              last_seen_at: new Date().toISOString()
             });
 
           if (pageError) throw pageError;
@@ -88,13 +103,6 @@ const scanWebsite = async (url: string): Promise<DiscoveredPage[]> => {
   try {
     const response = await fetch(url);
     const html = await response.text();
-    
-    // This is a simplified version - in production we would:
-    // 1. Use a proper HTML parser
-    // 2. Follow links recursively
-    // 3. Handle different types of forms
-    // 4. Handle JavaScript-rendered content
-    // 5. Respect robots.txt
     
     return [{
       url,
