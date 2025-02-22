@@ -39,8 +39,17 @@ export const FormMonitoringSettings = ({ formId, onSettingsUpdate }: FormMonitor
       }
 
       if (data) {
-        setSettings(data);
-        onSettingsUpdate(data);
+        // Konvertiere die Daten in das erwartete Format
+        const formattedSettings: MonitoringSettings = {
+          conversion_threshold: data.conversion_threshold,
+          error_rate_threshold: data.error_rate_threshold,
+          inactivity_threshold: typeof data.inactivity_threshold === 'string' 
+            ? data.inactivity_threshold 
+            : '1 hour'
+        };
+        
+        setSettings(formattedSettings);
+        onSettingsUpdate(formattedSettings);
       }
     };
 
@@ -52,7 +61,9 @@ export const FormMonitoringSettings = ({ formId, onSettingsUpdate }: FormMonitor
       .from('form_monitoring_settings')
       .upsert({
         form_id: formId,
-        ...settings
+        conversion_threshold: settings.conversion_threshold,
+        error_rate_threshold: settings.error_rate_threshold,
+        inactivity_threshold: settings.inactivity_threshold
       });
 
     if (error) {
@@ -62,6 +73,11 @@ export const FormMonitoringSettings = ({ formId, onSettingsUpdate }: FormMonitor
 
     toast.success('Einstellungen erfolgreich gespeichert');
     onSettingsUpdate(settings);
+  };
+
+  const parseInactivityHours = (intervalStr: string): number => {
+    const match = intervalStr.match(/(\d+)/);
+    return match ? parseInt(match[0]) : 1;
   };
 
   return (
@@ -112,7 +128,7 @@ export const FormMonitoringSettings = ({ formId, onSettingsUpdate }: FormMonitor
             <Input
               id="inactivity_threshold"
               type="number"
-              value={parseInt(settings.inactivity_threshold)}
+              value={parseInactivityHours(settings.inactivity_threshold)}
               onChange={(e) => setSettings(prev => ({
                 ...prev,
                 inactivity_threshold: `${e.target.value} hours`
