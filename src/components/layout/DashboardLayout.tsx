@@ -14,7 +14,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <DashboardSidebar />
         <div className="flex-1">
           <Header />
-          <main className="pt-16 px-4 md:px-6 lg:px-8">{children}</main>
+          <main className="pt-24 px-4 md:px-6 lg:px-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>
