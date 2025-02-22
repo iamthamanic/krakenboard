@@ -9,6 +9,120 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      discovered_pages: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_seen_at: string | null
+          title: string | null
+          updated_at: string | null
+          url: string
+          website_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_seen_at?: string | null
+          title?: string | null
+          updated_at?: string | null
+          url: string
+          website_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_seen_at?: string | null
+          title?: string | null
+          updated_at?: string | null
+          url?: string
+          website_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discovered_pages_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "websites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_conversions: {
+        Row: {
+          conversion_timestamp: string | null
+          error_message: string | null
+          form_id: string | null
+          id: string
+          is_successful: boolean | null
+        }
+        Insert: {
+          conversion_timestamp?: string | null
+          error_message?: string | null
+          form_id?: string | null
+          id?: string
+          is_successful?: boolean | null
+        }
+        Update: {
+          conversion_timestamp?: string | null
+          error_message?: string | null
+          form_id?: string | null
+          id?: string
+          is_successful?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_conversions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forms: {
+        Row: {
+          created_at: string | null
+          fields_count: number | null
+          form_type: string
+          id: string
+          is_multi_step: boolean | null
+          page_id: string | null
+          steps_count: number | null
+          success_page: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fields_count?: number | null
+          form_type: string
+          id?: string
+          is_multi_step?: boolean | null
+          page_id?: string | null
+          steps_count?: number | null
+          success_page?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fields_count?: number | null
+          form_type?: string
+          id?: string
+          is_multi_step?: boolean | null
+          page_id?: string | null
+          steps_count?: number | null
+          success_page?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forms_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "discovered_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integrations: {
         Row: {
           created_at: string | null
@@ -66,6 +180,33 @@ export type Database = {
           id?: string
           type?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      websites: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_scan_at: string | null
+          scan_frequency: unknown | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_scan_at?: string | null
+          scan_frequency?: unknown | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_scan_at?: string | null
+          scan_frequency?: unknown | null
+          updated_at?: string | null
+          url?: string
         }
         Relationships: []
       }

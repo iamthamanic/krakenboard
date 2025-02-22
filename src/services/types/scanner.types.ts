@@ -1,39 +1,31 @@
 
 export interface DiscoveredPage {
+  id?: string;
   url: string;
-  title: string;
+  title?: string;
   forms: FormElement[];
+  lastSeenAt?: Date;
 }
 
 export interface FormElement {
   id?: string;
-  action?: string;
-  method?: string;
-  fields: number;
-  steps?: number;
-  classes?: string[];
-  inputs?: FormInput[];
-  submitButton?: FormButton;
-  successPage?: string;
   type: 'standard' | 'dynamic' | 'multi-step';
+  fields: number;
+  successPage?: string;
+  isMultiStep: boolean;
+  stepsCount?: number;
 }
 
-export interface FormInput {
-  name: string;
-  type: string;
-  required: boolean;
-  label?: string;
+export interface FormConversion {
+  id?: string;
+  formId: string;
+  timestamp: Date;
+  isSuccessful: boolean;
+  errorMessage?: string;
 }
 
-export interface FormButton {
-  text: string;
-  type: 'submit' | 'button';
-  classes?: string[];
-}
-
-export interface ScanProgress {
-  scannedPages: number;
-  totalPages: number;
-  currentUrl: string;
-  estimatedTimeRemaining: string;
+export interface WebsiteScanResult {
+  url: string;
+  pages: DiscoveredPage[];
+  lastScanAt: Date;
 }
