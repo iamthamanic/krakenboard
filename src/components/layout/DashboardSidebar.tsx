@@ -10,7 +10,6 @@ import {
   LayoutDashboard,
   Settings,
   Puzzle,
-  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,14 +55,9 @@ const dashboardMenuItems = [
 const adminMenuItems = [
   {
     items: [
+      { icon: Settings, label: "Einstellungen", href: "/admin" },
       { icon: Settings, label: "Admin", href: "/admin" },
-    ]
-  },
-  {
-    group: "Einstellungen",
-    items: [
-      { icon: Puzzle, label: "Integrationen", href: "/admin#integrations" },
-      { icon: FileText, label: "Rechtliche Dokumente", href: "/admin#legal" },
+      { icon: Puzzle, label: "Integrationen", href: "/admin/integrations" },
     ]
   }
 ];
