@@ -33,20 +33,11 @@ export interface FormButton {
   classes?: string[];
 }
 
-export interface FormConversion {
-  id?: string;
-  formId: string;
-  timestamp: Date;
-  isSuccessful: boolean;
-  errorMessage?: string;
-}
-
 export interface WebsiteScanResult {
   id: string;
   url: string;
   lastScanAt: string;
   pages: DiscoveredPage[];
-  discovered_pages?: DiscoveredPage[];
 }
 
 export interface ScanProgress {
