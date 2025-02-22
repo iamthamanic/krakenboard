@@ -53,10 +53,10 @@ const menuItems = [
 export const DashboardSidebar = () => {
   return (
     <Sidebar variant="inset" collapsible="icon">
-      <SidebarContent className="pt-8">
+      <SidebarContent className="pt-16">
         {menuItems.map((group) => (
           <SidebarGroup key={group.group}>
-            <SidebarGroupLabel className="px-6 text-base font-medium mb-1">
+            <SidebarGroupLabel className="px-6 text-base font-medium mb-2">
               {group.group}
             </SidebarGroupLabel>
             <SidebarGroupContent>
