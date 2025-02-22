@@ -74,7 +74,7 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="hidden lg:flex items-center space-x-8">
-            <Link to="/admin" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
+            <Link to="/admin/settings" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
               Einstellungen
               <Cog className="ml-2 h-4 w-4" />
             </Link>
