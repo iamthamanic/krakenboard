@@ -5,11 +5,17 @@ import { toast } from "sonner";
 
 export type UserProfile = {
   id: string;
-  full_name: string;
+  full_name: string | null;
   role: 'admin' | 'editor' | 'user';
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type CreateUserInput = {
+  full_name?: string;
+  role: 'admin' | 'editor' | 'user';
+  is_active?: boolean;
 };
 
 export const useUsers = () => {
@@ -54,10 +60,10 @@ export const useUsers = () => {
   });
 
   const createUser = useMutation({
-    mutationFn: async (profile: Omit<UserProfile, "id" | "created_at" | "updated_at">) => {
+    mutationFn: async (profile: CreateUserInput) => {
       const { data, error } = await supabase
         .from("profiles")
-        .insert([profile])
+        .insert(profile)
         .select()
         .single();
 
