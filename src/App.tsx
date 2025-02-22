@@ -31,7 +31,7 @@ function App() {
             <Route path="/social/paid" element={<SocialPaid />} />
             <Route path="/google/campaigns" element={<GoogleCampaigns />} />
             <Route path="/google/metrics" element={<GoogleMetrics />} />
-            <Route path="/integrations" element={<Integrations />} />
+            <Route path="/admin/integrations" element={<Integrations />} />
             <Route path="/admin" element={<Settings />} />
             <Route path="/legal/privacy" element={<Privacy />} />
             <Route path="/legal/terms" element={<Terms />} />
