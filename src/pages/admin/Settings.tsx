@@ -1,4 +1,3 @@
-
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Copy, ChevronDown } from "lucide-react";
@@ -29,10 +28,7 @@ const Settings = () => {
   };
 
   const handleConnect = async (type: string) => {
-    toast({
-      title: "Info",
-      description: "OAuth2-Integration wird implementiert...",
-    });
+    toast.info("OAuth2-Integration wird implementiert...");
   };
 
   const isIntegrationActive = (type: string) => {
