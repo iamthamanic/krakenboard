@@ -1,9 +1,31 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Database } from "lucide-react";
+import { Database, Key } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 export const DataTab = () => {
+  const handleConfigureOAuth = async () => {
+    try {
+      const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES.join(' '))}&access_type=offline&prompt=consent`;
+      
+      // Öffne OAuth Dialog in neuem Fenster
+      window.open(googleOAuthUrl, '_blank');
+      
+      toast({
+        title: "OAuth2 Konfiguration",
+        description: "Bitte folgen Sie den Anweisungen im neuen Fenster."
+      });
+    } catch (error) {
+      console.error('OAuth error:', error);
+      toast({
+        title: "Fehler",
+        description: "OAuth2 Konfiguration konnte nicht gestartet werden.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -24,6 +46,19 @@ export const DataTab = () => {
                 </p>
               </div>
               <Button>Verwalten</Button>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center space-x-4">
+              <Key className="h-6 w-6" />
+              <div className="flex-1">
+                <h3 className="font-medium">OAuth2 Konfiguration</h3>
+                <p className="text-sm text-muted-foreground">
+                  Google Analytics & Meta API Zugriff einrichten
+                </p>
+              </div>
+              <Button onClick={handleConfigureOAuth}>Konfigurieren</Button>
             </div>
           </Card>
         </div>
