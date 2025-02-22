@@ -1,8 +1,31 @@
 
-import { Menu } from "lucide-react";
+import { Menu, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Language, languages, getStoredLanguage, setStoredLanguage } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 export const Header = () => {
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(getStoredLanguage);
+
+  const handleLanguageChange = (lang: Language) => {
+    setCurrentLanguage(lang);
+    setStoredLanguage(lang);
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    const storedLang = getStoredLanguage();
+    if (storedLang !== currentLanguage) {
+      setCurrentLanguage(storedLang);
+    }
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
       <div className="container flex items-center justify-between h-16">
@@ -20,16 +43,35 @@ export const Header = () => {
             <span className="text-secondary-500">Board</span>
           </h1>
         </div>
-        <nav className="hidden lg:flex items-center space-x-8">
-          <a href="#features" className="text-sm font-medium hover:text-primary-500 transition-colors">
-            Features
-          </a>
-          <a href="#integrations" className="text-sm font-medium hover:text-primary-500 transition-colors">
-            Integrations
-          </a>
-          <Button className="bg-primary-500 hover:bg-primary-600 text-white">
-            Get Started
-          </Button>
+        <nav className="flex items-center space-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Globe2 className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {Object.entries(languages).map(([code, name]) => (
+                <DropdownMenuItem
+                  key={code}
+                  onClick={() => handleLanguageChange(code as Language)}
+                >
+                  {name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="hidden lg:flex items-center space-x-8">
+            <a href="#features" className="text-sm font-medium hover:text-primary-500 transition-colors">
+              Features
+            </a>
+            <a href="#integrations" className="text-sm font-medium hover:text-primary-500 transition-colors">
+              Integrations
+            </a>
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+              Get Started
+            </Button>
+          </div>
         </nav>
       </div>
     </header>
