@@ -55,8 +55,8 @@ const settingsMenuItems = [
   {
     group: "Einstellungen",
     items: [
-      { icon: Settings, label: "Einstellungen", href: "/admin/settings" },
-      { icon: Plug, label: "Admin", href: "/admin" },
+      { icon: Settings, label: "Admin", href: "/admin" },
+      { icon: Plug, label: "Integration", href: "/admin/integrations" },
     ]
   }
 ];
