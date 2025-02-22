@@ -324,6 +324,36 @@ export type Database = {
         }
         Relationships: []
       }
+      oauth_config: {
+        Row: {
+          created_at: string | null
+          google_client_id: string | null
+          google_client_secret: string | null
+          id: string
+          meta_client_id: string | null
+          meta_client_secret: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          google_client_id?: string | null
+          google_client_secret?: string | null
+          id?: string
+          meta_client_id?: string | null
+          meta_client_secret?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          google_client_id?: string | null
+          google_client_secret?: string | null
+          id?: string
+          meta_client_id?: string | null
+          meta_client_secret?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

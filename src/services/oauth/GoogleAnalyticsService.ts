@@ -1,6 +1,16 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
+interface OAuthConfig {
+  id: string;
+  google_client_id: string;
+  google_client_secret: string;
+  meta_client_id: string;
+  meta_client_secret: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export class GoogleAnalyticsService {
   private static readonly SCOPES = [
     'https://www.googleapis.com/auth/analytics.readonly',
@@ -20,8 +30,10 @@ export class GoogleAnalyticsService {
         throw new Error('OAuth configuration not found');
       }
 
+      const oauthConfig = config as OAuthConfig;
+
       const params = new URLSearchParams({
-        client_id: config.google_client_id,
+        client_id: oauthConfig.google_client_id,
         redirect_uri: this.REDIRECT_URI,
         response_type: 'code',
         scope: this.SCOPES.join(' '),
@@ -47,6 +59,8 @@ export class GoogleAnalyticsService {
         throw new Error('OAuth configuration not found');
       }
 
+      const oauthConfig = config as OAuthConfig;
+
       const response = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: {
@@ -54,8 +68,8 @@ export class GoogleAnalyticsService {
         },
         body: new URLSearchParams({
           code,
-          client_id: config.google_client_id,
-          client_secret: config.google_client_secret,
+          client_id: oauthConfig.google_client_id,
+          client_secret: oauthConfig.google_client_secret,
           redirect_uri: this.REDIRECT_URI,
           grant_type: 'authorization_code',
         }),

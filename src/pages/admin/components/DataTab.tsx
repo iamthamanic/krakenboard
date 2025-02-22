@@ -3,14 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Database, Key } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
 
 export const DataTab = () => {
   const handleConfigureOAuth = async () => {
     try {
-      const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES.join(' '))}&access_type=offline&prompt=consent`;
-      
-      // Öffne OAuth Dialog in neuem Fenster
-      window.open(googleOAuthUrl, '_blank');
+      const authUrl = await GoogleAnalyticsService.initiateOAuth();
+      window.open(authUrl, '_blank');
       
       toast({
         title: "OAuth2 Konfiguration",
