@@ -29,7 +29,7 @@ export class WebsiteScanner {
       const discoveredPages: DiscoveredPage[] = [];
 
       // Versuche zuerst die Sitemap zu scannen
-      const sitemapUrls = await this.scanSitemap();
+      const sitemapUrls = await SitemapParser.parse(this.baseUrl);
       this.queue.push(...sitemapUrls);
 
       // Füge die Start-URL hinzu, falls sie nicht in der Sitemap war
@@ -64,6 +64,14 @@ export class WebsiteScanner {
 
         const page = await this.crawlPage(currentUrl);
         if (page) {
+          // Analysiere Dankeseiten für gefundene Formulare
+          for (const form of page.forms) {
+            const thankYouPage = await FormParser.detectThankYouPage(form, this.baseUrl);
+            if (thankYouPage) {
+              form.thankYouPage = thankYouPage;
+            }
+          }
+
           discoveredPages.push(page);
 
           // Füge neue URLs zur Queue hinzu
@@ -81,16 +89,6 @@ export class WebsiteScanner {
       return discoveredPages;
     } catch (error) {
       console.error('Error scanning website:', error);
-      return [];
-    }
-  }
-
-  private async scanSitemap(): Promise<string[]> {
-    try {
-      const sitemapUrls = await SitemapParser.parse(this.baseUrl);
-      return sitemapUrls.filter(url => this.isValidUrl(url));
-    } catch (error) {
-      console.warn('Error parsing sitemap:', error);
       return [];
     }
   }
