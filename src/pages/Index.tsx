@@ -1,8 +1,22 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Activity, Users, Globe, FormInput, BarChart, Share2, MessageCircle, CreditCard } from "lucide-react";
+import { 
+  Activity, 
+  Users, 
+  Globe, 
+  FormInput, 
+  BarChart, 
+  Share2, 
+  MessageCircle, 
+  CreditCard,
+  Chrome,
+  Facebook,
+  Youtube,
+  TrendingUp
+} from "lucide-react";
 import { translations, getStoredLanguage } from "@/lib/utils";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const t = translations[getStoredLanguage()];
@@ -52,30 +66,30 @@ const Index = () => {
             <h2 className="text-xl font-semibold mb-4">{t.socialMedia}</h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               <StatsCard
-                title={t.organicReach}
+                title="Facebook Reichweite"
                 value="52.3K"
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
+                icon={<Facebook className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 15, isPositive: true }}
                 description={t.vsLastWeek}
               />
               <StatsCard
-                title={t.socialEngagement}
+                title="Instagram Engagement"
                 value="8.9K"
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
+                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 5, isPositive: true }}
                 description={t.vsLastWeek}
               />
               <StatsCard
-                title={t.adImpressions}
+                title="YouTube Views"
                 value="234.1K"
-                icon={<CreditCard className="h-4 w-4 text-muted-foreground" />}
+                icon={<Youtube className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 23, isPositive: true }}
                 description={t.vsLastMonth}
               />
               <StatsCard
-                title={t.socialROI}
+                title="Social ROI"
                 value="324%"
-                icon={<BarChart className="h-4 w-4 text-muted-foreground" />}
+                icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 12, isPositive: true }}
                 description={t.vsLastQuarter}
               />
@@ -88,7 +102,7 @@ const Index = () => {
               <StatsCard
                 title={t.clicks}
                 value="12.4K"
-                icon={<BarChart className="h-4 w-4 text-muted-foreground" />}
+                icon={<Chrome className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 18, isPositive: true }}
                 description={t.vsLastMonth}
               />
@@ -100,21 +114,52 @@ const Index = () => {
                 description={t.vsLastMonth}
               />
               <StatsCard
-                title={t.ctr}
-                value="3.2%"
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
+                title="Cost per Click"
+                value="€0.32"
+                icon={<CreditCard className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 4, isPositive: false }}
                 description={t.vsLastMonth}
               />
               <StatsCard
                 title={t.conversionRate}
                 value="2.8%"
-                icon={<FormInput className="h-4 w-4 text-muted-foreground" />}
+                icon={<BarChart className="h-4 w-4 text-muted-foreground" />}
                 trend={{ value: 7, isPositive: true }}
                 description={t.vsLastMonth}
               />
             </div>
           </div>
+        </div>
+
+        <div>
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Aktive Integrationen</CardTitle>
+              <CardDescription>
+                Überblick über alle verbundenen Datenquellen
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                <div className="flex items-center space-x-2 p-2 rounded-lg border">
+                  <Chrome className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Google Analytics</span>
+                </div>
+                <div className="flex items-center space-x-2 p-2 rounded-lg border">
+                  <Facebook className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Meta Business</span>
+                </div>
+                <div className="flex items-center space-x-2 p-2 rounded-lg border">
+                  <Youtube className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">YouTube Studio</span>
+                </div>
+                <div className="flex items-center space-x-2 p-2 rounded-lg border">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Google Ads</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </DashboardLayout>
