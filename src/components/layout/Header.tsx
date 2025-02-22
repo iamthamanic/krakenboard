@@ -1,5 +1,5 @@
 
-import { Menu, Cog, Plug } from "lucide-react";
+import { Menu, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -77,10 +77,6 @@ export const Header = () => {
             <Link to="/admin" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
               Einstellungen
               <Cog className="ml-2 h-4 w-4" />
-            </Link>
-            <Link to="/integrations" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
-              Integrationen
-              <Plug className="ml-2 h-4 w-4" />
             </Link>
             <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               Get Started
