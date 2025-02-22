@@ -8,9 +8,6 @@ import {
   LineChart,
   FormInput,
   LayoutDashboard,
-  Shield,
-  FileText,
-  Home
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,15 +47,7 @@ const menuItems = [
       { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
       { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
     ]
-  },
-  {
-    group: "Administration",
-    items: [
-      { icon: Home, label: "Features Übersicht", href: "/admin" },
-      { icon: Shield, label: "Datenschutzerklärung", href: "/legal/privacy" },
-      { icon: FileText, label: "Nutzungsbedingungen", href: "/legal/terms" },
-    ]
-  },
+  }
 ];
 
 export const DashboardSidebar = () => {
