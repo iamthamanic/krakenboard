@@ -28,18 +28,19 @@ export class FormParser {
     const submitButton = this.parseSubmitButton(formHtml);
     const successPage = this.findSuccessPage(formHtml);
     const isMultiStep = this.isMultiStepForm(formHtml);
+    const stepsCount = isMultiStep ? this.countFormSteps(formHtml) : 1;
 
     return {
       id: (formHtml.match(/id="([^"]*)"/) || [])[1],
+      type: isMultiStep ? 'multi-step' : 'standard',
+      fields: inputs.length,
+      successPage,
+      isMultiStep,
+      stepsCount,
       action: (formHtml.match(/action="([^"]*)"/) || [])[1],
       method: (formHtml.match(/method="([^"]*)"/) || [])[1] || 'get',
-      fields: inputs.length,
-      steps: isMultiStep ? this.countFormSteps(formHtml) : 1,
-      classes: ((formHtml.match(/class="([^"]*)"/) || [])[1] || '').split(/\s+/),
       inputs,
-      submitButton,
-      successPage,
-      type: isMultiStep ? 'multi-step' : 'standard'
+      submitButton
     };
   }
 
@@ -48,13 +49,12 @@ export class FormParser {
     const submitButton = this.parseSubmitButton(divHtml);
     
     return {
+      type: 'dynamic',
       fields: inputCount,
-      steps: 1,
-      classes: ((divHtml.match(/class="([^"]*)"/) || [])[1] || '').split(/\s+/),
-      method: 'dynamic',
+      isMultiStep: false,
+      stepsCount: 1,
       inputs,
-      submitButton,
-      type: 'dynamic'
+      submitButton
     };
   }
 

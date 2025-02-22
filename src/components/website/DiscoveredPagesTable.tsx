@@ -74,9 +74,9 @@ export const DiscoveredPagesTable = ({ pages, t }: DiscoveredPagesTableProps) =>
                           >
                             {form.type}
                           </Badge>
-                          {form.steps && form.steps > 1 && (
+                          {form.stepsCount && form.stepsCount > 1 && (
                             <Badge variant="outline">
-                              {form.steps} {t.steps}
+                              {form.stepsCount} {t.steps}
                             </Badge>
                           )}
                         </div>
