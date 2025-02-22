@@ -1,12 +1,12 @@
-
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Settings, Users, Database, Shield } from "lucide-react";
+import { AlertCircle, Settings, Users, Database, Shield, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const AdminPage = () => {
   return (
@@ -31,6 +31,7 @@ const AdminPage = () => {
             <TabsTrigger value="general">Allgemein</TabsTrigger>
             <TabsTrigger value="security">Sicherheit</TabsTrigger>
             <TabsTrigger value="data">Daten & APIs</TabsTrigger>
+            <TabsTrigger value="functions">Function Log</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="space-y-4">
@@ -124,6 +125,92 @@ const AdminPage = () => {
                     </div>
                   </Card>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="functions" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Function Log</CardTitle>
+                <CardDescription>
+                  Übersicht aller verfügbaren KrakenBoard Funktionen
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="website">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-5 w-5" />
+                        Website Tracking & Analytics
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        <li>Automatische Erkennung aller Unterseiten via Sitemap oder Crawling</li>
+                        <li>Formulare werden automatisch erkannt und getrackt</li>
+                        <li>Conversion Tracking für alle Formulare</li>
+                        <li>Fehlerrate-Monitoring für Formulareingaben</li>
+                        <li>Echtzeit-Besucherstatistiken ohne Sampling</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="social">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-5 w-5" />
+                        Social Media Integration
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        <li>Facebook, Instagram & LinkedIn Performance Tracking</li>
+                        <li>TikTok & YouTube Analytics Integration</li>
+                        <li>Automatische Aggregation aller Social Media Metriken</li>
+                        <li>Engagement & Reichweiten-Monitoring</li>
+                        <li>Cross-Platform Performance Vergleich</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="ads">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-5 w-5" />
+                        Paid Advertising
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        <li>Google Ads Performance Tracking</li>
+                        <li>Meta Ads Integration</li>
+                        <li>LinkedIn & TikTok Ads Monitoring</li>
+                        <li>ROAS & CPC Analyse</li>
+                        <li>Cross-Channel Attribution</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="automation">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-5 w-5" />
+                        Automatisierung & KI
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        <li>Automatische Anomalie-Erkennung</li>
+                        <li>KI-gestützte Performance Insights</li>
+                        <li>Automatische Report-Generierung</li>
+                        <li>Smart Alerts bei wichtigen Ereignissen</li>
+                        <li>Predictive Analytics für Trends</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>
