@@ -13,6 +13,10 @@ export interface TechDocumentation {
     relations?: string[];
     implemented?: string[];
     integration?: string[];
+    website?: string[];
+    social?: string[];
+    ads?: string[];
+    automation?: string[];
   };
 }
 
