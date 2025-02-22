@@ -324,24 +324,13 @@ const AdminPage = () => {
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-4">
-                            <div>
-                              <h4 className="font-medium mb-2">Implementierte APIs</h4>
-                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                                {techDocs?.find(doc => doc.category === 'apis')?.content.implemented?.map((item, index) => (
-                                  <li key={index}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div>
-                              <h4 className="font-medium mb-2">Integration Pattern</h4>
-                              <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                                {techDocs?.find(doc => doc.category === 'apis')?.content.integration?.map((item, index) => (
-                                  <li key={index}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
+                          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                            <li>Docker Container für die Anwendung</li>
+                            <li>Supabase für Datenbank & Auth</li>
+                            <li>Edge Functions für serverless Backend</li>
+                            <li>Automatisches Deployment via CI/CD</li>
+                            <li>Monitoring & Error Tracking</li>
+                          </ul>
                         </AccordionContent>
                       </AccordionItem>
                     )}

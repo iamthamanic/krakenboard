@@ -11,6 +11,8 @@ export interface TechDocumentation {
     backend?: string[];
     tables?: string[];
     relations?: string[];
+    implemented?: string[];
+    integration?: string[];
   };
 }
 
