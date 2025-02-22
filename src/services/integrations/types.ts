@@ -4,24 +4,19 @@ import { Json } from '@/integrations/supabase/types';
 export type IntegrationType = 
   | 'google_analytics'
   | 'google_ads'
-  | 'facebook_ads'
-  | 'facebook_pages'
-  | 'instagram_business'
+  | 'meta_ads'
+  | 'meta_business'
   | 'linkedin_ads'
-  | 'linkedin_pages'
+  | 'linkedin_company'
   | 'tiktok_ads'
   | 'tiktok_business'
-  | 'youtube_analytics'
-  | 'shopify'
-  | 'woocommerce'
-  | 'stripe';
+  | 'youtube_studio';
 
 export type IntegrationStatus = 'pending' | 'active' | 'error' | 'disabled';
 
 export interface Integration {
   id: string;
-  type: IntegrationType;
-  integration_type?: string;
+  integration_type: IntegrationType;
   status: IntegrationStatus;
   credentials: Json;
   settings: Json;

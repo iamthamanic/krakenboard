@@ -29,7 +29,7 @@ export const useIntegrationManager = () => {
       const { data, error } = await supabase
         .from('integrations')
         .insert({
-          type: params.type,
+          integration_type: params.type,
           credentials: params.credentials,
           settings: params.settings || {},
           status: 'pending'
@@ -54,13 +54,13 @@ export const useIntegrationManager = () => {
     mutationFn: async (integration: Integration) => {
       let service;
       
-      switch (integration.type) {
+      switch (integration.integration_type) {
         case 'google_analytics':
           service = new GoogleAnalyticsService(integration);
           break;
         // Weitere Dienste hier hinzufügen
         default:
-          throw new Error(`Unbekannter Integrationstyp: ${integration.type}`);
+          throw new Error(`Unbekannter Integrationstyp: ${integration.integration_type}`);
       }
 
       const isValid = await service.validateCredentials();
