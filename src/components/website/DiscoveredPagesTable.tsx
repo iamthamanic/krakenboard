@@ -16,6 +16,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useState } from "react";
+import { FormAnalytics } from "./FormAnalytics";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface DiscoveredPagesTableProps {
   pages: DiscoveredPage[];
@@ -23,6 +26,16 @@ interface DiscoveredPagesTableProps {
 }
 
 export const DiscoveredPagesTable = ({ pages, t }: DiscoveredPagesTableProps) => {
+  const [expandedPages, setExpandedPages] = useState<string[]>([]);
+
+  const togglePageExpansion = (url: string) => {
+    setExpandedPages(prev => 
+      prev.includes(url) 
+        ? prev.filter(p => p !== url)
+        : [...prev, url]
+    );
+  };
+
   const getFormTypeColor = (type: string) => {
     switch (type) {
       case 'standard':
@@ -55,42 +68,62 @@ export const DiscoveredPagesTable = ({ pages, t }: DiscoveredPagesTableProps) =>
           </TableHeader>
           <TableBody>
             {pages.map((page) => (
-              <TableRow key={page.url}>
-                <TableCell>
-                  <div>
-                    <div className="font-medium">{page.title}</div>
-                    <div className="text-sm text-muted-foreground">{page.url}</div>
-                  </div>
-                </TableCell>
-                <TableCell>{page.forms.length}</TableCell>
-                <TableCell>
-                  <div className="space-y-2">
-                    {page.forms.map((form, index) => (
-                      <div key={index} className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            className={getFormTypeColor(form.type)}
-                            variant="secondary"
-                          >
-                            {form.type}
-                          </Badge>
-                          {form.stepsCount && form.stepsCount > 1 && (
-                            <Badge variant="outline">
-                              {form.stepsCount} {t.steps}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {form.fields} {t.fields}
-                          {form.successPage && (
-                            <span className="ml-2">• {t.successPageExists}</span>
-                          )}
-                        </div>
+              <>
+                <TableRow 
+                  key={page.url}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => togglePageExpansion(page.url)}
+                >
+                  <TableCell>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">{page.title}</div>
+                        <div className="text-sm text-muted-foreground">{page.url}</div>
                       </div>
-                    ))}
-                  </div>
-                </TableCell>
-              </TableRow>
+                      {expandedPages.includes(page.url) ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{page.forms.length}</TableCell>
+                  <TableCell>
+                    <div className="space-y-2">
+                      {page.forms.map((form, index) => (
+                        <div key={index} className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              className={getFormTypeColor(form.type)}
+                              variant="secondary"
+                            >
+                              {form.type}
+                            </Badge>
+                            {form.stepsCount && form.stepsCount > 1 && (
+                              <Badge variant="outline">
+                                {form.stepsCount} {t.steps}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {form.fields} {t.fields}
+                            {form.successPage && (
+                              <span className="ml-2">• {t.successPageExists}</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+                {expandedPages.includes(page.url) && page.forms.map((form, index) => (
+                  <TableRow key={`${page.url}-form-${index}`}>
+                    <TableCell colSpan={3}>
+                      <FormAnalytics form={form} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
             ))}
           </TableBody>
         </Table>
