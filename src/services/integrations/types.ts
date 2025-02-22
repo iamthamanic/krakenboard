@@ -1,4 +1,6 @@
 
+import { Json } from '@/integrations/supabase/types';
+
 export type IntegrationType = 
   | 'google_analytics'
   | 'google_ads'
@@ -18,13 +20,17 @@ export type IntegrationStatus = 'pending' | 'active' | 'error' | 'disabled';
 
 export interface Integration {
   id: string;
-  integration_type: IntegrationType;
+  type: IntegrationType;
+  integration_type?: string;
   status: IntegrationStatus;
-  credentials: Record<string, any>;
-  settings: Record<string, any>;
+  credentials: Json;
+  settings: Json;
   last_sync_at: string | null;
   created_at: string;
   updated_at: string;
+  user_id?: string;
+  is_active?: boolean;
+  metadata?: Json;
 }
 
 export interface ApiMetric {
@@ -32,7 +38,7 @@ export interface ApiMetric {
   integration_id: string;
   metric_type: string;
   metric_name: string;
-  value: any;
+  value: Json;
   timestamp: string;
   created_at: string;
   updated_at: string;

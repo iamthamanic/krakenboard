@@ -24,6 +24,7 @@ export class GoogleAnalyticsService extends BaseIntegrationService {
       
       // Hier später: Implementierung der GA4 Daten-Synchronisation
       const sampleMetric = {
+        integration_id: this.integration.id,
         metric_type: 'visitors',
         metric_name: 'total_visitors',
         value: { count: 100 },
