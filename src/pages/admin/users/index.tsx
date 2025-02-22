@@ -5,13 +5,47 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, UserPlus, Mail, Shield, User } from "lucide-react";
+import { useUsers } from "@/hooks/useUsers";
+import { toast } from "@/components/ui/use-toast";
 
 const Users = () => {
-  const mockUsers = [
-    { id: 1, name: "Max Mustermann", email: "max@example.com", role: "Admin", status: "active" },
-    { id: 2, name: "Anna Schmidt", email: "anna@example.com", role: "Editor", status: "active" },
-    { id: 3, name: "John Doe", email: "john@example.com", role: "User", status: "inactive" },
-  ];
+  const { users, updateUser } = useUsers();
+
+  const handleStatusToggle = async (id: string, isActive: boolean) => {
+    try {
+      await updateUser.mutateAsync({
+        id,
+        is_active: !isActive
+      });
+      toast({
+        title: "Erfolg",
+        description: `Benutzerstatus wurde ${!isActive ? 'aktiviert' : 'deaktiviert'}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Benutzerstatus konnte nicht aktualisiert werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (users.isLoading) {
+    return (
+      <AdminLayout>
+        <div className="space-y-8 animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/4"></div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((n) => (
+              <Card key={n}>
+                <CardContent className="h-20"></CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -37,7 +71,7 @@ const Users = () => {
         </Alert>
 
         <div className="space-y-6">
-          {mockUsers.map((user) => (
+          {users.data?.map((user) => (
             <Card key={user.id}>
               <CardContent className="flex items-center justify-between p-6">
                 <div className="flex items-center space-x-4">
@@ -45,21 +79,23 @@ const Users = () => {
                     <User className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-medium">{user.name}</h3>
+                    <h3 className="font-medium">{user.full_name}</h3>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                      <Mail className="h-4 w-4" />
-                      <span>{user.email}</span>
+                      <Shield className="h-4 w-4" />
+                      <span>{user.role}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Shield className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">{user.role}</span>
-                  </div>
-                  <Badge variant={user.status === 'active' ? 'success' : 'warning'}>
-                    {user.status === 'active' ? 'Aktiv' : 'Inaktiv'}
-                  </Badge>
+                  <Button 
+                    variant={user.is_active ? "outline" : "secondary"}
+                    size="sm"
+                    onClick={() => handleStatusToggle(user.id, user.is_active)}
+                  >
+                    <Badge variant={user.is_active ? 'success' : 'warning'}>
+                      {user.is_active ? 'Aktiv' : 'Inaktiv'}
+                    </Badge>
+                  </Button>
                   <Button variant="outline" size="sm">
                     Bearbeiten
                   </Button>
@@ -80,15 +116,25 @@ const Users = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 border rounded-lg">
                 <h4 className="text-sm font-medium text-muted-foreground">Aktive Benutzer</h4>
-                <p className="text-2xl font-bold mt-2">24</p>
+                <p className="text-2xl font-bold mt-2">
+                  {users.data?.filter(u => u.is_active).length || 0}
+                </p>
               </div>
               <div className="p-4 border rounded-lg">
                 <h4 className="text-sm font-medium text-muted-foreground">Neue Benutzer (30 Tage)</h4>
-                <p className="text-2xl font-bold mt-2">12</p>
+                <p className="text-2xl font-bold mt-2">
+                  {users.data?.filter(u => {
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    return new Date(u.created_at) > thirtyDaysAgo;
+                  }).length || 0}
+                </p>
               </div>
               <div className="p-4 border rounded-lg">
                 <h4 className="text-sm font-medium text-muted-foreground">Admin-Benutzer</h4>
-                <p className="text-2xl font-bold mt-2">3</p>
+                <p className="text-2xl font-bold mt-2">
+                  {users.data?.filter(u => u.role === 'admin').length || 0}
+                </p>
               </div>
             </div>
           </CardContent>
