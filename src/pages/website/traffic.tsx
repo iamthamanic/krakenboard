@@ -8,7 +8,23 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { WebsiteScanner } from "@/services/websiteScanner";
 import { toast } from "@/components/ui/use-toast";
-import { ScanProgress } from "@/services/types/scanner.types";
+import { ScanProgress, DiscoveredPage } from "@/services/types/scanner.types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const WebsiteTrafficPage = () => {
   const [url, setUrl] = useState("");
@@ -16,6 +32,7 @@ const WebsiteTrafficPage = () => {
   const [pagesCount, setPagesCount] = useState(0);
   const [formsCount, setFormsCount] = useState(0);
   const [progress, setProgress] = useState<ScanProgress | null>(null);
+  const [discoveredPages, setDiscoveredPages] = useState<DiscoveredPage[]>([]);
 
   const handleScan = async () => {
     if (!url) {
@@ -30,6 +47,7 @@ const WebsiteTrafficPage = () => {
     try {
       setScanning(true);
       setProgress(null);
+      setDiscoveredPages([]);
       
       const scanner = new WebsiteScanner(url, (progress) => {
         setProgress(progress);
@@ -40,6 +58,7 @@ const WebsiteTrafficPage = () => {
       
       setPagesCount(pages.length);
       setFormsCount(totalForms);
+      setDiscoveredPages(pages);
       
       toast({
         title: "Scan abgeschlossen",
@@ -54,6 +73,19 @@ const WebsiteTrafficPage = () => {
     } finally {
       setScanning(false);
       setProgress(null);
+    }
+  };
+
+  const getFormTypeColor = (type: string) => {
+    switch (type) {
+      case 'standard':
+        return 'bg-blue-100 text-blue-800';
+      case 'dynamic':
+        return 'bg-purple-100 text-purple-800';
+      case 'multi-step':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -121,6 +153,68 @@ const WebsiteTrafficPage = () => {
             description="Automatisch erkannt"
           />
         </div>
+
+        {discoveredPages.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gefundene Seiten & Formulare</CardTitle>
+              <CardDescription>
+                Übersicht aller erkannten Seiten und deren Formulare
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Seite</TableHead>
+                    <TableHead>Formulare</TableHead>
+                    <TableHead>Details</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {discoveredPages.map((page) => (
+                    <TableRow key={page.url}>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{page.title}</div>
+                          <div className="text-sm text-muted-foreground">{page.url}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{page.forms.length}</TableCell>
+                      <TableCell>
+                        <div className="space-y-2">
+                          {page.forms.map((form, index) => (
+                            <div key={index} className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  className={getFormTypeColor(form.type)}
+                                  variant="secondary"
+                                >
+                                  {form.type}
+                                </Badge>
+                                {form.steps && form.steps > 1 && (
+                                  <Badge variant="outline">
+                                    {form.steps} Schritte
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {form.fields} Felder
+                                {form.successPage && (
+                                  <span className="ml-2">• Erfolgsseite vorhanden</span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </DashboardLayout>
   );
