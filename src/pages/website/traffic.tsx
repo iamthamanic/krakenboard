@@ -5,7 +5,7 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Globe, Users, LineChart, FormInput } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { WebsiteScanner } from "@/services/websiteScanner";
+import { WebsiteScannerService } from "@/services/scanner/WebsiteScannerService";
 import { toast } from "@/components/ui/use-toast";
 import { ScanProgress as ScanProgressType, DiscoveredPage } from "@/services/types/scanner.types";
 import { translations, getStoredLanguage } from "@/lib/utils";
@@ -42,7 +42,7 @@ const WebsiteTrafficPage = () => {
       setProgress(null);
       setDiscoveredPages([]);
       
-      const scanner = new WebsiteScanner(url, (progress) => {
+      const scanner = new WebsiteScannerService(url, (progress) => {
         setProgress(progress);
       }, {
         includedUrls,
