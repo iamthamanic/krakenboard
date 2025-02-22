@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { FormParser } from './parsers/formParser';
 import { LinkParser } from './parsers/linkParser';
 import { SitemapParser } from './parsers/sitemapParser';
+import { Database } from '@/integrations/supabase/types';
 
 export class WebsiteScanner {
   private url: string;
@@ -234,16 +235,16 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
 
           // Insert/update forms
           for (const form of page.forms) {
-            const formData = {
+            const formData: Database['public']['Tables']['forms']['Insert'] = {
               form_type: form.type,
               fields_count: form.fields,
               is_multi_step: form.isMultiStep,
               steps_count: form.stepsCount || 1,
-              success_page: form.successPage,
-              action: form.action,
-              method: form.method,
-              submit_button: form.submitButton || {},
-              form_inputs: form.inputs || [],
+              success_page: form.successPage || null,
+              action: form.action || null,
+              method: form.method || null,
+              submit_button: form.submitButton ? JSON.parse(JSON.stringify(form.submitButton)) : {},
+              form_inputs: form.inputs ? JSON.parse(JSON.stringify(form.inputs)) : [],
               page_id: savedPage.id
             };
 
