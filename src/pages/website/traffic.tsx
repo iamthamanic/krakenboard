@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Globe, Users, LineChart, FormInput } from "lucide-react";
+import { Globe, Users, LineChart, FormInput, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -25,6 +25,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const WebsiteTrafficPage = () => {
   const [url, setUrl] = useState("");
@@ -33,6 +40,11 @@ const WebsiteTrafficPage = () => {
   const [formsCount, setFormsCount] = useState(0);
   const [progress, setProgress] = useState<ScanProgress | null>(null);
   const [discoveredPages, setDiscoveredPages] = useState<DiscoveredPage[]>([]);
+  const [includedUrls, setIncludedUrls] = useState<string[]>([]);
+  const [excludedUrls, setExcludedUrls] = useState<string[]>([]);
+  const [singleUrlOnly, setSingleUrlOnly] = useState(false);
+  const [newIncludeUrl, setNewIncludeUrl] = useState("");
+  const [newExcludeUrl, setNewExcludeUrl] = useState("");
 
   const handleScan = async () => {
     if (!url) {
@@ -51,6 +63,10 @@ const WebsiteTrafficPage = () => {
       
       const scanner = new WebsiteScanner(url, (progress) => {
         setProgress(progress);
+      }, {
+        includedUrls,
+        excludedUrls,
+        singleUrlOnly
       });
       
       const pages = await scanner.scanWebsite();
@@ -74,6 +90,28 @@ const WebsiteTrafficPage = () => {
       setScanning(false);
       setProgress(null);
     }
+  };
+
+  const handleAddIncludeUrl = () => {
+    if (newIncludeUrl && !includedUrls.includes(newIncludeUrl)) {
+      setIncludedUrls([...includedUrls, newIncludeUrl]);
+      setNewIncludeUrl("");
+    }
+  };
+
+  const handleAddExcludeUrl = () => {
+    if (newExcludeUrl && !excludedUrls.includes(newExcludeUrl)) {
+      setExcludedUrls([...excludedUrls, newExcludeUrl]);
+      setNewExcludeUrl("");
+    }
+  };
+
+  const handleRemoveIncludeUrl = (urlToRemove: string) => {
+    setIncludedUrls(includedUrls.filter(url => url !== urlToRemove));
+  };
+
+  const handleRemoveExcludeUrl = (urlToRemove: string) => {
+    setExcludedUrls(excludedUrls.filter(url => url !== urlToRemove));
   };
 
   const getFormTypeColor = (type: string) => {
@@ -114,6 +152,76 @@ const WebsiteTrafficPage = () => {
               {scanning ? "Scanne..." : "Website scannen"}
             </Button>
           </div>
+
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="scan-options">
+              <AccordionTrigger>Scan-Optionen</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="single-url"
+                      checked={singleUrlOnly}
+                      onCheckedChange={setSingleUrlOnly}
+                    />
+                    <label htmlFor="single-url" className="text-sm">
+                      Nur diese URL scannen (keine Unterseiten)
+                    </label>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium">Eingeschlossene URLs</h4>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="URL hinzufügen (z.B. /blog/*)"
+                        value={newIncludeUrl}
+                        onChange={(e) => setNewIncludeUrl(e.target.value)}
+                      />
+                      <Button onClick={handleAddIncludeUrl} size="icon">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {includedUrls.map((url) => (
+                        <Badge key={url} variant="secondary" className="flex items-center gap-1">
+                          {url}
+                          <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => handleRemoveIncludeUrl(url)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium">Ausgeschlossene URLs</h4>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="URL hinzufügen (z.B. /admin/*)"
+                        value={newExcludeUrl}
+                        onChange={(e) => setNewExcludeUrl(e.target.value)}
+                      />
+                      <Button onClick={handleAddExcludeUrl} size="icon">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {excludedUrls.map((url) => (
+                        <Badge key={url} variant="secondary" className="flex items-center gap-1">
+                          {url}
+                          <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => handleRemoveExcludeUrl(url)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           {progress && (
             <div className="space-y-2">

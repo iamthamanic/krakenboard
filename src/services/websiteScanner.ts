@@ -6,6 +6,12 @@ import { FormParser } from './parsers/formParser';
 import { LinkParser } from './parsers/linkParser';
 import { fetchWithProxy } from './proxy/proxyFetch';
 
+interface ScannerOptions {
+  includedUrls?: string[];
+  excludedUrls?: string[];
+  singleUrlOnly?: boolean;
+}
+
 export class WebsiteScanner {
   private visited = new Set<string>();
   private baseUrl: string;
@@ -14,13 +20,15 @@ export class WebsiteScanner {
   private avgPageScanTime: number = 0;
   private concurrentRequests = 5;
   private requestDelay = 100;
+  private options: ScannerOptions;
 
   private sitemapParser: SitemapParser;
   private linkParser: LinkParser;
 
-  constructor(url: string, onProgress?: (progress: ScanProgress) => void) {
+  constructor(url: string, onProgress?: (progress: ScanProgress) => void, options: ScannerOptions = {}) {
     this.baseUrl = new URL(url).origin;
     this.onProgress = onProgress;
+    this.options = options;
     this.sitemapParser = new SitemapParser(this.baseUrl);
     this.linkParser = new LinkParser(this.baseUrl);
   }
@@ -30,10 +38,17 @@ export class WebsiteScanner {
     this.startTime = Date.now();
     
     try {
+      if (this.options.singleUrlOnly) {
+        const page = await this.scanPage(this.baseUrl);
+        if (page) pages.push(page);
+        return pages;
+      }
+
       const sitemapUrls = await this.sitemapParser.getUrls();
       if (sitemapUrls.length > 0) {
         console.log("Sitemap gefunden, scanne URLs...", sitemapUrls.length);
-        await this.processSitemapUrls(sitemapUrls, pages);
+        const filteredUrls = this.filterUrls(sitemapUrls);
+        await this.processSitemapUrls(filteredUrls, pages);
       } else {
         console.log("Keine Sitemap gefunden, starte Crawler...");
         await this.crawlPage(this.baseUrl, pages);
@@ -56,12 +71,42 @@ export class WebsiteScanner {
     }
   }
 
+  private filterUrls(urls: string[]): string[] {
+    let filteredUrls = urls;
+
+    if (this.options.includedUrls?.length) {
+      filteredUrls = filteredUrls.filter(url => {
+        return this.options.includedUrls!.some(pattern => 
+          this.matchUrlPattern(url, pattern)
+        );
+      });
+    }
+
+    if (this.options.excludedUrls?.length) {
+      filteredUrls = filteredUrls.filter(url => {
+        return !this.options.excludedUrls!.some(pattern =>
+          this.matchUrlPattern(url, pattern)
+        );
+      });
+    }
+
+    return filteredUrls;
+  }
+
+  private matchUrlPattern(url: string, pattern: string): boolean {
+    const regex = new RegExp(
+      pattern.replace(/\*/g, '.*')
+        .replace(/\//g, '\\/')
+    );
+    return regex.test(url);
+  }
+
   private async processSitemapUrls(urls: string[], pages: DiscoveredPage[]) {
     this.updateProgress({
       scannedPages: 0,
       totalPages: urls.length,
       currentUrl: "Starte Scan...",
-      estimatedTimeRemaining: "Berechne..." // Hier wurde die Änderung vorgenommen
+      estimatedTimeRemaining: "Berechne..."
     });
 
     for (let i = 0; i < urls.length; i += this.concurrentRequests) {
@@ -96,7 +141,8 @@ export class WebsiteScanner {
         
         const html = await fetchWithProxy(url);
         const links = this.linkParser.parseLinks(html);
-        const newLinks = links.filter(link => !this.visited.has(link));
+        const filteredLinks = this.filterUrls(links);
+        const newLinks = filteredLinks.filter(link => !this.visited.has(link));
         
         for (let i = 0; i < newLinks.length; i += this.concurrentRequests) {
           const batch = newLinks.slice(i, i + this.concurrentRequests);
