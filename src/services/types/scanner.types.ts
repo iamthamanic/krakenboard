@@ -18,6 +18,7 @@ export interface FormElement {
   method?: string;
   inputs?: FormInput[];
   submitButton?: FormButton;
+  lastSeenAt?: Date;
 }
 
 export interface FormInput {
@@ -25,6 +26,7 @@ export interface FormInput {
   type: string;
   required?: boolean;
   label?: string;
+  placeholder?: string;
 }
 
 export interface FormButton {

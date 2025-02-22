@@ -13,6 +13,7 @@ export type UserProfile = {
 };
 
 type CreateUserInput = {
+  id: string;  // UUID wird nun required
   full_name?: string;
   role: 'admin' | 'editor' | 'user';
   is_active?: boolean;
@@ -61,9 +62,15 @@ export const useUsers = () => {
 
   const createUser = useMutation({
     mutationFn: async (profile: CreateUserInput) => {
+      const userProfile = {
+        ...profile,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
       const { data, error } = await supabase
         .from("profiles")
-        .insert(profile)
+        .insert(userProfile)
         .select()
         .single();
 
