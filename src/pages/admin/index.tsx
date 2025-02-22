@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Settings, Users, Database, Shield, BookOpen, Code, GitBranch, Database as DbIcon, Package, Api } from "lucide-react";
+import { AlertCircle, Settings, Users, Database, Shield, BookOpen, Code, GitBranch, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -260,7 +260,7 @@ const AdminPage = () => {
                   <AccordionItem value="database">
                     <AccordionTrigger>
                       <div className="flex items-center gap-2">
-                        <DbIcon className="h-5 w-5" />
+                        <Database className="h-5 w-5" />
                         Datenbankstruktur
                       </div>
                     </AccordionTrigger>
@@ -312,7 +312,7 @@ const AdminPage = () => {
                   <AccordionItem value="apis">
                     <AccordionTrigger>
                       <div className="flex items-center gap-2">
-                        <Api className="h-5 w-5" />
+                        <Database className="h-5 w-5" />
                         API-Integrationen
                       </div>
                     </AccordionTrigger>
