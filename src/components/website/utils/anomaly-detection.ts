@@ -1,3 +1,4 @@
+
 import { ConversionData } from "../types/monitoring.types";
 
 export interface AnomalyAlert {
@@ -72,7 +73,7 @@ export const checkInactivity = (
       alert_type: 'inactivity',
       message: `Keine Formular-Submissions seit ${Math.floor(inactivityHours)} Stunden`,
       metadata: {
-        last_conversion: lastConversion,
+        last_conversion: lastConversion.toISOString(), // Konvertiere Date zu String
         hours_inactive: inactivityHours
       }
     };

@@ -8,8 +8,8 @@ export interface DiscoveredPage {
 }
 
 export interface FormElement {
-  id?: string;
-  name?: string;  // Hinzugefügt
+  id: string;  // Nicht mehr optional
+  name: string;  // Nicht mehr optional
   type: 'standard' | 'dynamic' | 'multi-step';
   fields: number;
   successPage?: string;
