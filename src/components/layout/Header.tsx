@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Language, languages, getStoredLanguage, setStoredLanguage } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const FlagEmoji = ({ language }: { language: Language }) => {
   const flagEmojis = {
@@ -76,10 +77,10 @@ export const Header = () => {
             <a href="#features" className="text-sm font-medium hover:text-primary-500 transition-colors">
               Features
             </a>
-            <a href="#integrations" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
+            <Link to="/integrations" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
               Integrations
               <Cog className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
             <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               Get Started
             </Button>
