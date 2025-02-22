@@ -54,7 +54,7 @@ const menuItems = [
   {
     group: "Administration",
     items: [
-      { icon: Home, label: "Features Übersicht", href: "/features" },
+      { icon: Home, label: "Features Übersicht", href: "/admin" },
       { icon: Shield, label: "Datenschutzerklärung", href: "/legal/privacy" },
       { icon: FileText, label: "Nutzungsbedingungen", href: "/legal/terms" },
     ]

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
-export const Features = () => {
+const Settings = () => {
   const copyToClipboard = (path: string) => {
     const url = `${window.location.origin}${path}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -16,7 +16,7 @@ export const Features = () => {
     <AdminLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Features & Administration</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Einstellungen & Administration</h1>
           <p className="text-muted-foreground mt-2">
             Verwalten Sie hier die rechtlichen Dokumente und Hauptfunktionen der Anwendung.
           </p>
@@ -73,3 +73,5 @@ export const Features = () => {
     </AdminLayout>
   );
 };
+
+export default Settings;
