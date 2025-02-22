@@ -28,7 +28,7 @@ export class FormParser {
 
     for (const form of Array.from(formElements)) {
       const parsedForm = this.parseForm(form, baseUrl);
-      forms.push(this.convertToFormElement(parsedForm));
+      forms.push(this.convertToFormElement(parsedForm, form));
     }
 
     return forms;
@@ -89,8 +89,16 @@ export class FormParser {
     return `${baseUrl}${action.startsWith('/') ? '' : '/'}${action}`;
   }
 
-  private static convertToFormElement(parsedForm: ParsedForm): FormElement {
+  private static convertToFormElement(parsedForm: ParsedForm, originalForm: HTMLFormElement): FormElement {
+    // Generiere eine eindeutige ID basierend auf der Action-URL und einem Zeitstempel
+    const id = `form_${btoa(parsedForm.action).replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+    
+    // Extrahiere einen sinnvollen Namen aus dem Formular
+    const formName = this.extractFormName(originalForm) || `Form auf ${new URL(parsedForm.action).pathname}`;
+
     const formElement: FormElement = {
+      id,
+      name: formName,
       type: 'standard',
       fields: parsedForm.fields.length,
       isMultiStep: false,
@@ -110,6 +118,22 @@ export class FormParser {
     };
 
     return formElement;
+  }
+
+  private static extractFormName(form: HTMLFormElement): string {
+    // Versuche einen Namen aus verschiedenen Quellen zu extrahieren
+    const sources = [
+      form.getAttribute('name'),
+      form.getAttribute('id'),
+      form.getAttribute('aria-label'),
+      form.querySelector('legend')?.textContent,
+      form.querySelector('h1,h2,h3,h4,h5,h6')?.textContent,
+      form.querySelector('label')?.textContent
+    ];
+
+    // Nimm den ersten nicht-leeren Wert
+    const name = sources.find(source => source && source.trim());
+    return name?.trim() || 'Unbenanntes Formular';
   }
 
   static async detectThankYouPage(form: FormElement, baseUrl: string): Promise<string | null> {
