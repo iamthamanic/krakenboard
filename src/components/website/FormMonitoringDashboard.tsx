@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +36,39 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     errorMessage: data.error_message
   });
 
+  const checkForAnomalies = async (newData: ConversionData[], formId: string) => {
+    if (newData.length < 10) return; // Nicht genug Daten für Analyse
+
+    // Berechne aktuelle und vorherige Conversion Rate
+    const recentConversions = newData.slice(0, 5);
+    const previousConversions = newData.slice(5, 10);
+
+    const recentRate = recentConversions.filter(c => c.isSuccessful).length / recentConversions.length;
+    const previousRate = previousConversions.filter(c => c.isSuccessful).length / previousConversions.length;
+
+    // Prüfe auf signifikante Änderungen (20% Schwelle)
+    const percentageChange = ((recentRate - previousRate) / previousRate) * 100;
+    
+    if (Math.abs(percentageChange) >= 20) {
+      const alertType = percentageChange > 0 ? 'conversion_increase' : 'conversion_decrease';
+      const message = `Conversion Rate hat sich um ${Math.abs(percentageChange).toFixed(1)}% ${percentageChange > 0 ? 'verbessert' : 'verschlechtert'}`;
+      
+      // Erstelle einen neuen Alert
+      await supabase
+        .from('form_alerts')
+        .insert({
+          form_id: formId,
+          alert_type: alertType,
+          message: message,
+          metadata: {
+            previous_rate: previousRate,
+            current_rate: recentRate,
+            percentage_change: percentageChange
+          }
+        });
+    }
+  };
+
   useEffect(() => {
     // Lade historische Daten
     const loadConversions = async () => {
@@ -48,6 +82,7 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
       if (!error && data) {
         const mappedData = data.map(mapDatabaseToConversionData);
         setConversions(mappedData);
+        await checkForAnomalies(mappedData, form.id);
       }
     };
 
@@ -63,10 +98,12 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
           table: 'form_conversions',
           filter: `form_id=eq.${form.id}`
         },
-        (payload) => {
+        async (payload) => {
           const newConversion = mapDatabaseToConversionData(payload.new as DatabaseConversion);
-          setConversions(prev => [newConversion, ...prev].slice(0, 100));
+          const updatedConversions = [newConversion, ...conversions].slice(0, 100);
+          setConversions(updatedConversions);
           setRealtimeEnabled(true);
+          await checkForAnomalies(updatedConversions, form.id);
         }
       )
       .subscribe();
@@ -74,7 +111,7 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [form.id]);
+  }, [form.id, conversions]);
 
   // Berechne KPIs
   const totalConversions = conversions.length;
