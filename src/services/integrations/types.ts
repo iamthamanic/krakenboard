@@ -16,7 +16,8 @@ export type IntegrationStatus = 'pending' | 'active' | 'error' | 'disabled';
 
 export interface Integration {
   id: string;
-  integration_type: IntegrationType;
+  type: IntegrationType;
+  integration_type?: string;
   status: IntegrationStatus;
   credentials: Json;
   settings: Json;
