@@ -56,7 +56,7 @@ const dashboardMenuItems = [
 const adminMenuItems = [
   {
     items: [
-      { icon: Settings, label: "Administration", href: "/admin" },
+      { icon: Settings, label: "Admin", href: "/admin" },
     ]
   },
   {

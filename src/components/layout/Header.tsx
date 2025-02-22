@@ -44,7 +44,7 @@ export const Header = () => {
           <Button variant="ghost" size="icon" className="lg:hidden">
             <Menu className="h-6 w-6" />
           </Button>
-          <h1 className="flex items-center text-2xl font-bold">
+          <Link to="/" className="flex items-center text-2xl font-bold">
             <img 
               src="/lovable-uploads/deaeb7df-0e13-4733-b44b-7b2e5faf09d9.png" 
               alt="Kraken Logo" 
@@ -52,7 +52,7 @@ export const Header = () => {
             />
             <span className="text-primary-500">Kraken</span>
             <span className="text-secondary-500">Board</span>
-          </h1>
+          </Link>
         </div>
         <nav className="flex items-center space-x-4">
           <DropdownMenu>
