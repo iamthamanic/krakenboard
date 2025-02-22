@@ -1,13 +1,5 @@
 
 import { AdminLayout } from "@/components/layout/AdminLayout";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { LegalDocumentEditor } from "@/components/legal/LegalDocumentEditor";
-import { useLegalDocument } from "@/hooks/useLegalDocuments";
 
 const Settings = () => {
   return (
