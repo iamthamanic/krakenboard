@@ -234,22 +234,27 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
 
           // Insert/update forms
           for (const form of page.forms) {
+            const formData = {
+              form_type: form.type,
+              fields_count: form.fields,
+              is_multi_step: form.isMultiStep,
+              steps_count: form.stepsCount || 1,
+              success_page: form.successPage,
+              action: form.action,
+              method: form.method,
+              submit_button: form.submitButton || {},
+              form_inputs: form.inputs || [],
+              page_id: savedPage.id
+            };
+
             const { error: formError } = await supabase
               .from('forms')
-              .upsert({
-                page_id: savedPage.id,
-                form_type: form.type,
-                fields_count: form.fields,
-                is_multi_step: form.isMultiStep,
-                steps_count: form.stepsCount,
-                success_page: form.successPage,
-                action: form.action,
-                method: form.method,
-                submit_button: form.submitButton,
-                form_inputs: form.inputs
-              });
+              .upsert(formData);
 
-            if (formError) throw formError;
+            if (formError) {
+              console.error('Error saving form:', formError);
+              throw formError;
+            }
           }
         }
 
