@@ -22,9 +22,8 @@ import {
 
 const menuItems = [
   { 
-    group: "Gesamtübersicht",
     items: [
-      { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+      { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
     ]
   },
   { 
@@ -55,10 +54,12 @@ export const DashboardSidebar = () => {
     <Sidebar variant="inset" collapsible="icon">
       <SidebarContent className="pt-16">
         {menuItems.map((group) => (
-          <SidebarGroup key={group.group}>
-            <SidebarGroupLabel className="px-6 text-base font-medium mb-2">
-              {group.group}
-            </SidebarGroupLabel>
+          <SidebarGroup key={group.group || 'overview'}>
+            {group.group && (
+              <SidebarGroupLabel className="px-6 text-base font-medium mb-2">
+                {group.group}
+              </SidebarGroupLabel>
+            )}
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
