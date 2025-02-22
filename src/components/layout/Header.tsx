@@ -1,5 +1,5 @@
 
-import { Menu, Cog, Copy } from "lucide-react";
+import { Menu, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Language, languages, getStoredLanguage, setStoredLanguage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const FlagEmoji = ({ language }: { language: Language }) => {
   const flagEmojis = {
@@ -24,19 +23,11 @@ const FlagEmoji = ({ language }: { language: Language }) => {
 
 export const Header = () => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(getStoredLanguage);
-  const navigate = useNavigate();
 
   const handleLanguageChange = (lang: Language) => {
     setCurrentLanguage(lang);
     setStoredLanguage(lang);
     window.location.reload();
-  };
-
-  const copyToClipboard = (path: string) => {
-    const url = `${window.location.origin}${path}`;
-    navigator.clipboard.writeText(url).then(() => {
-      toast.success("URL wurde in die Zwischenablage kopiert");
-    });
   };
 
   useEffect(() => {
@@ -83,49 +74,9 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="hidden lg:flex items-center space-x-8">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="text-sm font-medium hover:text-primary-500 transition-colors">
-                Features
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <div className="flex items-center justify-between w-full">
-                    <Link to="/legal/privacy" className="flex-grow">
-                      Datenschutzerklärung
-                    </Link>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="ml-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        copyToClipboard('/legal/privacy');
-                      }}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex items-center justify-between w-full">
-                    <Link to="/legal/terms" className="flex-grow">
-                      Nutzungsbedingungen
-                    </Link>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="ml-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        copyToClipboard('/legal/terms');
-                      }}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link to="/features" className="text-sm font-medium hover:text-primary-500 transition-colors">
+              Features
+            </Link>
             <Link to="/integrations" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
               Integrations
               <Cog className="ml-2 h-4 w-4" />

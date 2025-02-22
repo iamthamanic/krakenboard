@@ -7,7 +7,10 @@ import {
   CreditCard,
   LineChart,
   FormInput,
-  LayoutDashboard
+  LayoutDashboard,
+  Shield,
+  FileText,
+  Home
 } from "lucide-react";
 import {
   Sidebar,
@@ -19,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useLocation } from "react-router-dom";
 
 const menuItems = [
   { 
@@ -47,9 +51,19 @@ const menuItems = [
       { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
     ]
   },
+  {
+    group: "Administration",
+    items: [
+      { icon: Home, label: "Features Übersicht", href: "/features" },
+      { icon: Shield, label: "Datenschutzerklärung", href: "/legal/privacy" },
+      { icon: FileText, label: "Nutzungsbedingungen", href: "/legal/terms" },
+    ]
+  },
 ];
 
 export const DashboardSidebar = () => {
+  const location = useLocation();
+
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarContent className="pt-16">
@@ -68,6 +82,7 @@ export const DashboardSidebar = () => {
                       <a
                         href={item.href}
                         className="flex items-center gap-4 px-6 py-2 hover:bg-accent transition-colors"
+                        data-active={location.pathname === item.href}
                       >
                         <item.icon className="h-5 w-5" />
                         <span className="text-base">{item.label}</span>
