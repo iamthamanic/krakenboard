@@ -1,4 +1,3 @@
-
 import { toast } from "@/components/ui/use-toast";
 import { DiscoveredPage, ScanProgress } from './types/scanner.types';
 import { SitemapParser } from './parsers/sitemapParser';
@@ -131,16 +130,38 @@ export class WebsiteScanner {
     }
   }
 
-  private estimateTimeRemaining(scannedPages: number, totalPages: number): number {
-    if (scannedPages === 0) return 0;
+  private formatTimeRemaining(seconds: number): string {
+    if (seconds === 0) return "0 Sekunden";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    
+    const parts = [];
+    
+    if (hours > 0) {
+      parts.push(`${hours} ${hours === 1 ? 'Stunde' : 'Stunden'}`);
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes} ${minutes === 1 ? 'Minute' : 'Minuten'}`);
+    }
+    if (remainingSeconds > 0) {
+      parts.push(`${remainingSeconds} ${remainingSeconds === 1 ? 'Sekunde' : 'Sekunden'}`);
+    }
+    
+    return parts.join(', ');
+  }
+
+  private estimateTimeRemaining(scannedPages: number, totalPages: number): string {
+    if (scannedPages === 0) return "Berechne...";
     
     const elapsedTime = Date.now() - this.startTime;
     const avgTimePerPage = elapsedTime / scannedPages;
     this.avgPageScanTime = avgTimePerPage;
     
     const remainingPages = totalPages - scannedPages;
-    const estimatedTime = Math.round(remainingPages * avgTimePerPage / 1000);
+    const estimatedSeconds = Math.ceil((remainingPages * avgTimePerPage / 1000) / this.concurrentRequests);
     
-    return Math.ceil(estimatedTime / this.concurrentRequests);
+    return this.formatTimeRemaining(estimatedSeconds);
   }
 }

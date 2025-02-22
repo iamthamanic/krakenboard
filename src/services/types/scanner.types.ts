@@ -18,5 +18,5 @@ export interface ScanProgress {
   scannedPages: number;
   totalPages: number;
   currentUrl: string;
-  estimatedTimeRemaining: number;
+  estimatedTimeRemaining: string; // Geändert von number zu string
 }

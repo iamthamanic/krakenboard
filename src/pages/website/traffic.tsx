@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
@@ -95,7 +94,7 @@ const WebsiteTrafficPage = () => {
               <div className="text-sm text-muted-foreground">
                 <p>Scanne {progress.currentUrl}</p>
                 <p>{progress.scannedPages} von {progress.totalPages} Seiten gescannt</p>
-                <p>Geschätzte Restzeit: {progress.estimatedTimeRemaining} Sekunden</p>
+                <p>Geschätzte Restzeit: {progress.estimatedTimeRemaining}</p>
               </div>
             </div>
           )}
