@@ -7,7 +7,10 @@ import {
   Facebook,
   Linkedin,
   MessageCircle,
-  AlertCircle
+  AlertCircle,
+  Youtube,
+  CreditCard,
+  BarChart3
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -58,31 +61,70 @@ const Integrations = () => {
           </AlertDescription>
         </Alert>
 
-        <div className="grid gap-6">
-          <IntegrationCard
-            title="Google Analytics & Ads"
-            description="Tracking, Kampagnen und Performance-Daten"
-            icon={<Chrome className="h-5 w-5" />}
-            isConnected={false}
-          />
-          <IntegrationCard
-            title="Facebook & Instagram"
-            description="Social Media Performance und Werbeanalysen"
-            icon={<Facebook className="h-5 w-5" />}
-            isConnected={false}
-          />
-          <IntegrationCard
-            title="LinkedIn"
-            description="B2B Marketing und Kampagnen-Tracking"
-            icon={<Linkedin className="h-5 w-5" />}
-            isConnected={false}
-          />
-          <IntegrationCard
-            title="TikTok"
-            description="Social Media Reichweite und Ad Performance"
-            icon={<MessageCircle className="h-5 w-5" />}
-            isConnected={false}
-          />
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Werbekonten</h2>
+          <div className="grid gap-6">
+            <IntegrationCard
+              title="Google Ads"
+              description="Performance Marketing & Search Ads"
+              icon={<CreditCard className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="Meta Ads Manager"
+              description="Facebook & Instagram Ads"
+              icon={<BarChart3 className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="LinkedIn Ads"
+              description="B2B Marketing & Sponsored Content"
+              icon={<Linkedin className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="TikTok Ads Manager"
+              description="TikTok Werbekampagnen & Analytics"
+              icon={<MessageCircle className="h-5 w-5" />}
+              isConnected={false}
+            />
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Organische Konten</h2>
+          <div className="grid gap-6">
+            <IntegrationCard
+              title="Google Analytics"
+              description="Website Traffic & User Behavior"
+              icon={<Chrome className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="Meta Business Suite"
+              description="Facebook & Instagram Organic Performance"
+              icon={<Facebook className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="LinkedIn Company Page"
+              description="Organic Posts & Engagement"
+              icon={<Linkedin className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="YouTube Studio"
+              description="Video Performance & Analytics"
+              icon={<Youtube className="h-5 w-5" />}
+              isConnected={false}
+            />
+            <IntegrationCard
+              title="TikTok Business Center"
+              description="Organische TikTok Performance"
+              icon={<MessageCircle className="h-5 w-5" />}
+              isConnected={false}
+            />
+          </div>
         </div>
       </div>
     </DashboardLayout>
