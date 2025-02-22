@@ -1,8 +1,61 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { WebsiteScanResult, DiscoveredPage } from '@/services/types/scanner.types';
+import { WebsiteScanResult, DiscoveredPage, ScanProgress } from '@/services/types/scanner.types';
 import { toast } from 'sonner';
+
+export class WebsiteScanner {
+  private url: string;
+  private onProgress?: (progress: ScanProgress) => void;
+  private options: any;
+
+  constructor(url: string, onProgress?: (progress: ScanProgress) => void, options = {}) {
+    this.url = url;
+    this.onProgress = onProgress;
+    this.options = options;
+  }
+
+  async scanWebsite(): Promise<DiscoveredPage[]> {
+    try {
+      const startTime = Date.now();
+      let scannedPages = 0;
+
+      // Melde Fortschritt, falls Callback vorhanden
+      if (this.onProgress) {
+        this.onProgress({
+          scannedPages: scannedPages,
+          totalPages: 1, // Wird später aktualisiert
+          currentUrl: this.url,
+          estimatedTimeRemaining: "Berechne..."
+        });
+      }
+
+      const pages = await this.crawlWebsite(this.url);
+      return pages;
+    } catch (error) {
+      console.error('Error scanning website:', error);
+      return [];
+    }
+  }
+
+  private async crawlWebsite(url: string): Promise<DiscoveredPage[]> {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      
+      return [{
+        url,
+        title: html.match(/<title>(.*?)<\/title>/)?.[1] || url,
+        forms: [],
+        lastSeenAt: new Date()
+      }];
+    } catch (error) {
+      console.error('Error crawling website:', error);
+      return [];
+    }
+  }
+}
 
 export const useWebsiteScanner = (websiteUrl?: string) => {
   const queryClient = useQueryClient();
