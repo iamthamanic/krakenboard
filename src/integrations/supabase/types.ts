@@ -81,35 +81,47 @@ export type Database = {
       }
       forms: {
         Row: {
+          action: string | null
           created_at: string | null
           fields_count: number | null
+          form_inputs: Json | null
           form_type: string
           id: string
           is_multi_step: boolean | null
+          method: string | null
           page_id: string | null
           steps_count: number | null
+          submit_button: Json | null
           success_page: string | null
           updated_at: string | null
         }
         Insert: {
+          action?: string | null
           created_at?: string | null
           fields_count?: number | null
+          form_inputs?: Json | null
           form_type: string
           id?: string
           is_multi_step?: boolean | null
+          method?: string | null
           page_id?: string | null
           steps_count?: number | null
+          submit_button?: Json | null
           success_page?: string | null
           updated_at?: string | null
         }
         Update: {
+          action?: string | null
           created_at?: string | null
           fields_count?: number | null
+          form_inputs?: Json | null
           form_type?: string
           id?: string
           is_multi_step?: boolean | null
+          method?: string | null
           page_id?: string | null
           steps_count?: number | null
+          submit_button?: Json | null
           success_page?: string | null
           updated_at?: string | null
         }

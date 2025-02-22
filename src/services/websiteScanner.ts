@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -212,20 +213,44 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
 
         if (websiteError) throw websiteError;
 
-        const pages: DiscoveredPage[] = await scanWebsite(url);
+        const scanner = new WebsiteScanner(url);
+        const pages = await scanner.scanWebsite();
         
-        // Save discovered pages
+        // Save discovered pages and forms
         for (const page of pages) {
-          const { error: pageError } = await supabase
+          // Insert/update page
+          const { data: savedPage, error: pageError } = await supabase
             .from('discovered_pages')
             .upsert({
               website_id: website.id,
               url: page.url,
               title: page.title,
               last_seen_at: new Date().toISOString()
-            });
+            })
+            .select()
+            .single();
 
           if (pageError) throw pageError;
+
+          // Insert/update forms
+          for (const form of page.forms) {
+            const { error: formError } = await supabase
+              .from('forms')
+              .upsert({
+                page_id: savedPage.id,
+                form_type: form.type,
+                fields_count: form.fields,
+                is_multi_step: form.isMultiStep,
+                steps_count: form.stepsCount,
+                success_page: form.successPage,
+                action: form.action,
+                method: form.method,
+                submit_button: form.submitButton,
+                form_inputs: form.inputs
+              });
+
+            if (formError) throw formError;
+          }
         }
 
         return { ...website, pages };
@@ -249,21 +274,4 @@ export const useWebsiteScanner = (websiteUrl?: string) => {
     scanning,
     startScan
   };
-};
-
-const scanWebsite = async (url: string, options = {}): Promise<DiscoveredPage[]> => {
-  try {
-    const response = await fetch(url);
-    const html = await response.text();
-    
-    return [{
-      url,
-      title: html.match(/<title>(.*?)<\/title>/)?.[1] || url,
-      forms: [],
-      lastSeenAt: new Date()
-    }];
-  } catch (error) {
-    console.error('Error scanning website:', error);
-    return [];
-  }
 };
