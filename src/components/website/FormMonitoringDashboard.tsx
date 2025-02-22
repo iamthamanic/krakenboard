@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +16,23 @@ interface ConversionData {
   errorMessage?: string;
 }
 
+interface DatabaseConversion {
+  conversion_timestamp: string;
+  is_successful: boolean;
+  error_message?: string;
+  form_id: string;
+  id: string;
+}
+
 export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) => {
   const [conversions, setConversions] = useState<ConversionData[]>([]);
   const [realtimeEnabled, setRealtimeEnabled] = useState(false);
+
+  const mapDatabaseToConversionData = (data: DatabaseConversion): ConversionData => ({
+    timestamp: data.conversion_timestamp,
+    isSuccessful: data.is_successful,
+    errorMessage: data.error_message
+  });
 
   useEffect(() => {
     // Lade historische Daten
@@ -32,7 +45,8 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
         .limit(100);
 
       if (!error && data) {
-        setConversions(data);
+        const mappedData = data.map(mapDatabaseToConversionData);
+        setConversions(mappedData);
       }
     };
 
@@ -49,7 +63,8 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
           filter: `form_id=eq.${form.id}`
         },
         (payload) => {
-          setConversions(prev => [payload.new as ConversionData, ...prev].slice(0, 100));
+          const newConversion = mapDatabaseToConversionData(payload.new as DatabaseConversion);
+          setConversions(prev => [newConversion, ...prev].slice(0, 100));
           setRealtimeEnabled(true);
         }
       )
