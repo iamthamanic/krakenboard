@@ -9,7 +9,6 @@ import {
   FormInput,
   LayoutDashboard,
   Settings,
-  Plug,
 } from "lucide-react";
 import {
   Sidebar,
@@ -57,7 +56,6 @@ const adminMenuItems = [
     group: "Einstellungen",
     items: [
       { icon: Settings, label: "Admin", href: "/admin" },
-      { icon: Plug, label: "Integrationen", href: "/admin/integrations" },
     ]
   }
 ];
