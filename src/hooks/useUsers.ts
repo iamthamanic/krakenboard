@@ -1,6 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export type UserProfile = {
   id: string;
@@ -23,6 +24,7 @@ export const useUsers = () => {
         .order("created_at", { ascending: false });
 
       if (error) {
+        toast.error("Fehler beim Laden der Benutzer");
         throw error;
       }
 
@@ -39,11 +41,15 @@ export const useUsers = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        toast.error("Fehler beim Aktualisieren des Benutzers");
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("Benutzer erfolgreich aktualisiert");
     }
   });
 
@@ -55,11 +61,15 @@ export const useUsers = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        toast.error("Fehler beim Erstellen des Benutzers");
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("Benutzer erfolgreich erstellt");
     }
   });
 
