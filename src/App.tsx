@@ -12,7 +12,8 @@ import SocialPaid from "@/pages/social/paid";
 import GoogleCampaigns from "@/pages/google/campaigns";
 import GoogleMetrics from "@/pages/google/metrics";
 import Integrations from "@/pages/Integrations";
-import Settings from "@/pages/admin/Settings";
+import Settings from "@/pages/admin/settings";
+import SettingsOverview from "@/pages/admin";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -32,7 +33,8 @@ function App() {
             <Route path="/google/campaigns" element={<GoogleCampaigns />} />
             <Route path="/google/metrics" element={<GoogleMetrics />} />
             <Route path="/admin/integrations" element={<Integrations />} />
-            <Route path="/admin" element={<Settings />} />
+            <Route path="/admin" element={<SettingsOverview />} />
+            <Route path="/admin/settings" element={<Settings />} />
             <Route path="/legal/privacy" element={<Privacy />} />
             <Route path="/legal/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
