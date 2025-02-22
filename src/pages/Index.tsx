@@ -1,9 +1,8 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { Activity, Users, Globe, FormInput, BarChart, Share2, MessageCircle, CreditCard, FileText, Shield } from "lucide-react";
+import { Activity, Users, Globe, FormInput, BarChart, Share2, MessageCircle, CreditCard } from "lucide-react";
 import { translations, getStoredLanguage } from "@/lib/utils";
-import { Link } from "react-router-dom";
 
 const Index = () => {
   const t = translations[getStoredLanguage()];
@@ -114,28 +113,6 @@ const Index = () => {
                 trend={{ value: 7, isPositive: true }}
                 description={t.vsLastMonth}
               />
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Rechtliches</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Link to="/legal/privacy">
-                <StatsCard
-                  title="Datenschutzerklärung"
-                  value="Bearbeiten"
-                  icon={<Shield className="h-4 w-4 text-muted-foreground" />}
-                  description="Datenschutzrichtlinien verwalten"
-                />
-              </Link>
-              <Link to="/legal/terms">
-                <StatsCard
-                  title="Nutzungsbedingungen"
-                  value="Bearbeiten"
-                  icon={<FileText className="h-4 w-4 text-muted-foreground" />}
-                  description="AGB und Nutzungsbedingungen verwalten"
-                />
-              </Link>
             </div>
           </div>
         </div>
