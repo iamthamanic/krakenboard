@@ -1,5 +1,5 @@
 
-import { Menu, Globe2 } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,6 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Language, languages, getStoredLanguage, setStoredLanguage } from "@/lib/utils";
 import { useState, useEffect } from "react";
+
+const FlagEmoji = ({ language }: { language: Language }) => {
+  const flagEmojis = {
+    de: "🇩🇪",
+    en: "🇬🇧",
+    tr: "🇹🇷"
+  };
+
+  return <span className="mr-2 text-lg">{flagEmojis[language]}</span>;
+};
 
 export const Header = () => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(getStoredLanguage);
@@ -46,8 +56,8 @@ export const Header = () => {
         <nav className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Globe2 className="h-4 w-4" />
+              <Button variant="outline" className="min-w-[2.5rem]">
+                <FlagEmoji language={currentLanguage} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -56,6 +66,7 @@ export const Header = () => {
                   key={code}
                   onClick={() => handleLanguageChange(code as Language)}
                 >
+                  <FlagEmoji language={code as Language} />
                   {name}
                 </DropdownMenuItem>
               ))}

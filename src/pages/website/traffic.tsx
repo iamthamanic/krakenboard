@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { WebsiteScanner } from "@/services/websiteScanner";
 import { toast } from "@/components/ui/use-toast";
 import { ScanProgress, DiscoveredPage } from "@/services/types/scanner.types";
+import { translations, getStoredLanguage } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ import {
 } from "@/components/ui/accordion";
 
 const WebsiteTrafficPage = () => {
+  const t = translations[getStoredLanguage()];
   const [url, setUrl] = useState("");
   const [scanning, setScanning] = useState(false);
   const [pagesCount, setPagesCount] = useState(0);
@@ -49,8 +51,8 @@ const WebsiteTrafficPage = () => {
   const handleScan = async () => {
     if (!url) {
       toast({
-        title: "Fehler",
-        description: "Bitte geben Sie eine URL ein",
+        title: t.scanError,
+        description: t.enterUrl,
         variant: "destructive"
       });
       return;
@@ -77,13 +79,13 @@ const WebsiteTrafficPage = () => {
       setDiscoveredPages(pages);
       
       toast({
-        title: "Scan abgeschlossen",
-        description: `${pages.length} Seiten und ${totalForms} Formulare gefunden`
+        title: t.scanComplete,
+        description: `${pages.length} ${t.pagesAndForms}`
       });
     } catch (error) {
       toast({
-        title: "Scan-Fehler",
-        description: "Überprüfen Sie die URL und versuchen Sie es erneut",
+        title: t.scanFailed,
+        description: t.checkUrlAndRetry,
         variant: "destructive"
       });
     } finally {
@@ -131,15 +133,15 @@ const WebsiteTrafficPage = () => {
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Website Traffic</h1>
-          <p className="text-muted-foreground">Übersicht über Ihre Website-Besucher und Aktivitäten.</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t.websiteTraffic}</h1>
+          <p className="text-muted-foreground">{t.websiteTrafficDescription}</p>
         </div>
 
         <div className="space-y-4">
           <div className="flex gap-4 items-end">
             <div className="flex-1">
               <Input
-                placeholder="Website URL eingeben (z.B. https://example.com)"
+                placeholder={t.enterWebsiteUrl}
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="w-full"
@@ -149,13 +151,13 @@ const WebsiteTrafficPage = () => {
               onClick={handleScan}
               disabled={scanning}
             >
-              {scanning ? "Scanne..." : "Website scannen"}
+              {scanning ? t.scanning : t.scanWebsite}
             </Button>
           </div>
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="scan-options">
-              <AccordionTrigger>Scan-Optionen</AccordionTrigger>
+              <AccordionTrigger>{t.scanOptions}</AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2">
@@ -165,15 +167,15 @@ const WebsiteTrafficPage = () => {
                       onCheckedChange={setSingleUrlOnly}
                     />
                     <label htmlFor="single-url" className="text-sm">
-                      Nur diese URL scannen (keine Unterseiten)
+                      {t.singleUrlScan}
                     </label>
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-sm font-medium">Eingeschlossene URLs</h4>
+                    <h4 className="text-sm font-medium">{t.includedUrls}</h4>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="URL hinzufügen (z.B. /blog/*)"
+                        placeholder={t.addUrl}
                         value={newIncludeUrl}
                         onChange={(e) => setNewIncludeUrl(e.target.value)}
                       />
@@ -195,10 +197,10 @@ const WebsiteTrafficPage = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-sm font-medium">Ausgeschlossene URLs</h4>
+                    <h4 className="text-sm font-medium">{t.excludedUrls}</h4>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="URL hinzufügen (z.B. /admin/*)"
+                        placeholder={t.addUrl}
                         value={newExcludeUrl}
                         onChange={(e) => setNewExcludeUrl(e.target.value)}
                       />
@@ -227,9 +229,9 @@ const WebsiteTrafficPage = () => {
             <div className="space-y-2">
               <Progress value={(progress.scannedPages / progress.totalPages) * 100} />
               <div className="text-sm text-muted-foreground">
-                <p>Scanne {progress.currentUrl}</p>
-                <p>{progress.scannedPages} von {progress.totalPages} Seiten gescannt</p>
-                <p>Geschätzte Restzeit: {progress.estimatedTimeRemaining}</p>
+                <p>{t.scanning} {progress.currentUrl}</p>
+                <p>{progress.scannedPages} {t.page} {progress.totalPages}</p>
+                <p>{progress.estimatedTimeRemaining}</p>
               </div>
             </div>
           )}
@@ -237,46 +239,46 @@ const WebsiteTrafficPage = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Gefundene Seiten"
+            title={t.discoveredPages}
             value={pagesCount}
             icon={<Users className="h-4 w-4 text-muted-foreground" />}
-            description="Automatisch erkannt"
+            description={t.autoDetected}
           />
           <StatsCard
-            title="Aktuelle Besucher"
+            title={t.currentVisitors}
             value="--"
             icon={<Globe className="h-4 w-4 text-muted-foreground" />}
-            description="GA4 Integration erforderlich"
+            description={t.ga4Required}
           />
           <StatsCard
-            title="Durchschn. Besuchszeit"
+            title={t.avgVisitTime}
             value="--"
             icon={<LineChart className="h-4 w-4 text-muted-foreground" />}
-            description="GA4 Integration erforderlich"
+            description={t.ga4Required}
           />
           <StatsCard
-            title="Aktive Formulare"
+            title={t.activeForms}
             value={formsCount}
             icon={<FormInput className="h-4 w-4 text-muted-foreground" />}
-            description="Automatisch erkannt"
+            description={t.autoDetected}
           />
         </div>
 
         {discoveredPages.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Gefundene Seiten & Formulare</CardTitle>
+              <CardTitle>{t.discoveredPagesAndForms}</CardTitle>
               <CardDescription>
-                Übersicht aller erkannten Seiten und deren Formulare
+                {t.discoveredPagesDescription}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Seite</TableHead>
-                    <TableHead>Formulare</TableHead>
-                    <TableHead>Details</TableHead>
+                    <TableHead>{t.page}</TableHead>
+                    <TableHead>{t.forms}</TableHead>
+                    <TableHead>{t.details}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -302,14 +304,14 @@ const WebsiteTrafficPage = () => {
                                 </Badge>
                                 {form.steps && form.steps > 1 && (
                                   <Badge variant="outline">
-                                    {form.steps} Schritte
+                                    {form.steps} {t.steps}
                                   </Badge>
                                 )}
                               </div>
                               <div className="text-sm text-muted-foreground">
-                                {form.fields} Felder
+                                {form.fields} {t.fields}
                                 {form.successPage && (
-                                  <span className="ml-2">• Erfolgsseite vorhanden</span>
+                                  <span className="ml-2">• {t.successPageExists}</span>
                                 )}
                               </div>
                             </div>
