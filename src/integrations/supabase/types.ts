@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      api_metrics: {
+        Row: {
+          created_at: string | null
+          id: string
+          integration_id: string | null
+          metric_name: string
+          metric_type: string
+          timestamp: string | null
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          integration_id?: string | null
+          metric_name: string
+          metric_type: string
+          timestamp?: string | null
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          integration_id?: string | null
+          metric_name?: string
+          metric_type?: string
+          timestamp?: string | null
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_metrics_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discovered_pages: {
         Row: {
           created_at: string | null
@@ -219,9 +260,12 @@ export type Database = {
           created_at: string | null
           credentials: Json
           id: string
+          integration_type: string | null
           is_active: boolean | null
           last_sync_at: string | null
           metadata: Json | null
+          settings: Json | null
+          status: string | null
           type: Database["public"]["Enums"]["integration_type"]
           updated_at: string | null
           user_id: string | null
@@ -230,9 +274,12 @@ export type Database = {
           created_at?: string | null
           credentials?: Json
           id?: string
+          integration_type?: string | null
           is_active?: boolean | null
           last_sync_at?: string | null
           metadata?: Json | null
+          settings?: Json | null
+          status?: string | null
           type: Database["public"]["Enums"]["integration_type"]
           updated_at?: string | null
           user_id?: string | null
@@ -241,9 +288,12 @@ export type Database = {
           created_at?: string | null
           credentials?: Json
           id?: string
+          integration_type?: string | null
           is_active?: boolean | null
           last_sync_at?: string | null
           metadata?: Json | null
+          settings?: Json | null
+          status?: string | null
           type?: Database["public"]["Enums"]["integration_type"]
           updated_at?: string | null
           user_id?: string | null
