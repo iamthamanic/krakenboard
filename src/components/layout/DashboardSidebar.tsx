@@ -54,8 +54,8 @@ const dashboardMenuItems = [
 
 const adminMenuItems = [
   {
+    group: "Einstellungen",
     items: [
-      { icon: Settings, label: "Einstellungen", href: "/admin" },
       { icon: Settings, label: "Admin", href: "/admin" },
       { icon: Puzzle, label: "Integrationen", href: "/admin/integrations" },
     ]
