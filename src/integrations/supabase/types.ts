@@ -120,6 +120,44 @@ export type Database = {
           },
         ]
       }
+      form_monitoring_settings: {
+        Row: {
+          conversion_threshold: number | null
+          created_at: string | null
+          error_rate_threshold: number | null
+          form_id: string | null
+          id: string
+          inactivity_threshold: unknown | null
+          updated_at: string | null
+        }
+        Insert: {
+          conversion_threshold?: number | null
+          created_at?: string | null
+          error_rate_threshold?: number | null
+          form_id?: string | null
+          id?: string
+          inactivity_threshold?: unknown | null
+          updated_at?: string | null
+        }
+        Update: {
+          conversion_threshold?: number | null
+          created_at?: string | null
+          error_rate_threshold?: number | null
+          form_id?: string | null
+          id?: string
+          inactivity_threshold?: unknown | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_monitoring_settings_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forms: {
         Row: {
           action: string | null

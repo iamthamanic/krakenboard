@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { AlertCircle, CheckCircle, Timer } from "lucide-react";
 import { FormAlerts } from "./FormAlerts";
+import { FormMonitoringSettings } from "./FormMonitoringSettings";
 
 interface FormMonitoringDashboardProps {
   form: FormElement;
@@ -26,9 +26,20 @@ interface DatabaseConversion {
   id: string;
 }
 
+interface MonitoringSettings {
+  conversion_threshold: number;
+  error_rate_threshold: number;
+  inactivity_threshold: string;
+}
+
 export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) => {
   const [conversions, setConversions] = useState<ConversionData[]>([]);
   const [realtimeEnabled, setRealtimeEnabled] = useState(false);
+  const [settings, setSettings] = useState<MonitoringSettings>({
+    conversion_threshold: 20.0,
+    error_rate_threshold: 10.0,
+    inactivity_threshold: '1 hour'
+  });
 
   const mapDatabaseToConversionData = (data: DatabaseConversion): ConversionData => ({
     timestamp: data.conversion_timestamp,
@@ -37,40 +48,69 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
   });
 
   const checkForAnomalies = async (newData: ConversionData[], formId: string) => {
-    if (newData.length < 10) return; // Nicht genug Daten für Analyse
+    if (newData.length < 10) return;
 
-    // Berechne aktuelle und vorherige Conversion Rate
     const recentConversions = newData.slice(0, 5);
     const previousConversions = newData.slice(5, 10);
 
     const recentRate = recentConversions.filter(c => c.isSuccessful).length / recentConversions.length;
     const previousRate = previousConversions.filter(c => c.isSuccessful).length / previousConversions.length;
-
-    // Prüfe auf signifikante Änderungen (20% Schwelle)
     const percentageChange = ((recentRate - previousRate) / previousRate) * 100;
-    
-    if (Math.abs(percentageChange) >= 20) {
-      const alertType = percentageChange > 0 ? 'conversion_increase' : 'conversion_decrease';
-      const message = `Conversion Rate hat sich um ${Math.abs(percentageChange).toFixed(1)}% ${percentageChange > 0 ? 'verbessert' : 'verschlechtert'}`;
-      
-      // Erstelle einen neuen Alert
+
+    const recentErrorRate = recentConversions.filter(c => !c.isSuccessful).length / recentConversions.length * 100;
+
+    const lastConversionTime = new Date(newData[0].timestamp);
+    const now = new Date();
+    const inactivityHours = (now.getTime() - lastConversionTime.getTime()) / (1000 * 60 * 60);
+
+    const alerts = [];
+
+    if (Math.abs(percentageChange) >= settings.conversion_threshold) {
+      alerts.push({
+        form_id: formId,
+        alert_type: percentageChange > 0 ? 'conversion_increase' : 'conversion_decrease',
+        message: `Conversion Rate hat sich um ${Math.abs(percentageChange).toFixed(1)}% ${percentageChange > 0 ? 'verbessert' : 'verschlechtert'}`,
+        metadata: {
+          previous_rate: previousRate,
+          current_rate: recentRate,
+          percentage_change: percentageChange
+        }
+      });
+    }
+
+    if (recentErrorRate >= settings.error_rate_threshold) {
+      alerts.push({
+        form_id: formId,
+        alert_type: 'high_error_rate',
+        message: `Hohe Fehlerrate: ${recentErrorRate.toFixed(1)}% der letzten Submissions waren nicht erfolgreich`,
+        metadata: {
+          error_rate: recentErrorRate,
+          threshold: settings.error_rate_threshold
+        }
+      });
+    }
+
+    const inactivityThresholdHours = parseInt(settings.inactivity_threshold);
+    if (inactivityHours >= inactivityThresholdHours) {
+      alerts.push({
+        form_id: formId,
+        alert_type: 'inactivity',
+        message: `Keine Formular-Submissions seit ${Math.floor(inactivityHours)} Stunden`,
+        metadata: {
+          last_conversion: lastConversionTime,
+          hours_inactive: inactivityHours
+        }
+      });
+    }
+
+    if (alerts.length > 0) {
       await supabase
         .from('form_alerts')
-        .insert({
-          form_id: formId,
-          alert_type: alertType,
-          message: message,
-          metadata: {
-            previous_rate: previousRate,
-            current_rate: recentRate,
-            percentage_change: percentageChange
-          }
-        });
+        .insert(alerts);
     }
   };
 
   useEffect(() => {
-    // Lade historische Daten
     const loadConversions = async () => {
       const { data, error } = await supabase
         .from('form_conversions')
@@ -88,7 +128,6 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
 
     loadConversions();
 
-    // Echtzeit-Updates einrichten
     const channel = supabase.channel('form-monitoring')
       .on(
         'postgres_changes',
@@ -113,14 +152,12 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
     };
   }, [form.id, conversions]);
 
-  // Berechne KPIs
   const totalConversions = conversions.length;
   const successfulConversions = conversions.filter(c => c.isSuccessful).length;
   const conversionRate = totalConversions > 0 
     ? ((successfulConversions / totalConversions) * 100).toFixed(1)
     : "0";
 
-  // Gruppiere Daten für Chart
   const chartData = conversions.reduce((acc: any[], conv) => {
     const date = new Date(conv.timestamp).toLocaleDateString();
     const existing = acc.find(item => item.date === date);
@@ -142,6 +179,10 @@ export const FormMonitoringDashboard = ({ form }: FormMonitoringDashboardProps) 
   return (
     <div className="space-y-6">
       <FormAlerts formId={form.id} />
+      <FormMonitoringSettings 
+        formId={form.id}
+        onSettingsUpdate={setSettings}
+      />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
