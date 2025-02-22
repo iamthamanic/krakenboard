@@ -24,7 +24,7 @@ const menuItems = [
   { 
     group: "Gesamtübersicht",
     items: [
-      { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
+      { icon: LayoutDashboard, label: "Dashboard", href: "/" },
     ]
   },
   { 
