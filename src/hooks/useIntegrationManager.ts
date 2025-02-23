@@ -5,6 +5,11 @@ import { Integration, IntegrationType } from '@/services/integrations/types';
 import { GoogleAnalyticsService } from '@/services/integrations/GoogleAnalyticsService';
 import { toast } from '@/components/ui/use-toast';
 
+interface GoogleAnalyticsCredentials {
+  propertyId: string;
+  accessToken: string;
+}
+
 export const useIntegrationManager = () => {
   const queryClient = useQueryClient();
 
@@ -62,9 +67,14 @@ export const useIntegrationManager = () => {
       let service;
       
       switch (integration.type) {
-        case 'google_analytics':
-          service = new GoogleAnalyticsService(integration.credentials.propertyId, integration.credentials.accessToken);
+        case 'google_analytics': {
+          const credentials = integration.credentials as GoogleAnalyticsCredentials;
+          if (!credentials.propertyId || !credentials.accessToken) {
+            throw new Error('Ungültige Google Analytics Credentials');
+          }
+          service = new GoogleAnalyticsService(credentials.propertyId, credentials.accessToken);
           break;
+        }
         // Weitere Dienste hier hinzufügen
         default:
           throw new Error(`Unbekannter Integrationstyp: ${integration.type}`);
