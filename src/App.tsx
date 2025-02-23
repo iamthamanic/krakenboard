@@ -8,6 +8,7 @@ import OAuthCallback from "./pages/oauth/callback";
 import Admin from "./pages/Admin";
 import Settings from "./pages/admin/settings";
 import Users from "./pages/admin/users";
+import Security from "./pages/admin/security";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/users",
     element: <Users />,
+  },
+  {
+    path: "/admin/security",
+    element: <Security />,
   },
 ]);
 
