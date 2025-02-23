@@ -17,6 +17,8 @@ export interface TechDocumentation {
     social?: string[];
     ads?: string[];
     automation?: string[];
+    infrastructure?: string[];  // Neue Property
+    pipeline?: string[];       // Neue Property
   };
 }
 
