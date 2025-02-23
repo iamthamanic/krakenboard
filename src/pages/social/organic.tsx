@@ -1,10 +1,27 @@
-
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { BarChart3, MessageCircle, Share2, Users, Video } from "lucide-react";
+import { SocialMediaChart } from "@/components/dashboard/SocialMediaChart";
+import { BarChart3, Download, MessageCircle, Share2, Users, Video } from "lucide-react";
 import { useSocialMediaMetrics } from "@/hooks/useSocialMediaMetrics";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
+import { toast } from "sonner";
+
+const TIME_RANGES = {
+  '7d': '7 Tage',
+  '30d': '30 Tage',
+  '90d': '90 Tage'
+};
 
 const SocialOrganic = () => {
+  const [timeRange, setTimeRange] = useState('30d');
   const { data: facebookMetrics } = useSocialMediaMetrics('facebook');
   const { data: instagramMetrics } = useSocialMediaMetrics('instagram');
   const { data: linkedinMetrics } = useSocialMediaMetrics('linkedin');
@@ -34,14 +51,72 @@ const SocialOrganic = () => {
     };
   };
 
+  const handleExport = () => {
+    const allData = {
+      facebook: facebookMetrics,
+      instagram: instagramMetrics,
+      linkedin: linkedinMetrics,
+      youtube: youtubeMetrics,
+      tiktok: tiktokMetrics
+    };
+
+    const csv = Object.entries(allData).map(([platform, metrics]) => {
+      if (!metrics) return '';
+      
+      return metrics.map(metric => ({
+        Platform: platform,
+        Timestamp: new Date(metric.timestamp).toLocaleString(),
+        Followers: metric.followers,
+        Reach: metric.reach,
+        'Engagement Rate': `${metric.engagement_rate.toFixed(1)}%`,
+        Interactions: metric.interactions
+      }));
+    }).flat();
+
+    const csvString = [
+      Object.keys(csv[0]).join(','),
+      ...csv.map(row => Object.values(row).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `social-media-metrics-${timeRange}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Export erfolgreich');
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Organic Social Media Performance</h1>
-          <p className="text-muted-foreground">
-            Übersicht über deine organische Social Media Reichweite
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Organic Social Media Performance</h1>
+            <p className="text-muted-foreground">
+              Übersicht über deine organische Social Media Reichweite
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Zeitraum wählen" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(TIME_RANGES).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={handleExport} variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -273,6 +348,90 @@ const SocialOrganic = () => {
                 description="vs. letzter Zeitraum"
               />
             </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <SocialMediaChart 
+              data={facebookMetrics || []} 
+              metric="followers" 
+              title="Facebook Follower Entwicklung" 
+            />
+            <SocialMediaChart 
+              data={instagramMetrics || []} 
+              metric="followers" 
+              title="Instagram Follower Entwicklung" 
+            />
+            <SocialMediaChart 
+              data={linkedinMetrics || []} 
+              metric="followers" 
+              title="LinkedIn Follower Entwicklung" 
+            />
+            <SocialMediaChart 
+              data={youtubeMetrics || []} 
+              metric="followers" 
+              title="YouTube Abonnenten Entwicklung" 
+            />
+            <SocialMediaChart 
+              data={tiktokMetrics || []} 
+              metric="followers" 
+              title="TikTok Follower Entwicklung" 
+            />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <SocialMediaChart 
+              data={facebookMetrics || []} 
+              metric="reach" 
+              title="Facebook Reichweite" 
+            />
+            <SocialMediaChart 
+              data={instagramMetrics || []} 
+              metric="reach" 
+              title="Instagram Reichweite" 
+            />
+            <SocialMediaChart 
+              data={linkedinMetrics || []} 
+              metric="reach" 
+              title="LinkedIn Reichweite" 
+            />
+            <SocialMediaChart 
+              data={youtubeMetrics || []} 
+              metric="reach" 
+              title="YouTube Aufrufe" 
+            />
+            <SocialMediaChart 
+              data={tiktokMetrics || []} 
+              metric="reach" 
+              title="TikTok Views" 
+            />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <SocialMediaChart 
+              data={facebookMetrics || []} 
+              metric="engagement_rate" 
+              title="Facebook Engagement Rate" 
+            />
+            <SocialMediaChart 
+              data={instagramMetrics || []} 
+              metric="engagement_rate" 
+              title="Instagram Engagement Rate" 
+            />
+            <SocialMediaChart 
+              data={linkedinMetrics || []} 
+              metric="engagement_rate" 
+              title="LinkedIn Engagement Rate" 
+            />
+            <SocialMediaChart 
+              data={youtubeMetrics || []} 
+              metric="engagement_rate" 
+              title="YouTube Engagement Rate" 
+            />
+            <SocialMediaChart 
+              data={tiktokMetrics || []} 
+              metric="engagement_rate" 
+              title="TikTok Engagement Rate" 
+            />
           </div>
         </div>
       </div>
