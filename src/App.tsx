@@ -40,6 +40,10 @@ const router = createBrowserRouter([
     path: "/admin/security",
     element: <Security />,
   },
+  {
+    path: "/admin/integrations",
+    element: <Integrations />,
+  }
 ]);
 
 // Erstelle eine neue QueryClient-Instanz
