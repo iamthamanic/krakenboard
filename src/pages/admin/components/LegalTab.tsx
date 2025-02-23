@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, RefreshCw, Clock } from "lucide-react";
+import { Copy, RefreshCw, Clock, Globe } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useLegalDocument } from "@/hooks/useLegalDocuments";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -40,6 +40,28 @@ export const LegalTab = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Domain:</span>
+            <span className="text-sm font-medium">{window.location.origin}</span>
+          </div>
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.origin);
+              toast({
+                title: "Domain kopiert",
+                description: "Die Domain wurde in die Zwischenablage kopiert."
+              });
+            }}
+          >
+            <Copy className="mr-2 h-4 w-4" />
+            Kopieren
+          </Button>
+        </div>
+
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="privacy" className="border rounded-lg">
             <AccordionTrigger className="px-6">
