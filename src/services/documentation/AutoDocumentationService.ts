@@ -40,7 +40,7 @@ export class AutoDocumentationService {
       if (existingDoc) {
         // Update existierende Dokumentation
         const content = existingDoc.content as DocumentationContent;
-        const categoryItems = content[category] || [];
+        const categoryItems = Array.isArray(content[category]) ? content[category] : [];
         
         // Prüfe ob Feature bereits existiert
         const existingFeatureIndex = categoryItems.findIndex(

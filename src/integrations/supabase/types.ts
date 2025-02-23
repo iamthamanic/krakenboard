@@ -440,7 +440,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_tech_documentation: {
+        Args: {
+          p_category: string
+          p_title: string
+          p_content: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       integration_type:
