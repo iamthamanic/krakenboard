@@ -12,16 +12,9 @@ import {
   Database
 } from "lucide-react";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { useSocialMediaMetrics } from "@/hooks/useSocialMediaMetrics";
 
 const AdminPage = () => {
   const navigate = useNavigate();
-  const { data: facebookMetrics } = useSocialMediaMetrics('facebook');
-  const { data: instagramMetrics } = useSocialMediaMetrics('instagram');
-
-  // Berechne die aktuellsten Metriken
-  const latestFacebookMetrics = facebookMetrics?.[0];
-  const latestInstagramMetrics = instagramMetrics?.[0];
 
   const adminCards = [
     {
@@ -78,31 +71,31 @@ const AdminPage = () => {
           </p>
         </div>
 
-        {/* Social Media Insights */}
+        {/* System Status Overview */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Facebook Follower"
-            value={latestFacebookMetrics?.followers.toLocaleString() || "0"}
-            icon={<BarChart3 className="h-4 w-4" />}
-            description="Gesamt Follower"
+            title="Aktive Benutzer"
+            value="24"
+            icon={<Users className="h-4 w-4" />}
+            description="Gesamt Benutzer"
           />
           <StatsCard
-            title="Facebook Engagement"
-            value={`${(latestFacebookMetrics?.engagement_rate || 0).toFixed(2)}%`}
-            icon={<BarChart3 className="h-4 w-4" />}
-            description="Durchschnittliche Engagement Rate"
+            title="API Auslastung"
+            value="42%"
+            icon={<Database className="h-4 w-4" />}
+            description="Durchschnittlich"
           />
           <StatsCard
-            title="Instagram Follower"
-            value={latestInstagramMetrics?.followers.toLocaleString() || "0"}
+            title="System Status"
+            value="99.9%"
             icon={<BarChart3 className="h-4 w-4" />}
-            description="Gesamt Follower"
+            description="Uptime"
           />
           <StatsCard
-            title="Instagram Engagement"
-            value={`${(latestInstagramMetrics?.engagement_rate || 0).toFixed(2)}%`}
-            icon={<BarChart3 className="h-4 w-4" />}
-            description="Durchschnittliche Engagement Rate"
+            title="Letzte Sicherung"
+            value="2h ago"
+            icon={<Shield className="h-4 w-4" />}
+            description="Automatisches Backup"
           />
         </div>
 
