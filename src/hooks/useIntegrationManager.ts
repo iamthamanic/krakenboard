@@ -68,8 +68,8 @@ export const useIntegrationManager = () => {
       
       switch (integration.type) {
         case 'google_analytics': {
-          const credentials = integration.credentials as GoogleAnalyticsCredentials;
-          if (!credentials.propertyId || !credentials.accessToken) {
+          const credentials = integration.credentials as unknown as GoogleAnalyticsCredentials;
+          if (!credentials?.propertyId || !credentials?.accessToken) {
             throw new Error('Ungültige Google Analytics Credentials');
           }
           service = new GoogleAnalyticsService(credentials.propertyId, credentials.accessToken);
