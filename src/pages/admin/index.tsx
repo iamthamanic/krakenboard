@@ -34,7 +34,7 @@ const AdminPage = () => {
             <TabsTrigger value="general">Allgemein</TabsTrigger>
             <TabsTrigger value="security">Sicherheit</TabsTrigger>
             <TabsTrigger value="data">Daten & APIs</TabsTrigger>
-            <TabsTrigger value="legal">Legal</TabsTrigger>
+            <TabsTrigger value="legal">Intern</TabsTrigger>
             <TabsTrigger value="functions">Function Log</TabsTrigger>
             <TabsTrigger value="dev">Dev Log</TabsTrigger>
           </TabsList>
