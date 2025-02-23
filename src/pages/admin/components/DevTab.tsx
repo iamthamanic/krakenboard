@@ -10,7 +10,7 @@ export const DevTab = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Developer Documentation</CardTitle>
+        <CardTitle>Dev Log</CardTitle>
         <CardDescription>
           Technische Dokumentation für Entwickler
         </CardDescription>
@@ -82,26 +82,6 @@ export const DevTab = () => {
               </AccordionItem>
             )}
 
-            {techDocs?.find(doc => doc.category === 'apis') && (
-              <AccordionItem value="apis">
-                <AccordionTrigger>
-                  <div className="flex items-center gap-2">
-                    <Database className="h-5 w-5" />
-                    API-Integrationen
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    <li>Docker Container für die Anwendung</li>
-                    <li>Supabase für Datenbank & Auth</li>
-                    <li>Edge Functions für serverless Backend</li>
-                    <li>Automatisches Deployment via CI/CD</li>
-                    <li>Monitoring & Error Tracking</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            )}
-
             {techDocs?.find(doc => doc.category === 'deployment') && (
               <AccordionItem value="deployment">
                 <AccordionTrigger>
@@ -111,13 +91,55 @@ export const DevTab = () => {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    <li>Docker Container für die Anwendung</li>
-                    <li>Supabase für Datenbank & Auth</li>
-                    <li>Edge Functions für serverless Backend</li>
-                    <li>Automatisches Deployment via CI/CD</li>
-                    <li>Monitoring & Error Tracking</li>
-                  </ul>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Infrastruktur</h4>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        {techDocs?.find(doc => doc.category === 'deployment')?.content.infrastructure?.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">CI/CD Pipeline</h4>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        {techDocs?.find(doc => doc.category === 'deployment')?.content.pipeline?.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            {techDocs?.find(doc => doc.category === 'apis') && (
+              <AccordionItem value="apis">
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    <GitBranch className="h-5 w-5" />
+                    API-Integrationen
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Aktive Integrationen</h4>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        {techDocs?.find(doc => doc.category === 'apis')?.content.implemented?.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Verfügbare Integrationen</h4>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        {techDocs?.find(doc => doc.category === 'apis')?.content.integration?.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             )}
