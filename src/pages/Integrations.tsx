@@ -10,7 +10,10 @@ import {
   AlertCircle,
   Youtube,
   CreditCard,
-  BarChart3
+  BarChart3,
+  BarChart4,
+  Activity,
+  CloudCog
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useIntegrations } from "@/hooks/useIntegrations";
@@ -60,11 +63,46 @@ const Integrations = () => {
           const authUrl = await GoogleAnalyticsService.initiateOAuth();
           window.location.href = authUrl;
           break;
+        case 'google_tag_manager':
+          toast({
+            title: "Google Tag Manager",
+            description: "GTM OAuth2-Integration wird initiiert...",
+          });
+          // GTM OAuth Implementation kommt hier
+          break;
+        case 'cloudflare':
+          toast({
+            title: "Cloudflare Analytics",
+            description: "Cloudflare OAuth2-Integration wird initiiert...",
+          });
+          // Cloudflare OAuth Implementation kommt hier
+          break;
         case 'facebook':
           await SocialMediaService.initiateFacebookAuth();
           break;
         case 'instagram':
           await SocialMediaService.initiateInstagramAuth();
+          break;
+        case 'linkedin':
+          await SocialMediaService.initiateLinkedInAuth();
+          break;
+        case 'youtube':
+          await SocialMediaService.initiateYouTubeAuth();
+          break;
+        case 'tiktok':
+          await SocialMediaService.initiateTikTokAuth();
+          break;
+        case 'google_ads':
+          await SocialMediaService.initiateGoogleAdsAuth();
+          break;
+        case 'meta_ads':
+          await SocialMediaService.initiateMetaAdsAuth();
+          break;
+        case 'linkedin_ads':
+          await SocialMediaService.initiateLinkedInAdsAuth();
+          break;
+        case 'tiktok_ads':
+          await SocialMediaService.initiateTikTokAdsAuth();
           break;
         default:
           toast({
@@ -101,9 +139,39 @@ const Integrations = () => {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Verbinde deine Accounts, um Echtzeitdaten in deinem Dashboard zu sehen.
+            Verbinde deine Analytics-Tools, um Echtzeitdaten in deinem Dashboard zu sehen.
           </AlertDescription>
         </Alert>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Analytics & Tracking</h2>
+          <div className="grid gap-6">
+            <IntegrationCard
+              title="Google Analytics 4"
+              description="Verbinde GA4 für ungesampelte Rohdaten"
+              icon={<BarChart4 className="h-5 w-5" />}
+              isConnected={isIntegrationActive('google_analytics')}
+              onConnect={() => handleConnect('google_analytics')}
+              type="google_analytics"
+            />
+            <IntegrationCard
+              title="Google Tag Manager"
+              description="Event-Tracking & Custom-Dimensionen"
+              icon={<Activity className="h-5 w-5" />}
+              isConnected={isIntegrationActive('google_tag_manager')}
+              onConnect={() => handleConnect('google_tag_manager')}
+              type="google_tag_manager"
+            />
+            <IntegrationCard
+              title="Cloudflare Analytics"
+              description="Server-Side Analytics ohne Cookies"
+              icon={<CloudCog className="h-5 w-5" />}
+              isConnected={isIntegrationActive('cloudflare')}
+              onConnect={() => handleConnect('cloudflare')}
+              type="cloudflare"
+            />
+          </div>
+        </div>
 
         <div>
           <h2 className="text-xl font-semibold mb-4">Organische Reichweite</h2>
