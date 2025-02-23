@@ -15,8 +15,9 @@ export class GoogleAnalyticsService {
 
       const redirectUri = `${window.location.origin}/oauth/callback`;
       const scope = encodeURIComponent('https://www.googleapis.com/auth/analytics.readonly');
+      const state = 'google_analytics';
       
-      return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
+      return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&state=${state}`;
     } catch (error) {
       console.error('Error initiating OAuth:', error);
       throw error;
@@ -36,33 +37,23 @@ export class GoogleAnalyticsService {
 
       const redirectUri = `${window.location.origin}/oauth/callback`;
       const scope = encodeURIComponent('https://www.googleapis.com/auth/tagmanager.readonly');
+      const state = 'google_tag_manager';
       
-      return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
+      return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&state=${state}`;
     } catch (error) {
       console.error('Error initiating GTM OAuth:', error);
       throw error;
     }
   }
 
-  static async handleCallback(code: string) {
+  static async handleCallback(code: string, type: string = 'google_analytics') {
     try {
       // Exchange auth code for tokens
       const { data, error } = await supabase.functions.invoke('google-auth-callback', {
-        body: { code }
+        body: { code, type }
       });
 
       if (error) throw error;
-
-      // Store the integration in the database
-      const { error: dbError } = await supabase
-        .from('integrations')
-        .insert({
-          type: 'google_analytics',
-          credentials: data,
-          is_active: true
-        });
-
-      if (dbError) throw dbError;
 
       return data;
     } catch (error) {

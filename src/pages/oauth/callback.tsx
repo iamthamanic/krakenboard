@@ -1,29 +1,32 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+        const code = searchParams.get('code');
+        const type = searchParams.get('state') || 'google_analytics';
         
         if (!code) {
           throw new Error('Kein Authorization Code gefunden');
         }
 
-        await GoogleAnalyticsService.handleCallback(code);
+        await GoogleAnalyticsService.handleCallback(code, type);
         
         toast({
           title: "Erfolg",
-          description: "Google Analytics wurde erfolgreich verbunden",
+          description: type === 'google_analytics' 
+            ? "Google Analytics wurde erfolgreich verbunden"
+            : "Google Tag Manager wurde erfolgreich verbunden",
         });
         
         navigate('/integrations');
@@ -31,7 +34,7 @@ const OAuthCallback = () => {
         console.error('OAuth callback error:', error);
         toast({
           title: "Fehler",
-          description: "Fehler bei der Verbindung mit Google Analytics",
+          description: "Fehler bei der OAuth Verbindung",
           variant: "destructive"
         });
         navigate('/integrations');
@@ -41,7 +44,7 @@ const OAuthCallback = () => {
     };
 
     handleCallback();
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

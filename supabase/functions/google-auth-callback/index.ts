@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,7 +16,7 @@ serve(async (req) => {
   }
 
   try {
-    const { code } = await req.json();
+    const { code, type = 'google_analytics' } = await req.json();
     
     if (!code) {
       throw new Error('Authorization code is required');
@@ -59,7 +60,25 @@ serve(async (req) => {
       throw new Error('Token exchange failed');
     }
 
-    console.log('Successfully exchanged code for tokens');
+    // Speichere die Integration mit dem korrekten Typ
+    const { error: integrationError } = await supabaseClient
+      .from('integrations')
+      .insert({
+        type: type,
+        credentials: tokenData,
+        is_active: true,
+        metadata: {
+          scope: type === 'google_analytics' 
+            ? 'https://www.googleapis.com/auth/analytics.readonly'
+            : 'https://www.googleapis.com/auth/tagmanager.readonly'
+        }
+      });
+
+    if (integrationError) {
+      throw new Error('Failed to save integration');
+    }
+
+    console.log(`Successfully exchanged code for tokens (${type})`);
 
     return new Response(
       JSON.stringify(tokenData),
@@ -86,4 +105,3 @@ serve(async (req) => {
     );
   }
 });
-
