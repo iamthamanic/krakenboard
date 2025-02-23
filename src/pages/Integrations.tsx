@@ -1,10 +1,10 @@
-
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Chrome,
   Facebook,
+  Instagram,
   Linkedin,
   MessageCircle,
   AlertCircle,
@@ -16,14 +16,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { toast } from "@/components/ui/use-toast";
 import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
+import { SocialMediaService } from "@/services/integrations/SocialMediaService";
 
 interface IntegrationCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
   isConnected: boolean;
-  type: string;
   onConnect: () => void;
+  type: string;
 }
 
 const IntegrationCard = ({ title, description, icon, isConnected, onConnect }: IntegrationCardProps) => (
@@ -54,17 +55,23 @@ const Integrations = () => {
 
   const handleConnect = async (type: string) => {
     try {
-      if (type === 'google_analytics') {
-        const authUrl = await GoogleAnalyticsService.initiateOAuth();
-        window.location.href = authUrl;
-        return;
+      switch(type) {
+        case 'google_analytics':
+          const authUrl = await GoogleAnalyticsService.initiateOAuth();
+          window.location.href = authUrl;
+          break;
+        case 'facebook':
+          await SocialMediaService.initiateFacebookAuth();
+          break;
+        case 'instagram':
+          await SocialMediaService.initiateInstagramAuth();
+          break;
+        default:
+          toast({
+            title: "Info",
+            description: "OAuth2-Integration wird implementiert...",
+          });
       }
-      
-      // Fallback für andere Integrationen
-      toast({
-        title: "Info",
-        description: "OAuth2-Integration wird implementiert...",
-      });
     } catch (error) {
       console.error('Error connecting:', error);
       toast({
@@ -97,6 +104,52 @@ const Integrations = () => {
             Verbinde deine Accounts, um Echtzeitdaten in deinem Dashboard zu sehen.
           </AlertDescription>
         </Alert>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Organische Reichweite</h2>
+          <div className="grid gap-6">
+            <IntegrationCard
+              title="Meta Business Suite"
+              description="Facebook & Instagram Organic Performance"
+              icon={<Facebook className="h-5 w-5" />}
+              isConnected={isIntegrationActive('facebook')}
+              onConnect={() => handleConnect('facebook')}
+              type="facebook"
+            />
+            <IntegrationCard
+              title="Instagram Professional"
+              description="Instagram Insights & Performance"
+              icon={<Instagram className="h-5 w-5" />}
+              isConnected={isIntegrationActive('instagram')}
+              onConnect={() => handleConnect('instagram')}
+              type="instagram"
+            />
+            <IntegrationCard
+              title="LinkedIn Company Page"
+              description="Organic Posts & Engagement"
+              icon={<Linkedin className="h-5 w-5" />}
+              isConnected={isIntegrationActive('linkedin')}
+              onConnect={() => handleConnect('linkedin')}
+              type="linkedin"
+            />
+            <IntegrationCard
+              title="YouTube Studio"
+              description="Video Performance & Analytics"
+              icon={<Youtube className="h-5 w-5" />}
+              isConnected={isIntegrationActive('youtube')}
+              onConnect={() => handleConnect('youtube')}
+              type="youtube"
+            />
+            <IntegrationCard
+              title="TikTok Business Center"
+              description="Organische TikTok Performance"
+              icon={<MessageCircle className="h-5 w-5" />}
+              isConnected={isIntegrationActive('tiktok')}
+              onConnect={() => handleConnect('tiktok')}
+              type="tiktok"
+            />
+          </div>
+        </div>
 
         <div>
           <h2 className="text-xl font-semibold mb-4">Werbekonten</h2>
@@ -132,52 +185,6 @@ const Integrations = () => {
               isConnected={isIntegrationActive('tiktok_ads')}
               onConnect={() => handleConnect('tiktok_ads')}
               type="tiktok_ads"
-            />
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Organische Konten</h2>
-          <div className="grid gap-6">
-            <IntegrationCard
-              title="Google Analytics"
-              description="Website Traffic & User Behavior"
-              icon={<Chrome className="h-5 w-5" />}
-              isConnected={isIntegrationActive('google_analytics')}
-              onConnect={() => handleConnect('google_analytics')}
-              type="google_analytics"
-            />
-            <IntegrationCard
-              title="Meta Business Suite"
-              description="Facebook & Instagram Organic Performance"
-              icon={<Facebook className="h-5 w-5" />}
-              isConnected={isIntegrationActive('meta_business')}
-              onConnect={() => handleConnect('meta_business')}
-              type="meta_business"
-            />
-            <IntegrationCard
-              title="LinkedIn Company Page"
-              description="Organic Posts & Engagement"
-              icon={<Linkedin className="h-5 w-5" />}
-              isConnected={isIntegrationActive('linkedin_company')}
-              onConnect={() => handleConnect('linkedin_company')}
-              type="linkedin_company"
-            />
-            <IntegrationCard
-              title="YouTube Studio"
-              description="Video Performance & Analytics"
-              icon={<Youtube className="h-5 w-5" />}
-              isConnected={isIntegrationActive('youtube_studio')}
-              onConnect={() => handleConnect('youtube_studio')}
-              type="youtube_studio"
-            />
-            <IntegrationCard
-              title="TikTok Business Center"
-              description="Organische TikTok Performance"
-              icon={<MessageCircle className="h-5 w-5" />}
-              isConnected={isIntegrationActive('tiktok_business')}
-              onConnect={() => handleConnect('tiktok_business')}
-              type="tiktok_business"
             />
           </div>
         </div>
