@@ -1,6 +1,14 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
+interface DocumentationContent {
+  [key: string]: Array<{
+    name: string;
+    implemented: boolean;
+    description: string;
+  }>;
+}
+
 export class AutoDocumentationService {
   static async documentFeature(
     category: string,
@@ -27,16 +35,16 @@ export class AutoDocumentationService {
         description
       };
 
-      let updatedContent;
+      let updatedContent: DocumentationContent;
       
       if (existingDoc) {
         // Update existierende Dokumentation
-        const content = existingDoc.content;
+        const content = existingDoc.content as DocumentationContent;
         const categoryItems = content[category] || [];
         
         // Prüfe ob Feature bereits existiert
         const existingFeatureIndex = categoryItems.findIndex(
-          (item: any) => typeof item === 'object' && item.name === featureName
+          (item) => item.name === featureName
         );
 
         if (existingFeatureIndex >= 0) {
@@ -87,4 +95,3 @@ export class AutoDocumentationService {
     );
   }
 }
-
