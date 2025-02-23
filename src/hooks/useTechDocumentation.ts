@@ -1,5 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface FunctionItem {
@@ -28,9 +28,13 @@ export interface TechDocumentation {
   };
 }
 
+export const TECH_DOCUMENTATION_KEY = "tech-documentation";
+
 export const useTechDocumentation = () => {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["tech-documentation"],
+    queryKey: [TECH_DOCUMENTATION_KEY],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tech_documentation")
@@ -40,5 +44,12 @@ export const useTechDocumentation = () => {
       if (error) throw error;
       return data as TechDocumentation[];
     },
+    staleTime: 1000 * 60 * 5, // Cache für 5 Minuten
+    refetchOnWindowFocus: true, // Aktualisiere wenn Fenster fokussiert wird
   });
+};
+
+// Hilfsfunktion zum manuellen Invalidieren des Caches
+export const invalidateTechDocumentation = async (queryClient: any) => {
+  await queryClient.invalidateQueries({ queryKey: [TECH_DOCUMENTATION_KEY] });
 };
