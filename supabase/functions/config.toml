@@ -5,6 +5,18 @@ project_id = "zjmztgdvdajbnjvypime"
 META_CLIENT_ID = "env"
 META_CLIENT_SECRET = "env"
 
+[meta-auth-callback.env]
+META_CLIENT_ID = "env"
+META_CLIENT_SECRET = "env"
+SUPABASE_URL = "env"
+SUPABASE_SERVICE_ROLE_KEY = "env"
+
 [linkedin-auth.env]
 LINKEDIN_CLIENT_ID = "env"
 LINKEDIN_CLIENT_SECRET = "env"
+
+[linkedin-auth-callback.env]
+LINKEDIN_CLIENT_ID = "env"
+LINKEDIN_CLIENT_SECRET = "env"
+SUPABASE_URL = "env"
+SUPABASE_SERVICE_ROLE_KEY = "env"
