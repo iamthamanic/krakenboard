@@ -1,5 +1,17 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
+
+interface ApiMetricRow {
+  created_at: string;
+  id: string;
+  integration_id: string;
+  metric_name: string;
+  metric_type: string;
+  timestamp: string;
+  updated_at: string;
+  value: Json;
+}
 
 export interface SocialMediaMetrics {
   platform: string;
@@ -49,17 +61,29 @@ export class SocialMediaService {
     }
   }
 
+  private static transformMetrics(rows: ApiMetricRow[]): SocialMediaMetrics[] {
+    return rows.map(row => ({
+      platform: row.metric_type,
+      followers: typeof row.value === 'object' && row.value !== null ? (row.value.followers as number) || 0 : 0,
+      engagement_rate: typeof row.value === 'object' && row.value !== null ? (row.value.engagement_rate as number) || 0 : 0,
+      reach: typeof row.value === 'object' && row.value !== null ? (row.value.reach as number) || 0 : 0,
+      interactions: typeof row.value === 'object' && row.value !== null ? (row.value.interactions as number) || 0 : 0,
+      timestamp: row.timestamp
+    }));
+  }
+
   static async getMetrics(platform: string): Promise<SocialMediaMetrics[]> {
     try {
       const { data, error } = await supabase
         .from('api_metrics')
         .select('*')
-        .eq('integration_type', platform)
+        .eq('metric_type', platform)
         .order('timestamp', { ascending: false })
         .limit(30);
 
       if (error) throw error;
-      return data as SocialMediaMetrics[];
+      
+      return this.transformMetrics(data as ApiMetricRow[]);
     } catch (error) {
       console.error(`Error fetching ${platform} metrics:`, error);
       throw error;
