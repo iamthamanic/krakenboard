@@ -23,28 +23,14 @@ import {
 import { useLocation, Link } from "react-router-dom";
 
 const dashboardMenuItems = [
-  { 
+  {
+    group: "Trackingboard",
     items: [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
-    ]
-  },
-  { 
-    group: "Website",
-    items: [
       { icon: LineChart, label: "Traffic Analytics", href: "/website/traffic" },
       { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
-    ]
-  },
-  {
-    group: "Social Media",
-    items: [
       { icon: MessageCircle, label: "Organic Performance", href: "/social/organic" },
       { icon: CreditCard, label: "Paid Campaigns", href: "/social/paid" },
-    ]
-  },
-  {
-    group: "Google Ads",
-    items: [
       { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
       { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
     ]
