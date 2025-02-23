@@ -255,6 +255,36 @@ export type Database = {
           },
         ]
       }
+      ga4_metrics: {
+        Row: {
+          created_at: string | null
+          date_hour: string
+          id: string
+          metric_name: string
+          metric_value: number
+          page_path: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date_hour: string
+          id?: string
+          metric_name: string
+          metric_value: number
+          page_path: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date_hour?: string
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          page_path?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       integrations: {
         Row: {
           created_at: string | null
