@@ -64,10 +64,10 @@ export class SocialMediaService {
   private static transformMetrics(rows: ApiMetricRow[]): SocialMediaMetrics[] {
     return rows.map(row => ({
       platform: row.metric_type,
-      followers: typeof row.value === 'object' && row.value !== null ? (row.value.followers as number) || 0 : 0,
-      engagement_rate: typeof row.value === 'object' && row.value !== null ? (row.value.engagement_rate as number) || 0 : 0,
-      reach: typeof row.value === 'object' && row.value !== null ? (row.value.reach as number) || 0 : 0,
-      interactions: typeof row.value === 'object' && row.value !== null ? (row.value.interactions as number) || 0 : 0,
+      followers: typeof row.value === 'object' && row.value !== null ? (row.value as { followers?: number })?.followers || 0 : 0,
+      engagement_rate: typeof row.value === 'object' && row.value !== null ? (row.value as { engagement_rate?: number })?.engagement_rate || 0 : 0,
+      reach: typeof row.value === 'object' && row.value !== null ? (row.value as { reach?: number })?.reach || 0 : 0,
+      interactions: typeof row.value === 'object' && row.value !== null ? (row.value as { interactions?: number })?.interactions || 0 : 0,
       timestamp: row.timestamp
     }));
   }
