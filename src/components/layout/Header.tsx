@@ -1,5 +1,5 @@
 
-import { Menu, Cog } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -74,9 +74,8 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="hidden lg:flex items-center space-x-8">
-            <Link to="/admin/settings" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
-              Einstellungen
-              <Cog className="ml-2 h-4 w-4" />
+            <Link to="/admin/dashboard" className="flex items-center text-sm font-medium hover:text-primary-500 transition-colors">
+              Admin Dashboard
             </Link>
             <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               Get Started
