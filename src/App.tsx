@@ -1,5 +1,6 @@
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Integrations from "./pages/Integrations";
@@ -36,9 +37,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Erstelle eine neue QueryClient-Instanz
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 Minute
+      retry: 1,
+    },
+  },
+});
+
 function App() {
   return (
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
