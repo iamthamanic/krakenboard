@@ -1,1 +1,10 @@
+
 project_id = "zjmztgdvdajbnjvypime"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+
+[functions.google-auth-callback]
+verify_jwt = false
