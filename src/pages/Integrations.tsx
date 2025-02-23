@@ -15,6 +15,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { toast } from "@/components/ui/use-toast";
+import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
 
 interface IntegrationCardProps {
   title: string;
@@ -52,11 +53,26 @@ const Integrations = () => {
   const { data: integrations, isLoading } = useIntegrations();
 
   const handleConnect = async (type: string) => {
-    // Hier später die OAuth2-Authentifizierung implementieren
-    toast({
-      title: "Info",
-      description: "OAuth2-Integration wird implementiert...",
-    });
+    try {
+      if (type === 'google_analytics') {
+        const authUrl = await GoogleAnalyticsService.initiateOAuth();
+        window.location.href = authUrl;
+        return;
+      }
+      
+      // Fallback für andere Integrationen
+      toast({
+        title: "Info",
+        description: "OAuth2-Integration wird implementiert...",
+      });
+    } catch (error) {
+      console.error('Error connecting:', error);
+      toast({
+        title: "Fehler",
+        description: "Fehler bei der Verbindung zur Integration",
+        variant: "destructive"
+      });
+    }
   };
 
   const isIntegrationActive = (type: string) => {
