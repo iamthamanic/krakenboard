@@ -34,9 +34,9 @@ export const LegalTab = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Rechtliche Dokumente</CardTitle>
+        <CardTitle>Intern</CardTitle>
         <CardDescription>
-          Verwalte Datenschutzerklärung und Nutzungsbedingungen
+          Alle Informationen die Krakenboard intern betreffen
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
