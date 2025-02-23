@@ -1,6 +1,7 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { SocialMediaStats } from "@/components/dashboard/SocialMediaStats";
 import { 
   Activity, 
   Users, 
@@ -62,39 +63,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-4">{t.socialMedia}</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Facebook Reichweite"
-                value="52.3K"
-                icon={<Facebook className="h-4 w-4 text-muted-foreground" />}
-                trend={{ value: 15, isPositive: true }}
-                description={t.vsLastWeek}
-              />
-              <StatsCard
-                title="Instagram Engagement"
-                value="8.9K"
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={{ value: 5, isPositive: true }}
-                description={t.vsLastWeek}
-              />
-              <StatsCard
-                title="YouTube Views"
-                value="234.1K"
-                icon={<Youtube className="h-4 w-4 text-muted-foreground" />}
-                trend={{ value: 23, isPositive: true }}
-                description={t.vsLastMonth}
-              />
-              <StatsCard
-                title="Social ROI"
-                value="324%"
-                icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
-                trend={{ value: 12, isPositive: true }}
-                description={t.vsLastQuarter}
-              />
-            </div>
-          </div>
+          <SocialMediaStats />
 
           <div>
             <h2 className="text-xl font-semibold mb-4">{t.googleAds}</h2>
