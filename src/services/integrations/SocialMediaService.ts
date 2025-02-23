@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Json } from "@/integrations/supabase/types";
 
@@ -59,6 +58,34 @@ export class SocialMediaService {
       console.error('Error initiating Instagram auth:', error);
       throw error;
     }
+  }
+
+  static async initiateLinkedInAuth() {
+    throw new Error("LinkedIn OAuth wird implementiert");
+  }
+
+  static async initiateYouTubeAuth() {
+    throw new Error("YouTube OAuth wird implementiert");
+  }
+
+  static async initiateTikTokAuth() {
+    throw new Error("TikTok OAuth wird implementiert");
+  }
+
+  static async initiateGoogleAdsAuth() {
+    throw new Error("Google Ads OAuth wird implementiert");
+  }
+
+  static async initiateMetaAdsAuth() {
+    throw new Error("Meta Ads OAuth wird implementiert");
+  }
+
+  static async initiateLinkedInAdsAuth() {
+    throw new Error("LinkedIn Ads OAuth wird implementiert");
+  }
+
+  static async initiateTikTokAdsAuth() {
+    throw new Error("TikTok Ads OAuth wird implementiert");
   }
 
   private static transformMetrics(rows: ApiMetricRow[]): SocialMediaMetrics[] {

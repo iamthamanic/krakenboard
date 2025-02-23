@@ -9,6 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      analytics_metrics: {
+        Row: {
+          created_at: string | null
+          dimension_name: string | null
+          dimension_value: string | null
+          id: string
+          integration_id: string | null
+          metric_name: string
+          metric_value: number
+          timestamp: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dimension_name?: string | null
+          dimension_value?: string | null
+          id?: string
+          integration_id?: string | null
+          metric_name: string
+          metric_value: number
+          timestamp?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dimension_name?: string | null
+          dimension_value?: string | null
+          id?: string
+          integration_id?: string | null
+          metric_name?: string
+          metric_value?: number
+          timestamp?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_metrics_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_metrics: {
         Row: {
           created_at: string | null

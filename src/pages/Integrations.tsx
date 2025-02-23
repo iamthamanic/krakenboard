@@ -18,7 +18,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { toast } from "@/components/ui/use-toast";
-import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
+import { GoogleAnalyticsService, CloudflareAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
 import { SocialMediaService } from "@/services/integrations/SocialMediaService";
 
 interface IntegrationCardProps {
@@ -64,18 +64,12 @@ const Integrations = () => {
           window.location.href = authUrl;
           break;
         case 'google_tag_manager':
-          toast({
-            title: "Google Tag Manager",
-            description: "GTM OAuth2-Integration wird initiiert...",
-          });
-          // GTM OAuth Implementation kommt hier
+          const gtmAuthUrl = await GoogleAnalyticsService.initiateTagManagerOAuth();
+          window.location.href = gtmAuthUrl;
           break;
         case 'cloudflare':
-          toast({
-            title: "Cloudflare Analytics",
-            description: "Cloudflare OAuth2-Integration wird initiiert...",
-          });
-          // Cloudflare OAuth Implementation kommt hier
+          const cfAuthUrl = await CloudflareAnalyticsService.initiateOAuth();
+          window.location.href = cfAuthUrl;
           break;
         case 'facebook':
           await SocialMediaService.initiateFacebookAuth();
