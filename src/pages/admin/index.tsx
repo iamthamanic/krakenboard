@@ -8,6 +8,7 @@ import { SecurityTab } from "./components/SecurityTab";
 import { DataTab } from "./components/DataTab";
 import { FunctionsTab } from "./components/FunctionsTab";
 import { DevTab } from "./components/DevTab";
+import { LegalTab } from "./components/LegalTab";
 import { StatusCards } from "./components/StatusCards";
 
 const AdminPage = () => {
@@ -33,6 +34,7 @@ const AdminPage = () => {
             <TabsTrigger value="general">Allgemein</TabsTrigger>
             <TabsTrigger value="security">Sicherheit</TabsTrigger>
             <TabsTrigger value="data">Daten & APIs</TabsTrigger>
+            <TabsTrigger value="legal">Legal</TabsTrigger>
             <TabsTrigger value="functions">Function Log</TabsTrigger>
             <TabsTrigger value="dev">Dev Log</TabsTrigger>
           </TabsList>
@@ -47,6 +49,10 @@ const AdminPage = () => {
 
           <TabsContent value="data" className="space-y-4">
             <DataTab />
+          </TabsContent>
+
+          <TabsContent value="legal" className="space-y-4">
+            <LegalTab />
           </TabsContent>
 
           <TabsContent value="functions" className="space-y-4">
