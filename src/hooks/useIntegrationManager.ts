@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Integration, IntegrationType } from '@/services/integrations/types';
 import { GoogleAnalyticsService } from '@/services/integrations/GoogleAnalyticsService';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/use-toast';
 
 export const useIntegrationManager = () => {
   const queryClient = useQueryClient();
@@ -42,11 +42,18 @@ export const useIntegrationManager = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['integrations'] });
-      toast.success('Integration erfolgreich erstellt');
+      toast({
+        title: "Erfolg",
+        description: "Integration erfolgreich erstellt"
+      });
     },
     onError: (error) => {
       console.error('Error creating integration:', error);
-      toast.error('Fehler beim Erstellen der Integration');
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Erstellen der Integration",
+        variant: "destructive"
+      });
     }
   });
 
@@ -56,7 +63,7 @@ export const useIntegrationManager = () => {
       
       switch (integration.type) {
         case 'google_analytics':
-          service = new GoogleAnalyticsService(integration);
+          service = new GoogleAnalyticsService(integration.credentials.propertyId, integration.credentials.accessToken);
           break;
         // Weitere Dienste hier hinzufügen
         default:
@@ -72,11 +79,18 @@ export const useIntegrationManager = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['integrations'] });
-      toast.success('Daten erfolgreich synchronisiert');
+      toast({
+        title: "Erfolg",
+        description: "Daten erfolgreich synchronisiert"
+      });
     },
     onError: (error) => {
       console.error('Sync error:', error);
-      toast.error('Fehler bei der Datensynchronisation');
+      toast({
+        title: "Fehler",
+        description: "Fehler bei der Datensynchronisation",
+        variant: "destructive"
+      });
     }
   });
 
