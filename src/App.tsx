@@ -9,6 +9,7 @@ import Admin from "./pages/Admin";
 import Settings from "./pages/admin/settings";
 import Users from "./pages/admin/users";
 import Security from "./pages/admin/security";
+import AdminPage from "./pages/admin/index";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/integrations",
     element: <Integrations />,
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminPage />,
   }
 ]);
 
