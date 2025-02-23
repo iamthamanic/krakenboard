@@ -20,3 +20,11 @@ LINKEDIN_CLIENT_ID = "env"
 LINKEDIN_CLIENT_SECRET = "env"
 SUPABASE_URL = "env"
 SUPABASE_SERVICE_ROLE_KEY = "env"
+
+[meta-metrics.env]
+SUPABASE_URL = "env"
+SUPABASE_SERVICE_ROLE_KEY = "env"
+
+[linkedin-metrics.env]
+SUPABASE_URL = "env"
+SUPABASE_SERVICE_ROLE_KEY = "env"
