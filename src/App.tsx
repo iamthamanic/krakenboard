@@ -14,6 +14,8 @@ import SocialOrganic from "./pages/social/organic";
 import SocialPaid from "./pages/social/paid";
 import GoogleCampaigns from "./pages/google/campaigns";
 import GoogleMetrics from "./pages/google/metrics";
+import WebsiteTraffic from "./pages/website/traffic";
+import WebsiteForms from "./pages/website/forms";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +70,14 @@ const router = createBrowserRouter([
   {
     path: "/google/metrics",
     element: <GoogleMetrics />,
+  },
+  {
+    path: "/website/traffic",
+    element: <WebsiteTraffic />,
+  },
+  {
+    path: "/website/forms",
+    element: <WebsiteForms />,
   }
 ]);
 

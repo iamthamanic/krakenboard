@@ -1,9 +1,8 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { DataTable } from "@/components/dashboard/DataTable";
 import { FormInput, Activity, CheckCircle, AlertCircle } from "lucide-react";
-import { translations, getStoredLanguage } from "@/lib/utils";
+import { DataTable } from "@/components/dashboard/DataTable";
 
 const mockFormData = [
   {
@@ -37,9 +36,7 @@ const formColumns = [
   { key: "errorRate", label: "Fehlerrate" }
 ];
 
-const WebsiteFormsPage = () => {
-  const t = translations[getStoredLanguage()];
-  
+const WebsiteForms = () => {
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
@@ -93,4 +90,4 @@ const WebsiteFormsPage = () => {
   );
 };
 
-export default WebsiteFormsPage;
+export default WebsiteForms;
