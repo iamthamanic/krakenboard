@@ -1,13 +1,15 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { BarChart3, MessageCircle, Share2, Users } from "lucide-react";
+import { BarChart3, MessageCircle, Share2, Users, Video } from "lucide-react";
 import { useSocialMediaMetrics } from "@/hooks/useSocialMediaMetrics";
 
 const SocialOrganic = () => {
   const { data: facebookMetrics } = useSocialMediaMetrics('facebook');
   const { data: instagramMetrics } = useSocialMediaMetrics('instagram');
   const { data: linkedinMetrics } = useSocialMediaMetrics('linkedin');
+  const { data: youtubeMetrics } = useSocialMediaMetrics('youtube');
+  const { data: tiktokMetrics } = useSocialMediaMetrics('tiktok');
 
   const latestFacebookMetrics = facebookMetrics?.[0];
   const previousFacebookMetrics = facebookMetrics?.[1];
@@ -17,6 +19,12 @@ const SocialOrganic = () => {
   
   const latestLinkedinMetrics = linkedinMetrics?.[0];
   const previousLinkedinMetrics = linkedinMetrics?.[1];
+
+  const latestYoutubeMetrics = youtubeMetrics?.[0];
+  const previousYoutubeMetrics = youtubeMetrics?.[1];
+
+  const latestTiktokMetrics = tiktokMetrics?.[0];
+  const previousTiktokMetrics = tiktokMetrics?.[1];
 
   const calculateTrend = (current?: number, previous?: number) => {
     if (!current || !previous) return undefined;
@@ -169,6 +177,98 @@ const SocialOrganic = () => {
                 trend={calculateTrend(
                   latestLinkedinMetrics?.interactions,
                   previousLinkedinMetrics?.interactions
+                )}
+                description="vs. letzter Zeitraum"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">YouTube</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <StatsCard
+                title="Abonnenten"
+                value={latestYoutubeMetrics?.followers.toLocaleString() || "0"}
+                icon={<Users className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestYoutubeMetrics?.followers,
+                  previousYoutubeMetrics?.followers
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Aufrufe"
+                value={latestYoutubeMetrics?.reach.toLocaleString() || "0"}
+                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestYoutubeMetrics?.reach,
+                  previousYoutubeMetrics?.reach
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Engagement Rate"
+                value={`${(latestYoutubeMetrics?.engagement_rate || 0).toFixed(1)}%`}
+                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestYoutubeMetrics?.engagement_rate,
+                  previousYoutubeMetrics?.engagement_rate
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Interaktionen"
+                value={latestYoutubeMetrics?.interactions.toLocaleString() || "0"}
+                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestYoutubeMetrics?.interactions,
+                  previousYoutubeMetrics?.interactions
+                )}
+                description="vs. letzter Zeitraum"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">TikTok</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <StatsCard
+                title="Follower"
+                value={latestTiktokMetrics?.followers.toLocaleString() || "0"}
+                icon={<Users className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestTiktokMetrics?.followers,
+                  previousTiktokMetrics?.followers
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Views"
+                value={latestTiktokMetrics?.reach.toLocaleString() || "0"}
+                icon={<Video className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestTiktokMetrics?.reach,
+                  previousTiktokMetrics?.reach
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Engagement Rate"
+                value={`${(latestTiktokMetrics?.engagement_rate || 0).toFixed(1)}%`}
+                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestTiktokMetrics?.engagement_rate,
+                  previousTiktokMetrics?.engagement_rate
+                )}
+                description="vs. letzter Zeitraum"
+              />
+              <StatsCard
+                title="Interaktionen"
+                value={latestTiktokMetrics?.interactions.toLocaleString() || "0"}
+                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
+                trend={calculateTrend(
+                  latestTiktokMetrics?.interactions,
+                  previousTiktokMetrics?.interactions
                 )}
                 description="vs. letzter Zeitraum"
               />
