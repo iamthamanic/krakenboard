@@ -534,6 +534,7 @@ export type Database = {
         | "linkedin_company"
         | "youtube_studio"
         | "tiktok_business"
+        | "cloudflare"
       user_role: "admin" | "editor" | "user"
     }
     CompositeTypes: {

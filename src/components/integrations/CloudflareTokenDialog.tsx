@@ -45,9 +45,10 @@ export function CloudflareTokenDialog({ open, onOpenChange }: CloudflareTokenDia
       const { error } = await supabase
         .from('integrations')
         .insert({
-          type: 'cloudflare',
+          type: "cloudflare" as const,
           credentials: { token },
           is_active: true,
+          integration_type: "cloudflare",
         });
 
       if (error) throw error;
