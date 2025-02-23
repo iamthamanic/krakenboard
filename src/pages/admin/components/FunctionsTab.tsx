@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, CheckCircle2, Info } from "lucide-react";
+import { BookOpen, Info, Square, SquareCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTechDocumentation } from "@/hooks/useTechDocumentation";
 import {
@@ -20,8 +20,12 @@ const FunctionItem = ({
   description: string;
 }) => (
   <div className="flex items-center gap-2">
+    {isImplemented ? (
+      <SquareCheck className="h-4 w-4 text-green-500 shrink-0" />
+    ) : (
+      <Square className="h-4 w-4 text-muted-foreground shrink-0" />
+    )}
     <span>{text}</span>
-    {isImplemented && <CheckCircle2 className="h-4 w-4 text-green-500" />}
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
