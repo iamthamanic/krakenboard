@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
@@ -11,6 +12,8 @@ import Security from "./pages/admin/security";
 import AdminPage from "./pages/admin/index";
 import SocialOrganic from "./pages/social/organic";
 import SocialPaid from "./pages/social/paid";
+import GoogleCampaigns from "./pages/google/campaigns";
+import GoogleMetrics from "./pages/google/metrics";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +60,14 @@ const router = createBrowserRouter([
   {
     path: "/social/paid",
     element: <SocialPaid />,
+  },
+  {
+    path: "/google/campaigns",
+    element: <GoogleCampaigns />,
+  },
+  {
+    path: "/google/metrics",
+    element: <GoogleMetrics />,
   }
 ]);
 
