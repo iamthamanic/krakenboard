@@ -2,6 +2,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+interface FunctionItem {
+  name: string;
+  implemented: boolean;
+  description: string;
+}
+
 export interface TechDocumentation {
   id: string;
   category: string;
@@ -13,12 +19,12 @@ export interface TechDocumentation {
     relations?: string[];
     implemented?: string[];
     integration?: string[];
-    website?: string[];
-    social?: string[];
-    ads?: string[];
-    automation?: string[];
-    infrastructure?: string[];  // Neue Property
-    pipeline?: string[];       // Neue Property
+    website?: (string | FunctionItem)[];
+    social?: (string | FunctionItem)[];
+    ads?: (string | FunctionItem)[];
+    automation?: (string | FunctionItem)[];
+    infrastructure?: string[];
+    pipeline?: string[];
   };
 }
 

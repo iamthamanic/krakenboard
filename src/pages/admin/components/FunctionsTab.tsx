@@ -1,18 +1,68 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen } from "lucide-react";
+import { BookOpen, CheckCircle2, Info } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTechDocumentation } from "@/hooks/useTechDocumentation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const FunctionItem = ({ 
+  text, 
+  isImplemented, 
+  description 
+}: { 
+  text: string; 
+  isImplemented: boolean; 
+  description: string;
+}) => (
+  <div className="flex items-center gap-2">
+    <span>{text}</span>
+    {isImplemented && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <Info className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="max-w-xs text-sm">{description}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
+);
 
 export const FunctionsTab = () => {
   const { data: techDocs } = useTechDocumentation();
+
+  const getFunctionData = (category: string) => {
+    const doc = techDocs?.find(doc => doc.category === 'functions')?.content[category];
+    if (!doc) return [];
+    return doc.map(item => {
+      if (typeof item === 'object' && item !== null) {
+        return {
+          text: item.name,
+          isImplemented: item.implemented || false,
+          description: item.description || 'Keine Beschreibung verfügbar'
+        };
+      }
+      return {
+        text: item,
+        isImplemented: false,
+        description: 'Keine Beschreibung verfügbar'
+      };
+    });
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Function Log</CardTitle>
         <CardDescription>
-          Übersicht aller verfügbaren KrakenBoard Funktionen
+          Übersicht aller verfügbaren und geplanten KrakenBoard Funktionen
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -27,11 +77,16 @@ export const FunctionsTab = () => {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    {techDocs?.find(doc => doc.category === 'functions')?.content.website?.map((item, index) => (
-                      <li key={index}>{item}</li>
+                  <div className="space-y-2">
+                    {getFunctionData('website').map((item, index) => (
+                      <FunctionItem 
+                        key={index}
+                        text={item.text}
+                        isImplemented={item.isImplemented}
+                        description={item.description}
+                      />
                     ))}
-                  </ul>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -43,11 +98,16 @@ export const FunctionsTab = () => {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    {techDocs?.find(doc => doc.category === 'functions')?.content.social?.map((item, index) => (
-                      <li key={index}>{item}</li>
+                  <div className="space-y-2">
+                    {getFunctionData('social').map((item, index) => (
+                      <FunctionItem 
+                        key={index}
+                        text={item.text}
+                        isImplemented={item.isImplemented}
+                        description={item.description}
+                      />
                     ))}
-                  </ul>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -59,11 +119,16 @@ export const FunctionsTab = () => {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    {techDocs?.find(doc => doc.category === 'functions')?.content.ads?.map((item, index) => (
-                      <li key={index}>{item}</li>
+                  <div className="space-y-2">
+                    {getFunctionData('ads').map((item, index) => (
+                      <FunctionItem 
+                        key={index}
+                        text={item.text}
+                        isImplemented={item.isImplemented}
+                        description={item.description}
+                      />
                     ))}
-                  </ul>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -75,11 +140,16 @@ export const FunctionsTab = () => {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                    {techDocs?.find(doc => doc.category === 'functions')?.content.automation?.map((item, index) => (
-                      <li key={index}>{item}</li>
+                  <div className="space-y-2">
+                    {getFunctionData('automation').map((item, index) => (
+                      <FunctionItem 
+                        key={index}
+                        text={item.text}
+                        isImplemented={item.isImplemented}
+                        description={item.description}
+                      />
                     ))}
-                  </ul>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </>
