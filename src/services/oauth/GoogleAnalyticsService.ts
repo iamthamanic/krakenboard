@@ -64,14 +64,23 @@ export class GoogleAnalyticsService {
 }
 
 export class CloudflareAnalyticsService {
+  static cloudflareTokenDialog: {
+    open: (onOpenChange: (open: boolean) => void) => void;
+    setOpen: (open: boolean) => void;
+  } | null = null;
+
+  static registerTokenDialog(dialogControls: {
+    open: (onOpenChange: (open: boolean) => void) => void;
+    setOpen: (open: boolean) => void;
+  }) {
+    this.cloudflareTokenDialog = dialogControls;
+  }
+
   static async initiateOAuth() {
-    try {
-      // Cloudflare verwendet API-Token statt OAuth
-      // Wir zeigen ein Modal zum Eingeben des API-Tokens
-      return '/settings/cloudflare';
-    } catch (error) {
-      console.error('Error initiating Cloudflare auth:', error);
-      throw error;
+    if (this.cloudflareTokenDialog) {
+      this.cloudflareTokenDialog.setOpen(true);
+    } else {
+      console.error('Cloudflare token dialog not registered');
     }
   }
 }

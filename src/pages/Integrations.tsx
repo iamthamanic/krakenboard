@@ -20,6 +20,8 @@ import { useIntegrations } from "@/hooks/useIntegrations";
 import { toast } from "@/components/ui/use-toast";
 import { GoogleAnalyticsService, CloudflareAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
 import { SocialMediaService } from "@/services/integrations/SocialMediaService";
+import { CloudflareTokenDialog } from "@/components/integrations/CloudflareTokenDialog";
+import { useState, useEffect } from "react";
 
 interface IntegrationCardProps {
   title: string;
@@ -55,6 +57,14 @@ const IntegrationCard = ({ title, description, icon, isConnected, onConnect }: I
 
 const Integrations = () => {
   const { data: integrations, isLoading } = useIntegrations();
+  const [isCloudflareDialogOpen, setIsCloudflareDialogOpen] = useState(false);
+
+  useEffect(() => {
+    CloudflareAnalyticsService.registerTokenDialog({
+      open: (onOpenChange) => setIsCloudflareDialogOpen(true),
+      setOpen: setIsCloudflareDialogOpen,
+    });
+  }, []);
 
   const handleConnect = async (type: string) => {
     try {
@@ -68,8 +78,7 @@ const Integrations = () => {
           window.location.href = gtmAuthUrl;
           break;
         case 'cloudflare':
-          const cfAuthUrl = await CloudflareAnalyticsService.initiateOAuth();
-          window.location.href = cfAuthUrl;
+          await CloudflareAnalyticsService.initiateOAuth();
           break;
         case 'facebook':
           await SocialMediaService.initiateFacebookAuth();
@@ -250,6 +259,11 @@ const Integrations = () => {
             />
           </div>
         </div>
+
+        <CloudflareTokenDialog 
+          open={isCloudflareDialogOpen} 
+          onOpenChange={setIsCloudflareDialogOpen}
+        />
       </div>
     </DashboardLayout>
   );
