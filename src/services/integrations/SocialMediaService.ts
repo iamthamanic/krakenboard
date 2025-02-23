@@ -24,7 +24,7 @@ export interface SocialMediaMetrics {
 export class SocialMediaService {
   static async initiateFacebookAuth() {
     try {
-      const { data, error } = await supabase.functions.invoke('facebook-auth', {
+      const { data, error } = await supabase.functions.invoke('meta-auth', {
         body: { 
           redirect_uri: window.location.origin + '/oauth/callback',
           scope: 'pages_show_list,pages_read_engagement,instagram_basic,instagram_manage_insights'
@@ -61,7 +61,22 @@ export class SocialMediaService {
   }
 
   static async initiateLinkedInAuth() {
-    throw new Error("LinkedIn OAuth wird implementiert");
+    try {
+      const { data, error } = await supabase.functions.invoke('linkedin-auth', {
+        body: { 
+          redirect_uri: window.location.origin + '/oauth/callback',
+          scope: 'r_organization_social,r_ads,rw_ads'
+        }
+      });
+
+      if (error) throw error;
+      if (data?.authUrl) {
+        window.location.href = data.authUrl;
+      }
+    } catch (error) {
+      console.error('Error initiating LinkedIn auth:', error);
+      throw error;
+    }
   }
 
   static async initiateYouTubeAuth() {

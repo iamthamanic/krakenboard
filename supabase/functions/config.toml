@@ -1,0 +1,10 @@
+
+project_id = "zjmztgdvdajbnjvypime"
+
+[meta-auth.env]
+META_CLIENT_ID = "env"
+META_CLIENT_SECRET = "env"
+
+[linkedin-auth.env]
+LINKEDIN_CLIENT_ID = "env"
+LINKEDIN_CLIENT_SECRET = "env"
