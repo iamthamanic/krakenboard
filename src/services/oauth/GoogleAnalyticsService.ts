@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 export class GoogleAnalyticsService {
   static async initiateOAuth() {
     try {
-      // Bestehende GA4 OAuth Implementation
       const { data: config } = await supabase
         .from('oauth_config')
         .select('google_client_id')
@@ -41,6 +40,33 @@ export class GoogleAnalyticsService {
       return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google_client_id}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
     } catch (error) {
       console.error('Error initiating GTM OAuth:', error);
+      throw error;
+    }
+  }
+
+  static async handleCallback(code: string) {
+    try {
+      // Exchange auth code for tokens
+      const { data, error } = await supabase.functions.invoke('google-auth-callback', {
+        body: { code }
+      });
+
+      if (error) throw error;
+
+      // Store the integration in the database
+      const { error: dbError } = await supabase
+        .from('integrations')
+        .insert({
+          type: 'google_analytics',
+          credentials: data,
+          is_active: true
+        });
+
+      if (dbError) throw dbError;
+
+      return data;
+    } catch (error) {
+      console.error('Error handling callback:', error);
       throw error;
     }
   }
