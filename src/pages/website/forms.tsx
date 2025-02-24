@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from "../../../components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown, Scan } from "lucide-react";
@@ -117,13 +118,13 @@ const WebsiteForms: React.FC = () => {
       setIsScanning(true);
       toast.info('Starte Formularerkennung...');
       
-      const websiteId = '123'; // Placeholder
-      const url = 'https://example.com'; // Placeholder
+      const websiteId = '123';
+      const url = 'https://example.com';
       
       const scanner = new FormScannerService(websiteId, url);
       await scanner.scanForms();
       
-      await loadFormData(); // Neu laden der Formulardaten
+      await loadFormData();
       
       toast.success('Formulare wurden erfolgreich gescannt!');
     } catch (error) {
