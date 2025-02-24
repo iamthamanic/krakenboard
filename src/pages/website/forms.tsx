@@ -1,5 +1,5 @@
 
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { DashboardLayout } from "../../../components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown, Scan } from "lucide-react";
 import { DataTable } from "@/components/dashboard/DataTable";
