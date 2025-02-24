@@ -18,19 +18,32 @@ interface TrafficChartsProps {
 
 export const TrafficCharts = ({ trafficData, trafficSources, deviceTypes }: TrafficChartsProps) => {
   // Social Media Traffic aufschlüsseln
-  const socialMediaTraffic = [
-    { name: 'Facebook', value: 8 },
-    { name: 'Instagram', value: 5 },
-    { name: 'LinkedIn', value: 3 },
-    { name: 'Twitter', value: 2 },
-    { name: 'TikTok', value: 1.5 },
-    { name: 'YouTube', value: 0.5 }
+  const organicSocialMediaTraffic = [
+    { name: 'Facebook Organic', value: 4 },
+    { name: 'Instagram Organic', value: 2.5 },
+    { name: 'LinkedIn Organic', value: 1.5 },
+    { name: 'Twitter Organic', value: 1 },
+    { name: 'TikTok Organic', value: 0.7 },
+    { name: 'YouTube Organic', value: 0.3 }
+  ];
+
+  const paidSocialMediaTraffic = [
+    { name: 'Facebook Ads', value: 4 },
+    { name: 'Instagram Ads', value: 2.5 },
+    { name: 'LinkedIn Ads', value: 1.5 },
+    { name: 'Twitter Ads', value: 1 },
+    { name: 'TikTok Ads', value: 0.8 },
+    { name: 'YouTube Ads', value: 0.2 }
   ];
 
   // Angepasste Traffic-Quellen ohne Social Media als Einzeleintrag
   const adjustedTrafficSources = trafficSources.map(source => 
     source.name === 'Social Media' 
-      ? { ...source, value: socialMediaTraffic.reduce((acc, curr) => acc + curr.value, 0) }
+      ? { 
+          ...source, 
+          value: [...organicSocialMediaTraffic, ...paidSocialMediaTraffic]
+            .reduce((acc, curr) => acc + curr.value, 0) 
+        }
       : source
   );
 
@@ -89,12 +102,12 @@ export const TrafficCharts = ({ trafficData, trafficSources, deviceTypes }: Traf
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Social Media Traffic</h2>
+            <h2 className="text-xl font-semibold mb-4">Social Media Traffic (Organic)</h2>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={socialMediaTraffic}
+                    data={organicSocialMediaTraffic}
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
@@ -102,7 +115,31 @@ export const TrafficCharts = ({ trafficData, trafficSources, deviceTypes }: Traf
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                   >
-                    {socialMediaTraffic.map((entry, index) => (
+                    {organicSocialMediaTraffic.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Social Media Traffic (Paid)</h2>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={paidSocialMediaTraffic}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {paidSocialMediaTraffic.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
