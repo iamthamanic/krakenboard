@@ -2,7 +2,9 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Card } from "@/components/ui/card";
-import { DataTable } from "@/components/dashboard/DataTable";
+import { EnhancedDataTable } from "@/components/website/EnhancedDataTable";
+import { TrafficCharts } from "@/components/website/TrafficCharts";
+import { RealtimeVisitors } from "@/components/website/RealtimeVisitors";
 import { Users, Clock, ArrowDownUp, MousePointer } from "lucide-react";
 import { useState } from "react";
 import { DateRangeSelector } from "@/components/social/DateRangeSelector";
@@ -17,6 +19,30 @@ const TIME_RANGES = {
   '90d': '90 Tage',
   'custom': 'Benutzerdefiniert'
 };
+
+// Beispieldaten für die Charts
+const trafficData = [
+  { date: '2024-01-01', visitors: 2400, pageviews: 4000 },
+  { date: '2024-01-02', visitors: 1398, pageviews: 3000 },
+  { date: '2024-01-03', visitors: 9800, pageviews: 12000 },
+  { date: '2024-01-04', visitors: 3908, pageviews: 6000 },
+  { date: '2024-01-05', visitors: 4800, pageviews: 7000 },
+  { date: '2024-01-06', visitors: 3800, pageviews: 5000 },
+  { date: '2024-01-07', visitors: 4300, pageviews: 6000 },
+];
+
+const trafficSources = [
+  { name: 'Organische Suche', value: 45 },
+  { name: 'Direkt', value: 25 },
+  { name: 'Social Media', value: 20 },
+  { name: 'Andere', value: 10 },
+];
+
+const deviceTypes = [
+  { name: 'Desktop', value: 65 },
+  { name: 'Mobile', value: 30 },
+  { name: 'Tablet', value: 5 },
+];
 
 const WebsiteTraffic = () => {
   const [timeRange, setTimeRange] = useState('30d');
@@ -33,7 +59,9 @@ const WebsiteTraffic = () => {
     { page: "/startseite", views: "12.4K", uniqueVisitors: "8.2K", avgTime: "2m 15s", bounceRate: "32%" },
     { page: "/produkte", views: "8.7K", uniqueVisitors: "5.9K", avgTime: "3m 45s", bounceRate: "28%" },
     { page: "/kontakt", views: "4.2K", uniqueVisitors: "3.1K", avgTime: "1m 30s", bounceRate: "45%" },
-    { page: "/blog", views: "6.8K", uniqueVisitors: "4.5K", avgTime: "4m 20s", bounceRate: "25%" }
+    { page: "/blog", views: "6.8K", uniqueVisitors: "4.5K", avgTime: "4m 20s", bounceRate: "25%" },
+    { page: "/about", views: "3.1K", uniqueVisitors: "2.4K", avgTime: "1m 45s", bounceRate: "38%" },
+    { page: "/services", views: "5.2K", uniqueVisitors: "3.8K", avgTime: "2m 30s", bounceRate: "30%" },
   ];
 
   // Tabellen-Spalten Definition
@@ -48,7 +76,6 @@ const WebsiteTraffic = () => {
   const handleExportPDF = () => {
     const doc = new jsPDF();
     doc.text('Website Traffic Report', 20, 20);
-    // Hier weitere PDF Export Logik implementieren
     doc.save(`traffic-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
     toast.success('PDF Export erfolgreich');
   };
@@ -114,63 +141,27 @@ const WebsiteTraffic = () => {
           />
         </div>
 
-        {/* Top Pages Table */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <TrafficCharts
+              trafficData={trafficData}
+              trafficSources={trafficSources}
+              deviceTypes={deviceTypes}
+            />
+          </div>
+          <div>
+            <RealtimeVisitors />
+          </div>
+        </div>
+
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-6">Top Seiten Performance</h2>
-          <DataTable 
+          <EnhancedDataTable 
             columns={columns}
             data={pageViewsData}
+            itemsPerPage={5}
           />
         </Card>
-
-        {/* Traffic Distribution */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-2">Traffic Quellen</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Hauptquellen deiner Website-Besucher
-            </p>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span>Organische Suche</span>
-                <span className="font-medium">45%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Direkt</span>
-                <span className="font-medium">25%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Social Media</span>
-                <span className="font-medium">20%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Andere</span>
-                <span className="font-medium">10%</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-2">Besucherverhalten</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Wie Besucher mit deiner Website interagieren
-            </p>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span>Desktop</span>
-                <span className="font-medium">65%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Mobile</span>
-                <span className="font-medium">30%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Tablet</span>
-                <span className="font-medium">5%</span>
-              </div>
-            </div>
-          </Card>
-        </div>
       </div>
     </DashboardLayout>
   );
