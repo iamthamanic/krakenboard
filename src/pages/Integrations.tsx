@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,7 +19,8 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { toast } from "@/components/ui/use-toast";
-import { GoogleAnalyticsService, CloudflareAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
+import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
+import { CloudflareAnalyticsService } from "@/services/oauth/CloudflareAnalyticsService";
 import { SocialMediaService } from "@/services/integrations/SocialMediaService";
 import { CloudflareTokenDialog } from "@/components/integrations/CloudflareTokenDialog";
 import { useState, useEffect } from "react";
