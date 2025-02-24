@@ -19,6 +19,12 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const TIME_RANGES = {
   '7d': '7 Tage',
@@ -211,16 +217,25 @@ const SocialOrganic = () => {
                 </SelectContent>
               </Select>
             )}
-            <div className="flex gap-2">
-              <Button onClick={handleExportPDF} variant="outline">
-                <FileDown className="mr-2 h-4 w-4" />
-                PDF Export
-              </Button>
-              <Button onClick={handleExportCSV} variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                CSV Export
-              </Button>
-            </div>
+            <Accordion type="single" collapsible className="w-[200px]">
+              <AccordionItem value="export">
+                <AccordionTrigger className="hover:no-underline px-4 py-2 bg-background border rounded-md">
+                  Export
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col gap-2 pt-2">
+                    <Button onClick={handleExportPDF} variant="ghost" className="justify-start">
+                      <FileDown className="mr-2 h-4 w-4" />
+                      Als PDF exportieren
+                    </Button>
+                    <Button onClick={handleExportCSV} variant="ghost" className="justify-start">
+                      <Download className="mr-2 h-4 w-4" />
+                      Als CSV exportieren
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
 
