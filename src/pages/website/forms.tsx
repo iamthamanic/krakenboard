@@ -4,7 +4,7 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown, Scan } from "lucide-react";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FormScannerService } from "@/services/scanner/FormScannerService";
 
 const TIME_RANGES = {
   '7d': '7 Tage',
@@ -33,29 +33,14 @@ const TIME_RANGES = {
   'custom': 'Benutzerdefiniert'
 };
 
-const mockFormData = [
-  {
-    url: "/kontakt",
-    fields: 5,
-    submissions: 45,
-    conversionRate: "8.2%",
-    errorRate: "2.1%"
-  },
-  {
-    url: "/newsletter",
-    fields: 2,
-    submissions: 128,
-    conversionRate: "12.4%",
-    errorRate: "1.8%"
-  },
-  {
-    url: "/demo-anfrage",
-    fields: 7,
-    submissions: 23,
-    conversionRate: "15.2%",
-    errorRate: "3.5%"
-  }
-];
+interface FormData {
+  id: string;
+  url: string;
+  fields: number;
+  submissions: number;
+  conversionRate: string;
+  errorRate: string;
+}
 
 const formColumns = [
   { key: "url", label: "Formular URL" },
@@ -68,6 +53,7 @@ const formColumns = [
 const WebsiteForms = () => {
   const [timeRange, setTimeRange] = useState('30d');
   const [isScanning, setIsScanning] = useState(false);
+  const [formData, setFormData] = useState<FormData[]>([]);
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to?: Date | undefined;
@@ -75,6 +61,49 @@ const WebsiteForms = () => {
     from: undefined,
     to: undefined,
   });
+
+  const loadFormData = async () => {
+    try {
+      const { data: forms, error } = await supabase
+        .from('forms')
+        .select(`
+          id,
+          action,
+          fields_count,
+          form_conversions (
+            id,
+            is_successful
+          )
+        `)
+        .eq('status', 'active');
+
+      if (error) throw error;
+
+      const formattedData: FormData[] = forms.map(form => {
+        const submissions = form.form_conversions?.length || 0;
+        const successfulSubmissions = form.form_conversions?.filter(c => c.is_successful)?.length || 0;
+        const errorCount = submissions - successfulSubmissions;
+        
+        return {
+          id: form.id,
+          url: form.action || 'Unbekannt',
+          fields: form.fields_count || 0,
+          submissions,
+          conversionRate: submissions > 0 ? `${((successfulSubmissions / submissions) * 100).toFixed(1)}%` : '0%',
+          errorRate: submissions > 0 ? `${((errorCount / submissions) * 100).toFixed(1)}%` : '0%'
+        };
+      });
+
+      setFormData(formattedData);
+    } catch (error) {
+      console.error('Fehler beim Laden der Formulardaten:', error);
+      toast.error('Fehler beim Laden der Formulardaten');
+    }
+  };
+
+  useEffect(() => {
+    loadFormData();
+  }, []);
 
   const handleExportPDF = () => {
     toast.success('PDF Export erfolgreich');
@@ -89,9 +118,14 @@ const WebsiteForms = () => {
       setIsScanning(true);
       toast.info('Starte Formularerkennung...');
       
-      // TODO: Implement actual form scanning logic
-      // This is a placeholder for demonstration
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // TODO: Später dynamisch die Website-ID und URL laden
+      const websiteId = '123'; // Placeholder
+      const url = 'https://example.com'; // Placeholder
+      
+      const scanner = new FormScannerService(websiteId, url);
+      await scanner.scanForms();
+      
+      await loadFormData(); // Neu laden der Formulardaten
       
       toast.success('Formulare wurden erfolgreich gescannt!');
     } catch (error) {
@@ -191,28 +225,34 @@ const WebsiteForms = () => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Aktive Formulare"
-            value="18"
+            value={formData.length.toString()}
             icon={<FormInput className="h-4 w-4 text-muted-foreground" />}
             trend={{ value: 2, isPositive: true }}
             description="vs. letzter Monat"
           />
           <StatsCard
             title="Formular Submissions"
-            value="234"
+            value={formData.reduce((sum, form) => sum + form.submissions, 0).toString()}
             icon={<Activity className="h-4 w-4 text-muted-foreground" />}
             trend={{ value: 15, isPositive: true }}
             description="vs. letzter Monat"
           />
           <StatsCard
             title="Erfolgsrate"
-            value="89%"
+            value={`${((formData.reduce((sum, form) => {
+              const rate = parseFloat(form.conversionRate);
+              return sum + (isNaN(rate) ? 0 : rate);
+            }, 0) / (formData.length || 1)).toFixed(1)}%`}
             icon={<CheckCircle className="h-4 w-4 text-muted-foreground" />}
             trend={{ value: 5, isPositive: true }}
             description="vs. letzter Monat"
           />
           <StatsCard
             title="Fehlerrate"
-            value="11%"
+            value={`${((formData.reduce((sum, form) => {
+              const rate = parseFloat(form.errorRate);
+              return sum + (isNaN(rate) ? 0 : rate);
+            }, 0) / (formData.length || 1)).toFixed(1)}%`}
             icon={<AlertCircle className="h-4 w-4 text-muted-foreground" />}
             trend={{ value: 3, isPositive: false }}
             description="vs. letzter Monat"
@@ -223,7 +263,7 @@ const WebsiteForms = () => {
           <h2 className="text-xl font-semibold">Erkannte Formulare</h2>
           <DataTable 
             columns={formColumns}
-            data={mockFormData}
+            data={formData}
           />
         </div>
       </div>
@@ -232,4 +272,3 @@ const WebsiteForms = () => {
 };
 
 export default WebsiteForms;
-

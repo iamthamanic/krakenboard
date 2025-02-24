@@ -252,12 +252,16 @@ export type Database = {
           form_type: string
           id: string
           is_multi_step: boolean | null
+          last_seen_at: string | null
           method: string | null
           page_id: string | null
+          selector: string | null
+          status: string | null
           steps_count: number | null
           submit_button: Json | null
           success_page: string | null
           updated_at: string | null
+          website_id: string | null
         }
         Insert: {
           action?: string | null
@@ -267,12 +271,16 @@ export type Database = {
           form_type: string
           id?: string
           is_multi_step?: boolean | null
+          last_seen_at?: string | null
           method?: string | null
           page_id?: string | null
+          selector?: string | null
+          status?: string | null
           steps_count?: number | null
           submit_button?: Json | null
           success_page?: string | null
           updated_at?: string | null
+          website_id?: string | null
         }
         Update: {
           action?: string | null
@@ -282,12 +290,16 @@ export type Database = {
           form_type?: string
           id?: string
           is_multi_step?: boolean | null
+          last_seen_at?: string | null
           method?: string | null
           page_id?: string | null
+          selector?: string | null
+          status?: string | null
           steps_count?: number | null
           submit_button?: Json | null
           success_page?: string | null
           updated_at?: string | null
+          website_id?: string | null
         }
         Relationships: [
           {
@@ -295,6 +307,13 @@ export type Database = {
             columns: ["page_id"]
             isOneToOne: false
             referencedRelation: "discovered_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forms_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "websites"
             referencedColumns: ["id"]
           },
         ]
