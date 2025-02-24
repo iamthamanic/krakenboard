@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { SocialMediaChart } from "@/components/dashboard/SocialMediaChart";
-import { BarChart3, Download, MessageCircle, Share2, Users, Video } from "lucide-react";
+import { BarChart3, Calendar, Download, FileDown, MessageCircle, Share2, Users, Video } from "lucide-react";
 import { useSocialMediaMetrics } from "@/hooks/useSocialMediaMetrics";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +13,30 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 
 const TIME_RANGES = {
   '7d': '7 Tage',
   '30d': '30 Tage',
-  '90d': '90 Tage'
+  '90d': '90 Tage',
+  'custom': 'Benutzerdefiniert'
 };
 
 const SocialOrganic = () => {
   const [timeRange, setTimeRange] = useState('30d');
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
+  
   const { data: facebookMetrics } = useSocialMediaMetrics('facebook');
   const { data: instagramMetrics } = useSocialMediaMetrics('instagram');
   const { data: linkedinMetrics } = useSocialMediaMetrics('linkedin');
@@ -51,7 +66,58 @@ const SocialOrganic = () => {
     };
   };
 
-  const handleExport = () => {
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text('Social Media Metriken', 14, 15);
+    doc.setFontSize(12);
+    
+    const allData = [
+      ['Plattform', 'Follower', 'Reichweite', 'Engagement Rate', 'Interaktionen'],
+      ['Facebook', 
+        latestFacebookMetrics?.followers || 0,
+        latestFacebookMetrics?.reach || 0,
+        `${(latestFacebookMetrics?.engagement_rate || 0).toFixed(1)}%`,
+        latestFacebookMetrics?.interactions || 0
+      ],
+      ['Instagram',
+        latestInstagramMetrics?.followers || 0,
+        latestInstagramMetrics?.reach || 0,
+        `${(latestInstagramMetrics?.engagement_rate || 0).toFixed(1)}%`,
+        latestInstagramMetrics?.interactions || 0
+      ],
+      ['LinkedIn',
+        latestLinkedinMetrics?.followers || 0,
+        latestLinkedinMetrics?.reach || 0,
+        `${(latestLinkedinMetrics?.engagement_rate || 0).toFixed(1)}%`,
+        latestLinkedinMetrics?.interactions || 0
+      ],
+      ['YouTube',
+        latestYoutubeMetrics?.followers || 0,
+        latestYoutubeMetrics?.reach || 0,
+        `${(latestYoutubeMetrics?.engagement_rate || 0).toFixed(1)}%`,
+        latestYoutubeMetrics?.interactions || 0
+      ],
+      ['TikTok',
+        latestTiktokMetrics?.followers || 0,
+        latestTiktokMetrics?.reach || 0,
+        `${(latestTiktokMetrics?.engagement_rate || 0).toFixed(1)}%`,
+        latestTiktokMetrics?.interactions || 0
+      ]
+    ];
+
+    autoTable(doc, {
+      head: [allData[0]],
+      body: allData.slice(1),
+      startY: 25,
+    });
+
+    doc.save(`social-media-metrics-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+    toast.success('PDF Export erfolgreich');
+  };
+
+  const handleExportCSV = () => {
     const allData = {
       facebook: facebookMetrics,
       instagram: instagramMetrics,
@@ -82,11 +148,11 @@ const SocialOrganic = () => {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `social-media-metrics-${timeRange}.csv`);
+    link.setAttribute('download', `social-media-metrics-${format(new Date(), 'yyyy-MM-dd')}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success('Export erfolgreich');
+    toast.success('CSV Export erfolgreich');
   };
 
   return (
@@ -100,22 +166,61 @@ const SocialOrganic = () => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Zeitraum wählen" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(TIME_RANGES).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleExport} variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Export CSV
-            </Button>
+            {timeRange === 'custom' ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {dateRange.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "dd.MM.yyyy", { locale: de })} -{" "}
+                          {format(dateRange.to, "dd.MM.yyyy", { locale: de })}
+                        </>
+                      ) : (
+                        format(dateRange.from, "dd.MM.yyyy", { locale: de })
+                      )
+                    ) : (
+                      "Zeitraum wählen"
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <CalendarComponent
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange.from}
+                    selected={{ from: dateRange.from, to: dateRange.to }}
+                    onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
+                    numberOfMonths={2}
+                    locale={de}
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Zeitraum wählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(TIME_RANGES).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <div className="flex gap-2">
+              <Button onClick={handleExportPDF} variant="outline">
+                <FileDown className="mr-2 h-4 w-4" />
+                PDF Export
+              </Button>
+              <Button onClick={handleExportCSV} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                CSV Export
+              </Button>
+            </div>
           </div>
         </div>
 
