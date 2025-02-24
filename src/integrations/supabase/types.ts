@@ -348,6 +348,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ga4_properties: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_sync: string | null
+          property_id: string
+          property_name: string | null
+          updated_at: string | null
+          website_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync?: string | null
+          property_id: string
+          property_name?: string | null
+          updated_at?: string | null
+          website_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync?: string | null
+          property_id?: string
+          property_name?: string | null
+          updated_at?: string | null
+          website_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ga4_properties_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "websites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integrations: {
         Row: {
           created_at: string | null
@@ -509,6 +550,7 @@ export type Database = {
           scan_frequency: unknown | null
           updated_at: string | null
           url: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -517,6 +559,7 @@ export type Database = {
           scan_frequency?: unknown | null
           updated_at?: string | null
           url: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -525,6 +568,7 @@ export type Database = {
           scan_frequency?: unknown | null
           updated_at?: string | null
           url?: string
+          user_id?: string | null
         }
         Relationships: []
       }

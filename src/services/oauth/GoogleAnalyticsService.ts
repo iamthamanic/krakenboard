@@ -48,9 +48,13 @@ export class GoogleAnalyticsService {
 
   static async handleCallback(code: string, type: string = 'google_analytics') {
     try {
-      // Exchange auth code for tokens
+      // Exchange auth code for tokens and fetch properties
       const { data, error } = await supabase.functions.invoke('google-auth-callback', {
-        body: { code, type }
+        body: { 
+          code, 
+          type,
+          redirect_uri: window.location.origin + '/oauth/callback'
+        }
       });
 
       if (error) throw error;
@@ -61,26 +65,9 @@ export class GoogleAnalyticsService {
       throw error;
     }
   }
-}
 
-export class CloudflareAnalyticsService {
-  static cloudflareTokenDialog: {
-    open: (onOpenChange: (open: boolean) => void) => void;
-    setOpen: (open: boolean) => void;
-  } | null = null;
-
-  static registerTokenDialog(dialogControls: {
-    open: (onOpenChange: (open: boolean) => void) => void;
-    setOpen: (open: boolean) => void;
-  }) {
-    this.cloudflareTokenDialog = dialogControls;
-  }
-
-  static async initiateOAuth() {
-    if (this.cloudflareTokenDialog) {
-      this.cloudflareTokenDialog.setOpen(true);
-    } else {
-      console.error('Cloudflare token dialog not registered');
-    }
+  static async getProperties(accessToken: string) {
+    // TODO: Implementiere API-Call zu GA4 um Properties abzurufen
+    return [];
   }
 }

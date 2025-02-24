@@ -2,14 +2,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleAnalyticsService } from "@/services/oauth/GoogleAnalyticsService";
+import { GA4PropertySelector } from "@/components/integrations/GA4PropertySelector";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+
+interface GA4Property {
+  propertyId: string;
+  propertyName: string;
+}
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
+  const [showPropertySelector, setShowPropertySelector] = useState(false);
+  const [properties, setProperties] = useState<GA4Property[]>([]);
+  const [websiteId, setWebsiteId] = useState<string>("");
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -23,7 +32,21 @@ const OAuthCallback = () => {
 
         // Handle different OAuth flows based on state parameter
         if (state?.startsWith('google_')) {
-          await GoogleAnalyticsService.handleCallback(code, state);
+          const data = await GoogleAnalyticsService.handleCallback(code, state);
+          
+          if (state === 'google_analytics') {
+            // Simulierte Properties für Test-Zwecke
+            // TODO: Echte Properties über die GA4 API abrufen
+            setProperties([
+              { propertyId: "123456", propertyName: "My Website" },
+              { propertyId: "789012", propertyName: "My Shop" }
+            ]);
+            setWebsiteId("test-website-id"); // TODO: Echte Website-ID verwenden
+            setShowPropertySelector(true);
+            setIsProcessing(false);
+            return;
+          }
+          
           toast.success(state === 'google_analytics' 
             ? "Google Analytics wurde erfolgreich verbunden"
             : "Google Tag Manager wurde erfolgreich verbunden");
@@ -47,12 +70,19 @@ const OAuthCallback = () => {
         toast.error("Fehler bei der OAuth Verbindung");
         navigate('/integrations');
       } finally {
-        setIsProcessing(false);
+        if (!showPropertySelector) {
+          setIsProcessing(false);
+        }
       }
     };
 
     handleCallback();
   }, [navigate, searchParams]);
+
+  const handlePropertySelect = async (selectedProperties: GA4Property[]) => {
+    toast.success(`${selectedProperties.length} Properties ausgewählt`);
+    navigate('/integrations');
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -62,6 +92,19 @@ const OAuthCallback = () => {
           <p className="text-lg">Verbindung wird hergestellt...</p>
         </div>
       )}
+      
+      <GA4PropertySelector
+        websiteId={websiteId}
+        properties={properties}
+        open={showPropertySelector}
+        onOpenChange={(open) => {
+          if (!open) {
+            navigate('/integrations');
+          }
+          setShowPropertySelector(open);
+        }}
+        onPropertySelect={handlePropertySelect}
+      />
     </div>
   );
 };
