@@ -4,8 +4,30 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Card } from "@/components/ui/card";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { Users, Clock, ArrowDownUp, MousePointer } from "lucide-react";
+import { useState } from "react";
+import { DateRangeSelector } from "@/components/social/DateRangeSelector";
+import { ExportMenu } from "@/components/social/ExportMenu";
+import { toast } from "sonner";
+import jsPDF from 'jspdf';
+import { format } from "date-fns";
+
+const TIME_RANGES = {
+  '7d': '7 Tage',
+  '30d': '30 Tage',
+  '90d': '90 Tage',
+  'custom': 'Benutzerdefiniert'
+};
 
 const WebsiteTraffic = () => {
+  const [timeRange, setTimeRange] = useState('30d');
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to?: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
+
   // Beispieldaten für die Tabelle
   const pageViewsData = [
     { page: "/startseite", views: "12.4K", uniqueVisitors: "8.2K", avgTime: "2m 15s", bounceRate: "32%" },
@@ -23,17 +45,44 @@ const WebsiteTraffic = () => {
     { key: "bounceRate", label: "Absprungrate" }
   ];
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Website Traffic Report', 20, 20);
+    // Hier weitere PDF Export Logik implementieren
+    doc.save(`traffic-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+    toast.success('PDF Export erfolgreich');
+  };
+
+  const handleExportCSV = () => {
+    // CSV Export Logik hier implementieren
+    toast.success('CSV Export erfolgreich');
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Website Traffic Analytics</h1>
-          <p className="text-muted-foreground">
-            Detaillierte Analyse deines Website-Traffics
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Website Traffic Analytics</h1>
+            <p className="text-muted-foreground">
+              Detaillierte Analyse deines Website-Traffics
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <DateRangeSelector
+              timeRange={timeRange}
+              setTimeRange={setTimeRange}
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+              timeRanges={TIME_RANGES}
+            />
+            <ExportMenu
+              onExportPDF={handleExportPDF}
+              onExportCSV={handleExportCSV}
+            />
+          </div>
         </div>
 
-        {/* Traffic Overview Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Besucher"
@@ -65,65 +114,62 @@ const WebsiteTraffic = () => {
           />
         </div>
 
-        {/* Detailed Traffic Analytics */}
-        <div className="grid gap-6">
-          {/* Top Pages Table */}
+        {/* Top Pages Table */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-6">Top Seiten Performance</h2>
+          <DataTable 
+            columns={columns}
+            data={pageViewsData}
+          />
+        </Card>
+
+        {/* Traffic Distribution */}
+        <div className="grid gap-6 md:grid-cols-2">
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Top Seiten Performance</h2>
-            <DataTable 
-              columns={columns}
-              data={pageViewsData}
-            />
+            <h2 className="text-xl font-semibold mb-2">Traffic Quellen</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Hauptquellen deiner Website-Besucher
+            </p>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span>Organische Suche</span>
+                <span className="font-medium">45%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Direkt</span>
+                <span className="font-medium">25%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Social Media</span>
+                <span className="font-medium">20%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Andere</span>
+                <span className="font-medium">10%</span>
+              </div>
+            </div>
           </Card>
 
-          {/* Traffic Distribution */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-2">Traffic Quellen</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Hauptquellen deiner Website-Besucher
-              </p>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Organische Suche</span>
-                  <span className="font-medium">45%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Direkt</span>
-                  <span className="font-medium">25%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Social Media</span>
-                  <span className="font-medium">20%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Andere</span>
-                  <span className="font-medium">10%</span>
-                </div>
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-2">Besucherverhalten</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Wie Besucher mit deiner Website interagieren
+            </p>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span>Desktop</span>
+                <span className="font-medium">65%</span>
               </div>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-2">Besucherverhalten</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Wie Besucher mit deiner Website interagieren
-              </p>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Desktop</span>
-                  <span className="font-medium">65%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Mobile</span>
-                  <span className="font-medium">30%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Tablet</span>
-                  <span className="font-medium">5%</span>
-                </div>
+              <div className="flex justify-between items-center">
+                <span>Mobile</span>
+                <span className="font-medium">30%</span>
               </div>
-            </Card>
-          </div>
+              <div className="flex justify-between items-center">
+                <span>Tablet</span>
+                <span className="font-medium">5%</span>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </DashboardLayout>
