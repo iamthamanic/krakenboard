@@ -1,30 +1,15 @@
+
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { StatsCard } from "@/components/dashboard/StatsCard";
 import { SocialMediaChart } from "@/components/dashboard/SocialMediaChart";
-import { BarChart3, Calendar, Download, FileDown, MessageCircle, Share2, Users, Video } from "lucide-react";
 import { useSocialMediaMetrics } from "@/hooks/useSocialMediaMetrics";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { de } from "date-fns/locale";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { DateRangeSelector } from "@/components/social/DateRangeSelector";
+import { ExportMenu } from "@/components/social/ExportMenu";
+import { PlatformMetrics } from "@/components/social/PlatformMetrics";
 
 const TIME_RANGES = {
   '7d': '7 Tage',
@@ -49,29 +34,6 @@ const SocialOrganic = () => {
   const { data: youtubeMetrics } = useSocialMediaMetrics('youtube');
   const { data: tiktokMetrics } = useSocialMediaMetrics('tiktok');
 
-  const latestFacebookMetrics = facebookMetrics?.[0];
-  const previousFacebookMetrics = facebookMetrics?.[1];
-  
-  const latestInstagramMetrics = instagramMetrics?.[0];
-  const previousInstagramMetrics = instagramMetrics?.[1];
-  
-  const latestLinkedinMetrics = linkedinMetrics?.[0];
-  const previousLinkedinMetrics = linkedinMetrics?.[1];
-
-  const latestYoutubeMetrics = youtubeMetrics?.[0];
-  const previousYoutubeMetrics = youtubeMetrics?.[1];
-
-  const latestTiktokMetrics = tiktokMetrics?.[0];
-  const previousTiktokMetrics = tiktokMetrics?.[1];
-
-  const calculateTrend = (current?: number, previous?: number) => {
-    if (!current || !previous) return undefined;
-    return {
-      value: Math.round(((current - previous) / previous) * 100),
-      isPositive: current >= previous
-    };
-  };
-
   const handleExportPDF = () => {
     const doc = new jsPDF();
     
@@ -82,34 +44,34 @@ const SocialOrganic = () => {
     const allData = [
       ['Plattform', 'Follower', 'Reichweite', 'Engagement Rate', 'Interaktionen'],
       ['Facebook', 
-        latestFacebookMetrics?.followers || 0,
-        latestFacebookMetrics?.reach || 0,
-        `${(latestFacebookMetrics?.engagement_rate || 0).toFixed(1)}%`,
-        latestFacebookMetrics?.interactions || 0
+        facebookMetrics?.[0]?.followers || 0,
+        facebookMetrics?.[0]?.reach || 0,
+        `${(facebookMetrics?.[0]?.engagement_rate || 0).toFixed(1)}%`,
+        facebookMetrics?.[0]?.interactions || 0
       ],
       ['Instagram',
-        latestInstagramMetrics?.followers || 0,
-        latestInstagramMetrics?.reach || 0,
-        `${(latestInstagramMetrics?.engagement_rate || 0).toFixed(1)}%`,
-        latestInstagramMetrics?.interactions || 0
+        instagramMetrics?.[0]?.followers || 0,
+        instagramMetrics?.[0]?.reach || 0,
+        `${(instagramMetrics?.[0]?.engagement_rate || 0).toFixed(1)}%`,
+        instagramMetrics?.[0]?.interactions || 0
       ],
       ['LinkedIn',
-        latestLinkedinMetrics?.followers || 0,
-        latestLinkedinMetrics?.reach || 0,
-        `${(latestLinkedinMetrics?.engagement_rate || 0).toFixed(1)}%`,
-        latestLinkedinMetrics?.interactions || 0
+        linkedinMetrics?.[0]?.followers || 0,
+        linkedinMetrics?.[0]?.reach || 0,
+        `${(linkedinMetrics?.[0]?.engagement_rate || 0).toFixed(1)}%`,
+        linkedinMetrics?.[0]?.interactions || 0
       ],
       ['YouTube',
-        latestYoutubeMetrics?.followers || 0,
-        latestYoutubeMetrics?.reach || 0,
-        `${(latestYoutubeMetrics?.engagement_rate || 0).toFixed(1)}%`,
-        latestYoutubeMetrics?.interactions || 0
+        youtubeMetrics?.[0]?.followers || 0,
+        youtubeMetrics?.[0]?.reach || 0,
+        `${(youtubeMetrics?.[0]?.engagement_rate || 0).toFixed(1)}%`,
+        youtubeMetrics?.[0]?.interactions || 0
       ],
       ['TikTok',
-        latestTiktokMetrics?.followers || 0,
-        latestTiktokMetrics?.reach || 0,
-        `${(latestTiktokMetrics?.engagement_rate || 0).toFixed(1)}%`,
-        latestTiktokMetrics?.interactions || 0
+        tiktokMetrics?.[0]?.followers || 0,
+        tiktokMetrics?.[0]?.reach || 0,
+        `${(tiktokMetrics?.[0]?.engagement_rate || 0).toFixed(1)}%`,
+        tiktokMetrics?.[0]?.interactions || 0
       ]
     ];
 
@@ -172,387 +134,135 @@ const SocialOrganic = () => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {timeRange === 'custom' ? (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    {dateRange.from ? (
-                      dateRange.to ? (
-                        <>
-                          {format(dateRange.from, "dd.MM.yyyy", { locale: de })} -{" "}
-                          {format(dateRange.to, "dd.MM.yyyy", { locale: de })}
-                        </>
-                      ) : (
-                        format(dateRange.from, "dd.MM.yyyy", { locale: de })
-                      )
-                    ) : (
-                      "Zeitraum wählen"
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <CalendarComponent
-                    initialFocus
-                    mode="range"
-                    defaultMonth={dateRange.from}
-                    selected={{ from: dateRange.from, to: dateRange.to }}
-                    onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
-                    numberOfMonths={2}
-                    locale={de}
-                  />
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Zeitraum wählen" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(TIME_RANGES).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-            <Accordion type="single" collapsible className="w-[200px]">
-              <AccordionItem value="export">
-                <AccordionTrigger className="hover:no-underline px-4 py-2 bg-background border rounded-md">
-                  Export
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex flex-col gap-2 pt-2">
-                    <Button onClick={handleExportPDF} variant="ghost" className="justify-start">
-                      <FileDown className="mr-2 h-4 w-4" />
-                      Als PDF exportieren
-                    </Button>
-                    <Button onClick={handleExportCSV} variant="ghost" className="justify-start">
-                      <Download className="mr-2 h-4 w-4" />
-                      Als CSV exportieren
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            <DateRangeSelector
+              timeRange={timeRange}
+              setTimeRange={setTimeRange}
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+              timeRanges={TIME_RANGES}
+            />
+            <ExportMenu
+              onExportPDF={handleExportPDF}
+              onExportCSV={handleExportCSV}
+            />
           </div>
         </div>
 
         <div className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Facebook</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Follower"
-                value={latestFacebookMetrics?.followers.toLocaleString() || "0"}
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestFacebookMetrics?.followers,
-                  previousFacebookMetrics?.followers
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Reichweite"
-                value={latestFacebookMetrics?.reach.toLocaleString() || "0"}
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestFacebookMetrics?.reach,
-                  previousFacebookMetrics?.reach
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Engagement Rate"
-                value={`${(latestFacebookMetrics?.engagement_rate || 0).toFixed(1)}%`}
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestFacebookMetrics?.engagement_rate,
-                  previousFacebookMetrics?.engagement_rate
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Interaktionen"
-                value={latestFacebookMetrics?.interactions.toLocaleString() || "0"}
-                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestFacebookMetrics?.interactions,
-                  previousFacebookMetrics?.interactions
-                )}
-                description="vs. letzter Zeitraum"
-              />
-            </div>
-          </div>
+          <PlatformMetrics
+            title="Facebook"
+            latestMetrics={facebookMetrics?.[0]}
+            previousMetrics={facebookMetrics?.[1]}
+          />
+          
+          <PlatformMetrics
+            title="Instagram"
+            latestMetrics={instagramMetrics?.[0]}
+            previousMetrics={instagramMetrics?.[1]}
+          />
+          
+          <PlatformMetrics
+            title="LinkedIn"
+            latestMetrics={linkedinMetrics?.[0]}
+            previousMetrics={linkedinMetrics?.[1]}
+          />
+          
+          <PlatformMetrics
+            title="YouTube"
+            latestMetrics={youtubeMetrics?.[0]}
+            previousMetrics={youtubeMetrics?.[1]}
+          />
+          
+          <PlatformMetrics
+            title="TikTok"
+            latestMetrics={tiktokMetrics?.[0]}
+            previousMetrics={tiktokMetrics?.[1]}
+            useVideoIcon
+          />
+        </div>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Instagram</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Follower"
-                value={latestInstagramMetrics?.followers.toLocaleString() || "0"}
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestInstagramMetrics?.followers,
-                  previousInstagramMetrics?.followers
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Reichweite"
-                value={latestInstagramMetrics?.reach.toLocaleString() || "0"}
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestInstagramMetrics?.reach,
-                  previousInstagramMetrics?.reach
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Engagement Rate"
-                value={`${(latestInstagramMetrics?.engagement_rate || 0).toFixed(1)}%`}
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestInstagramMetrics?.engagement_rate,
-                  previousInstagramMetrics?.engagement_rate
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Interaktionen"
-                value={latestInstagramMetrics?.interactions.toLocaleString() || "0"}
-                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestInstagramMetrics?.interactions,
-                  previousInstagramMetrics?.interactions
-                )}
-                description="vs. letzter Zeitraum"
-              />
-            </div>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SocialMediaChart 
+            data={facebookMetrics || []} 
+            metric="followers" 
+            title="Facebook Follower Entwicklung" 
+          />
+          <SocialMediaChart 
+            data={instagramMetrics || []} 
+            metric="followers" 
+            title="Instagram Follower Entwicklung" 
+          />
+          <SocialMediaChart 
+            data={linkedinMetrics || []} 
+            metric="followers" 
+            title="LinkedIn Follower Entwicklung" 
+          />
+          <SocialMediaChart 
+            data={youtubeMetrics || []} 
+            metric="followers" 
+            title="YouTube Abonnenten Entwicklung" 
+          />
+          <SocialMediaChart 
+            data={tiktokMetrics || []} 
+            metric="followers" 
+            title="TikTok Follower Entwicklung" 
+          />
+        </div>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-4">LinkedIn</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Follower"
-                value={latestLinkedinMetrics?.followers.toLocaleString() || "0"}
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestLinkedinMetrics?.followers,
-                  previousLinkedinMetrics?.followers
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Reichweite"
-                value={latestLinkedinMetrics?.reach.toLocaleString() || "0"}
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestLinkedinMetrics?.reach,
-                  previousLinkedinMetrics?.reach
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Engagement Rate"
-                value={`${(latestLinkedinMetrics?.engagement_rate || 0).toFixed(1)}%`}
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestLinkedinMetrics?.engagement_rate,
-                  previousLinkedinMetrics?.engagement_rate
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Interaktionen"
-                value={latestLinkedinMetrics?.interactions.toLocaleString() || "0"}
-                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestLinkedinMetrics?.interactions,
-                  previousLinkedinMetrics?.interactions
-                )}
-                description="vs. letzter Zeitraum"
-              />
-            </div>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SocialMediaChart 
+            data={facebookMetrics || []} 
+            metric="reach" 
+            title="Facebook Reichweite" 
+          />
+          <SocialMediaChart 
+            data={instagramMetrics || []} 
+            metric="reach" 
+            title="Instagram Reichweite" 
+          />
+          <SocialMediaChart 
+            data={linkedinMetrics || []} 
+            metric="reach" 
+            title="LinkedIn Reichweite" 
+          />
+          <SocialMediaChart 
+            data={youtubeMetrics || []} 
+            metric="reach" 
+            title="YouTube Aufrufe" 
+          />
+          <SocialMediaChart 
+            data={tiktokMetrics || []} 
+            metric="reach" 
+            title="TikTok Views" 
+          />
+        </div>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-4">YouTube</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Abonnenten"
-                value={latestYoutubeMetrics?.followers.toLocaleString() || "0"}
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestYoutubeMetrics?.followers,
-                  previousYoutubeMetrics?.followers
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Aufrufe"
-                value={latestYoutubeMetrics?.reach.toLocaleString() || "0"}
-                icon={<Share2 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestYoutubeMetrics?.reach,
-                  previousYoutubeMetrics?.reach
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Engagement Rate"
-                value={`${(latestYoutubeMetrics?.engagement_rate || 0).toFixed(1)}%`}
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestYoutubeMetrics?.engagement_rate,
-                  previousYoutubeMetrics?.engagement_rate
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Interaktionen"
-                value={latestYoutubeMetrics?.interactions.toLocaleString() || "0"}
-                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestYoutubeMetrics?.interactions,
-                  previousYoutubeMetrics?.interactions
-                )}
-                description="vs. letzter Zeitraum"
-              />
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-semibold mb-4">TikTok</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Follower"
-                value={latestTiktokMetrics?.followers.toLocaleString() || "0"}
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestTiktokMetrics?.followers,
-                  previousTiktokMetrics?.followers
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Views"
-                value={latestTiktokMetrics?.reach.toLocaleString() || "0"}
-                icon={<Video className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestTiktokMetrics?.reach,
-                  previousTiktokMetrics?.reach
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Engagement Rate"
-                value={`${(latestTiktokMetrics?.engagement_rate || 0).toFixed(1)}%`}
-                icon={<MessageCircle className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestTiktokMetrics?.engagement_rate,
-                  previousTiktokMetrics?.engagement_rate
-                )}
-                description="vs. letzter Zeitraum"
-              />
-              <StatsCard
-                title="Interaktionen"
-                value={latestTiktokMetrics?.interactions.toLocaleString() || "0"}
-                icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-                trend={calculateTrend(
-                  latestTiktokMetrics?.interactions,
-                  previousTiktokMetrics?.interactions
-                )}
-                description="vs. letzter Zeitraum"
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <SocialMediaChart 
-              data={facebookMetrics || []} 
-              metric="followers" 
-              title="Facebook Follower Entwicklung" 
-            />
-            <SocialMediaChart 
-              data={instagramMetrics || []} 
-              metric="followers" 
-              title="Instagram Follower Entwicklung" 
-            />
-            <SocialMediaChart 
-              data={linkedinMetrics || []} 
-              metric="followers" 
-              title="LinkedIn Follower Entwicklung" 
-            />
-            <SocialMediaChart 
-              data={youtubeMetrics || []} 
-              metric="followers" 
-              title="YouTube Abonnenten Entwicklung" 
-            />
-            <SocialMediaChart 
-              data={tiktokMetrics || []} 
-              metric="followers" 
-              title="TikTok Follower Entwicklung" 
-            />
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <SocialMediaChart 
-              data={facebookMetrics || []} 
-              metric="reach" 
-              title="Facebook Reichweite" 
-            />
-            <SocialMediaChart 
-              data={instagramMetrics || []} 
-              metric="reach" 
-              title="Instagram Reichweite" 
-            />
-            <SocialMediaChart 
-              data={linkedinMetrics || []} 
-              metric="reach" 
-              title="LinkedIn Reichweite" 
-            />
-            <SocialMediaChart 
-              data={youtubeMetrics || []} 
-              metric="reach" 
-              title="YouTube Aufrufe" 
-            />
-            <SocialMediaChart 
-              data={tiktokMetrics || []} 
-              metric="reach" 
-              title="TikTok Views" 
-            />
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <SocialMediaChart 
-              data={facebookMetrics || []} 
-              metric="engagement_rate" 
-              title="Facebook Engagement Rate" 
-            />
-            <SocialMediaChart 
-              data={instagramMetrics || []} 
-              metric="engagement_rate" 
-              title="Instagram Engagement Rate" 
-            />
-            <SocialMediaChart 
-              data={linkedinMetrics || []} 
-              metric="engagement_rate" 
-              title="LinkedIn Engagement Rate" 
-            />
-            <SocialMediaChart 
-              data={youtubeMetrics || []} 
-              metric="engagement_rate" 
-              title="YouTube Engagement Rate" 
-            />
-            <SocialMediaChart 
-              data={tiktokMetrics || []} 
-              metric="engagement_rate" 
-              title="TikTok Engagement Rate" 
-            />
-          </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SocialMediaChart 
+            data={facebookMetrics || []} 
+            metric="engagement_rate" 
+            title="Facebook Engagement Rate" 
+          />
+          <SocialMediaChart 
+            data={instagramMetrics || []} 
+            metric="engagement_rate" 
+            title="Instagram Engagement Rate" 
+          />
+          <SocialMediaChart 
+            data={linkedinMetrics || []} 
+            metric="engagement_rate" 
+            title="LinkedIn Engagement Rate" 
+          />
+          <SocialMediaChart 
+            data={youtubeMetrics || []} 
+            metric="engagement_rate" 
+            title="YouTube Engagement Rate" 
+          />
+          <SocialMediaChart 
+            data={tiktokMetrics || []} 
+            metric="engagement_rate" 
+            title="TikTok Engagement Rate" 
+          />
         </div>
       </div>
     </DashboardLayout>
