@@ -19,6 +19,10 @@ export interface ScannedForm {
   };
 }
 
+type JsonFormField = {
+  [key: string]: string | boolean | undefined;
+}
+
 export class FormScannerService {
   private websiteId: string;
   private url: string;
@@ -83,13 +87,21 @@ export class FormScannerService {
         .eq('selector', form.selector)
         .maybeSingle();
 
+      // Konvertiere FormField[] zu JsonFormField[]
+      const jsonFields: JsonFormField[] = form.fields.map(field => ({
+        name: field.name,
+        type: field.type,
+        required: field.required,
+        label: field.label
+      }));
+
       if (existingForm) {
         await supabase
           .from('forms')
           .update({
             action: form.action,
             method: form.method,
-            form_inputs: form.fields,
+            form_inputs: jsonFields,
             submit_button: form.submitButton,
             fields_count: form.fields.length,
             last_seen_at: new Date().toISOString()
@@ -103,7 +115,7 @@ export class FormScannerService {
             selector: form.selector,
             action: form.action,
             method: form.method,
-            form_inputs: form.fields,
+            form_inputs: jsonFields,
             submit_button: form.submitButton,
             fields_count: form.fields.length,
             form_type: 'contact', // Später dynamisch bestimmen
