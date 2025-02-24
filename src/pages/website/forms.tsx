@@ -1,6 +1,7 @@
+
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
-import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown } from "lucide-react";
+import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown, Scan } from "lucide-react";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -22,6 +23,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const TIME_RANGES = {
   '7d': '7 Tage',
@@ -64,6 +67,7 @@ const formColumns = [
 
 const WebsiteForms = () => {
   const [timeRange, setTimeRange] = useState('30d');
+  const [isScanning, setIsScanning] = useState(false);
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to?: Date | undefined;
@@ -78,6 +82,24 @@ const WebsiteForms = () => {
 
   const handleExportCSV = () => {
     toast.success('CSV Export erfolgreich');
+  };
+
+  const startFormScan = async () => {
+    try {
+      setIsScanning(true);
+      toast.info('Starte Formularerkennung...');
+      
+      // TODO: Implement actual form scanning logic
+      // This is a placeholder for demonstration
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast.success('Formulare wurden erfolgreich gescannt!');
+    } catch (error) {
+      console.error('Fehler beim Scannen:', error);
+      toast.error('Fehler beim Scannen der Formulare');
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   return (
@@ -136,6 +158,14 @@ const WebsiteForms = () => {
                 </SelectContent>
               </Select>
             )}
+            <Button
+              variant="default"
+              onClick={startFormScan}
+              disabled={isScanning}
+            >
+              <Scan className="mr-2 h-4 w-4" />
+              {isScanning ? 'Scanne...' : 'Formulare scannen'}
+            </Button>
             <Accordion type="single" collapsible className="w-[200px]">
               <AccordionItem value="export">
                 <AccordionTrigger className="hover:no-underline px-4 py-2 bg-background border rounded-md">
@@ -202,3 +232,4 @@ const WebsiteForms = () => {
 };
 
 export default WebsiteForms;
+
