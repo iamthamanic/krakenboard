@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from "../../../components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { FormInput, Activity, CheckCircle, AlertCircle, Calendar, Download, FileDown, Scan } from "lucide-react";
@@ -50,7 +49,7 @@ const formColumns = [
   { key: "errorRate", label: "Fehlerrate" }
 ];
 
-const WebsiteForms = () => {
+const WebsiteForms: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30d');
   const [isScanning, setIsScanning] = useState(false);
   const [formData, setFormData] = useState<FormData[]>([]);
@@ -118,7 +117,6 @@ const WebsiteForms = () => {
       setIsScanning(true);
       toast.info('Starte Formularerkennung...');
       
-      // TODO: Später dynamisch die Website-ID und URL laden
       const websiteId = '123'; // Placeholder
       const url = 'https://example.com'; // Placeholder
       
