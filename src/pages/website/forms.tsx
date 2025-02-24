@@ -1,4 +1,3 @@
-
 import { type ReactElement } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
@@ -136,7 +135,7 @@ function WebsiteForms(): ReactElement {
     }
   };
 
-  return (
+  const content = (
     <div className="space-y-8 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
@@ -238,7 +237,7 @@ function WebsiteForms(): ReactElement {
         />
         <StatsCard
           title="Erfolgsrate"
-          value={`${((formData.reduce((sum, form) => {
+          value={`${(formData.reduce((sum, form) => {
             const rate = parseFloat(form.conversionRate);
             return sum + (isNaN(rate) ? 0 : rate);
           }, 0) / (formData.length || 1)).toFixed(1)}%`}
@@ -248,7 +247,7 @@ function WebsiteForms(): ReactElement {
         />
         <StatsCard
           title="Fehlerrate"
-          value={`${((formData.reduce((sum, form) => {
+          value={`${(formData.reduce((sum, form) => {
             const rate = parseFloat(form.errorRate);
             return sum + (isNaN(rate) ? 0 : rate);
           }, 0) / (formData.length || 1)).toFixed(1)}%`}
@@ -267,6 +266,8 @@ function WebsiteForms(): ReactElement {
       </div>
     </div>
   );
+
+  return <DashboardLayout>{content}</DashboardLayout>;
 }
 
 WebsiteForms.getLayout = function getLayout(page: ReactElement) {
