@@ -1,14 +1,13 @@
 
 import {
-  BarChart,
-  Share2,
-  MessageCircle,
-  CreditCard,
-  LineChart,
-  FormInput,
+  Briefcase,
+  FileText,
+  Filter,
+  Globe,
   LayoutDashboard,
   Settings,
   Plug,
+  Table,
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,27 +28,16 @@ const dashboardMenuItems = [
       { icon: LayoutDashboard, label: "Gesamtübersicht", href: "/" },
     ]
   },
-  { 
-    group: "Website",
-    items: [
-      { icon: LineChart, label: "Traffic Analytics", href: "/website/traffic" },
-      { icon: FormInput, label: "Form Analytics", href: "/website/forms" },
-    ]
-  },
   {
-    group: "Social Media",
+    group: "My Board",
     items: [
-      { icon: MessageCircle, label: "Organic Performance", href: "/social/organic" },
-      { icon: CreditCard, label: "Paid Campaigns", href: "/social/paid" },
-    ]
+      { icon: Table, label: "My Board", href: "/my-board" },
+      { icon: FileText, label: "Master-Baustein", href: "/blocks/master" },
+      { icon: Filter, label: "Funnel-Baustein", href: "/blocks/funnel" },
+      { icon: Globe, label: "Website-Baustein", href: "/blocks/website" },
+      { icon: Briefcase, label: "Operations-Baustein", href: "/blocks/operations" },
+    ],
   },
-  {
-    group: "Google Ads",
-    items: [
-      { icon: BarChart, label: "Campaign Overview", href: "/google/campaigns" },
-      { icon: Share2, label: "Performance Metrics", href: "/google/metrics" },
-    ]
-  }
 ];
 
 const settingsMenuItems = [
@@ -68,27 +56,26 @@ export const DashboardSidebar = () => {
   const menuItems = isSettingsRoute ? settingsMenuItems : dashboardMenuItems;
 
   return (
-    <Sidebar variant="inset" collapsible="icon">
-      <SidebarContent className="pt-16">
+    <Sidebar variant="inset" collapsible="offcanvas">
+      <SidebarContent className="pt-16 overflow-y-auto">
         {menuItems.map((group, index) => (
-          <SidebarGroup key={group.group || `group-${index}`}>
+          <SidebarGroup key={group.group || `group-${index}`} className="mb-4">
             {group.group && (
-              <SidebarGroupLabel className="px-6 text-base font-medium mb-2">
+              <SidebarGroupLabel className="px-3 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/70 mb-1">
                 {group.group}
               </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="flex flex-col gap-0.5">
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={location.pathname === item.href}>
                       <Link
                         to={item.href}
-                        className="flex items-center gap-4 px-6 py-2 hover:bg-accent transition-colors"
-                        data-active={location.pathname === item.href}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-md"
                       >
-                        <item.icon className="h-5 w-5" />
-                        <span className="text-base">{item.label}</span>
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        <span className="truncate text-sm">{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

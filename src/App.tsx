@@ -1,5 +1,5 @@
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -10,12 +10,11 @@ import Settings from "./pages/admin/settings";
 import Users from "./pages/admin/users";
 import Security from "./pages/admin/security";
 import AdminPage from "./pages/admin/index";
-import SocialOrganic from "./pages/social/organic";
-import SocialPaid from "./pages/social/paid";
-import GoogleCampaigns from "./pages/google/campaigns";
-import GoogleMetrics from "./pages/google/metrics";
-import WebsiteTraffic from "./pages/website/traffic";
-import WebsiteForms from "./pages/website/forms";
+import AnalyticsOverview from "./pages/analytics/overview";
+import AnalyticsInteractions from "./pages/analytics/interactions";
+import AnalyticsFunnel from "./pages/analytics/funnel";
+import AnalyticsWebsite from "./pages/analytics/website";
+import AnalyticsOperations from "./pages/analytics/operations";
 
 const router = createBrowserRouter([
   {
@@ -56,29 +55,77 @@ const router = createBrowserRouter([
     element: <AdminPage />,
   },
   {
+    path: "/analytics",
+    element: <Navigate to="/my-board" replace />,
+  },
+  {
+    path: "/my-board",
+    element: <AnalyticsInteractions />,
+  },
+  {
+    path: "/blocks/master",
+    element: <AnalyticsOverview />,
+  },
+  {
+    path: "/blocks/funnel",
+    element: <AnalyticsFunnel />,
+  },
+  {
+    path: "/blocks/website",
+    element: <AnalyticsWebsite />,
+  },
+  {
+    path: "/blocks/operations",
+    element: <AnalyticsOperations />,
+  },
+  {
+    path: "/analytics/overview",
+    element: <Navigate to="/blocks/master" replace />,
+  },
+  {
+    path: "/analytics/interactions",
+    element: <Navigate to="/my-board" replace />,
+  },
+  {
+    path: "/analytics/funnel",
+    element: <Navigate to="/blocks/funnel" replace />,
+  },
+  {
+    path: "/analytics/website",
+    element: <Navigate to="/blocks/website" replace />,
+  },
+  {
+    path: "/analytics/operations",
+    element: <Navigate to="/blocks/operations" replace />,
+  },
+  {
+    path: "/analytics/report-center",
+    element: <Navigate to="/blocks/master" replace />,
+  },
+  {
     path: "/social/organic",
-    element: <SocialOrganic />,
+    element: <Navigate to="/blocks/funnel" replace />,
   },
   {
     path: "/social/paid",
-    element: <SocialPaid />,
+    element: <Navigate to="/blocks/funnel" replace />,
   },
   {
     path: "/google/campaigns",
-    element: <GoogleCampaigns />,
+    element: <Navigate to="/blocks/funnel" replace />,
   },
   {
     path: "/google/metrics",
-    element: <GoogleMetrics />,
+    element: <Navigate to="/blocks/funnel" replace />,
   },
   {
     path: "/website/traffic",
-    element: <WebsiteTraffic />,
+    element: <Navigate to="/blocks/website" replace />,
   },
   {
     path: "/website/forms",
-    element: <WebsiteForms />,
-  }
+    element: <Navigate to="/blocks/website" replace />,
+  },
 ]);
 
 const queryClient = new QueryClient({

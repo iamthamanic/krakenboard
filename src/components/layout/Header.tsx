@@ -1,6 +1,7 @@
 
-import { Menu } from "lucide-react";
+import { Menu, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,9 +42,9 @@ export const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
       <div className="container flex items-center justify-between h-16">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="lg:hidden">
+          <SidebarTrigger className="lg:hidden" variant="ghost" size="icon">
             <Menu className="h-6 w-6" />
-          </Button>
+          </SidebarTrigger>
           <Link to="/" className="flex items-center text-2xl font-bold">
             <img 
               src="/lovable-uploads/deaeb7df-0e13-4733-b44b-7b2e5faf09d9.png" 
@@ -55,6 +56,12 @@ export const Header = () => {
           </Link>
         </div>
         <nav className="flex items-center space-x-4">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/admin/settings" className="gap-2">
+              <Settings className="h-4 w-4" />
+              <span className="hidden sm:inline">Einstellungen</span>
+            </Link>
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="min-w-[2.5rem]">
